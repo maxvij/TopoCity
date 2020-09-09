@@ -16,7 +16,7 @@ function App() {
 
   return (
     <div className="App">
-      
+      <a href="/profile">Get started!</a>
     </div>
   );
 }
