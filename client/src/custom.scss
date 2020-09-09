@@ -1,0 +1,78 @@
+// Override default variables before the import
+$body-bg: #fff;
+
+$theme-colors: (
+  "primary": #ff4136,
+  "red": #EF476F,
+  "yellow": #FFD166,
+  "green": #06D6A0,
+  "blue": #118AB2,
+  "dark": #073B4C,
+  "black": #333,
+  "light": #efefef
+);
+
+.center-box{
+  margin:40px auto;
+  max-width: 960px;
+  text-align:center;
+}
+.max-400 {
+  margin: 0 auto;
+  width: 400px;
+  max-width: 100%;
+}
+.filler-20 {
+  height:20px;
+}
+.filler-40 {
+  height: 40px;
+}
+.filler-60 {
+  height: 60px;
+}
+.form-group {
+  text-align: left;
+}
+.react-slider2d-x658 .slider-container .progressBar {
+  cursor: pointer;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(to right, #06D6A0, #118AB2);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  transition: width 0.15s ease-out, height 0.15s ease-out;
+}
+.react-slider2d-x658 .slider-container {
+  position: relative;
+  background: linear-gradient(to right, #06D6A0,#118AB2);
+  cursor: pointer;
+  border-radius: 5px;
+  height: 7px;
+}
+
+/* src/App.css */
+.map-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.vote-panel {
+  text-align:center;
+  padding:20px;
+  background:#fff;
+  border-radius:20px;
+  width:600px;
+  max-width:80%;
+  display:block;
+  margin:auto;
+  position: fixed;
+  left: 50%;
+transform: translateX(-50%);
+  bottom:40px;
+  box-shadow: 0 5px 10px rgba(154,160,185,.05), 0 15px 40px rgba(166,173,201,.2);
+}
+// Import Bootstrap and its default variables
+@import '~bootstrap/scss/bootstrap.scss';
