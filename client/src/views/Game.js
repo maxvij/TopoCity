@@ -1,7 +1,11 @@
 import React from 'react';
-import mapboxgl from 'mapbox-gl';
+import ReactMapboxGl, {Layer, Feature } from 'react-mapbox-gl';
 import "../custom.scss";
 import Button from "react-bootstrap/Button";
+
+const Map = ReactMapboxGl({
+    accessToken: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN
+})
 
 export default class Game extends React.Component {
     constructor(props) {
@@ -17,15 +21,6 @@ export default class Game extends React.Component {
     }
 
     componentDidMount() {
-        mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
-
-        const map = new mapboxgl.Map({
-            container: this.mapContainer,
-            style: 'mapbox://styles/mapbox/streets-v11',
-            center: [this.state.lng, this.state.lat],
-            zoom: this.state.zoom
-        });
-
         this.getFacts()
         this.getNextFact()
     }
@@ -80,7 +75,19 @@ export default class Game extends React.Component {
     render () {
         return (
             <div>
-                <div className="map-container" ref={el => this.mapContainer = el}></div>
+                <Map
+                    className="map-container"
+                    containerStyle={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0
+                    }}
+                    style="mapbox://styles/mapbox/streets-v11"
+                    zoomLevel={9}
+                    center={[this.state.lng, this.state.lat]}>
+                </Map>
                 <div className="vote-panel">
                     <h1>What's the name of this city?</h1>
                     <p>(Hint: it's {this.state.currentFact[2]})</p>
