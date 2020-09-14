@@ -27,6 +27,8 @@ def init():
         model.add_fact(Fact(2, "6.5625000-52.9966700", "Assen"))
         model.add_fact(Fact(3, "6.5666700-53.2191700", "Groningen"))
         model.add_fact(Fact(4, "5.2916700-52.7033300", "Enkhuizen"))
+        model.add_fact(Fact(5, "5.9694400-52.2100000", "Apeldoorn"))
+        model.add_fact(Fact(6, "4.7486100-52.6316700", "Alkmaar"))
     return {'facts': model.facts}
 
 
@@ -53,7 +55,7 @@ def get_next_fact():
 def log_response():
     global starttime
     next_fact, new = model.get_next_fact(time.time() - starttime)
-    resp = Response(fact=next_fact, start_time=time.time() - starttime, rt=(time.time() - starttime) + 500,
+    resp = Response(fact=next_fact, start_time=time.time() - starttime, rt=(time.time() - starttime) + 2000,
                     correct=True)
     model.register_response(resp)
     return {'responses': model.responses}

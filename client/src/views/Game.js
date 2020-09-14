@@ -43,8 +43,7 @@ export default class Game extends React.Component {
 
     }
 
-    logResponse = (fact) => {
-        console.log('logging fact: ', fact)
+    logResponse = (correct) => {
         this.setState({loading: true})
         fetch('/logresponse', {
             headers: {
@@ -53,7 +52,7 @@ export default class Game extends React.Component {
             },
             method: 'POST',
             body: {
-                'correct' : 'true'
+                'correct' : correct
             }
         }).then(res => res.json()).then(data => {
             this.setState({loading: false})
@@ -61,11 +60,18 @@ export default class Game extends React.Component {
         this.getNextFact()
     }
 
+    logCorrectResponse = () => {
+        this.logResponse(true)
+    }
+
+    logIncorrectResponse = () => {
+        this.logResponse(false)
+    }
+
     getNextFact = () => {
         this.setState({loading: true})
         fetch('/getnextfact').then(res => res.json()).then(data => {
             const splittedString = data.next_fact[1].split("-");
-            console.log(splittedString)
             this.setState({
                 currentFact: data.next_fact,
                 isNewFact: data.new,
@@ -105,7 +111,6 @@ export default class Game extends React.Component {
                     <p>Lat: {this.state.lng}</p>
                     <div className="filler-20"></div>
                     <div className="max-400">
-                        {console.log(this.state.currentFact)}
                         {this.state.loading ? <div className="loading">Fetching...</div> : this.state.facts.map(fact => {
                             return <Button variant="blue" size="lg" color="blue" block onClick={this.logResponse} key={fact[0]}>{fact[2]}</Button>
                         })}
