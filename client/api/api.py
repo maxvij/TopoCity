@@ -23,10 +23,10 @@ def init():
     global starttime
     starttime = time.time()
     if len(model.facts) == 0:
-        model.add_fact(Fact(1, "hello", "bonjour"))
-        model.add_fact(Fact(2, "dog", "chien"))
-        model.add_fact(Fact(3, "cat", "chat"))
-        model.add_fact(Fact(4, "computer", "ordinateur"))
+        model.add_fact(Fact(1, "4.8896900-52.3740300", "Amsterdam"))
+        model.add_fact(Fact(2, "6.5625000-52.9966700", "Assen"))
+        model.add_fact(Fact(3, "6.5666700-53.2191700", "Groningen"))
+        model.add_fact(Fact(4, "5.2916700-52.7033300", "Enkhuizen"))
     return {'facts': model.facts}
 
 
@@ -49,11 +49,11 @@ def get_next_fact():
             'new': new}
 
 
-@app.route('/logresponse', methods=['POST', 'GET'])
+@app.route('/logresponse', methods=['POST'])
 def log_response():
     global starttime
     next_fact, new = model.get_next_fact(time.time() - starttime)
-    resp = Response(fact=next_fact, start_time=time.time() - starttime, rt=(time.time() - starttime) + 5000,
+    resp = Response(fact=next_fact, start_time=time.time() - starttime, rt=(time.time() - starttime) + 500,
                     correct=True)
     model.register_response(resp)
     return {'responses': model.responses}
