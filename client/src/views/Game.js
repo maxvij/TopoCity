@@ -1,52 +1,50 @@
-/* src/App.js */
-import React, {useRef, useEffect} from 'react';
+import React from 'react';
 import mapboxgl from 'mapbox-gl';
-import Button from "react-bootstrap/Button";
 import "../custom.scss";
+import Button from "react-bootstrap/Button";
 
-mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
+export default class Game extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            lng: 4.8896900,
+            lat: 52.3740300,
+            zoom: 8
+        }
+    }
 
-const App = () => {
-    const mapContainerRef = useRef(null);
+    componentDidMount() {
+        mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
-    // initialize map when component mounts
-    useEffect(() => {
         const map = new mapboxgl.Map({
-            container: mapContainerRef.current,
-            // See style options here: https://docs.mapbox.com/api/maps/#styles
+            container: this.mapContainer,
             style: 'mapbox://styles/mapbox/streets-v11',
-            center: [3.0368641, 52.1917338],
-            zoom: 5,
+            center: [this.state.lng, this.state.lat],
+            zoom: this.state.zoom
         });
+    }
 
-        // add navigation control (the +/- zoom buttons)
-        map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
-
-        // clean up on unmount
-        return () => map.remove();
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-    return (
-        <div>
-            <div className="map-container" ref={mapContainerRef}/>
-            <div className="vote-panel">
-                <h1>What's the name of this city?</h1>
-                <div className="filler-20"></div>
-                <div className="max-400">
-                    <Button variant="blue" size="lg" color="blue" block>
-                        Amsterdam
-                    </Button>
-                    <Button variant="blue" size="lg" color="blue" block>
-                        Groningen
-                    </Button>
-                    <Button variant="blue" size="lg" color="blue" block>
-                        Utrecht
-                    </Button>
+    render () {
+        return (
+            <div>
+                <div className="map-container" ref={el => this.mapContainer = el}></div>
+                <div className="vote-panel">
+                    <h1>What's the name of this city?</h1>
                     <div className="filler-20"></div>
+                    <div className="max-400">
+                        <Button variant="blue" size="lg" color="blue" block>
+                            Amsterdam
+                        </Button>
+                        <Button variant="blue" size="lg" color="blue" block>
+                            Groningen
+                        </Button>
+                        <Button variant="blue" size="lg" color="blue" block>
+                            Utrecht
+                        </Button>
+                        <div className="filler-20"></div>
+                    </div>
                 </div>
             </div>
-        </div>
-    );
-};
-
-export default App;
+        )
+    }
+}
