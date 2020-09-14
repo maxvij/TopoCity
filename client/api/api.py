@@ -12,6 +12,7 @@ Encounter = namedtuple("Encounter", "activation, time, reaction_time, decay")
 
 starttime = 0
 
+
 @app.route('/time')
 def get_current_time():
     return {'time': time.time()}
@@ -26,7 +27,17 @@ def init():
         model.add_fact(Fact(2, "dog", "chien"))
         model.add_fact(Fact(3, "cat", "chat"))
         model.add_fact(Fact(4, "computer", "ordinateur"))
-    return {'facts' : model.facts}
+    return {'facts': model.facts}
+
+
+@app.route('/facts')
+def facts():
+    return {'facts': model.facts}
+
+
+@app.route('/responses')
+def responses():
+    return {'responses': model.responses}
 
 
 @app.route('/getnextfact')
@@ -37,10 +48,12 @@ def get_next_fact():
     return {'next_fact': next_fact,
             'new': new}
 
-@app.route('/logresponse', methods = ['POST', 'GET'])
+
+@app.route('/logresponse', methods=['POST', 'GET'])
 def log_response():
     global starttime
     next_fact, new = model.get_next_fact(time.time() - starttime)
-    resp = Response(fact = next_fact, start_time=time.time() - starttime, rt = (time.time() - starttime) + 5000, correct = True)
+    resp = Response(fact=next_fact, start_time=time.time() - starttime, rt=(time.time() - starttime) + 5000,
+                    correct=True)
     model.register_response(resp)
-    return {'responses' : model.responses}
+    return {'responses': model.responses}
