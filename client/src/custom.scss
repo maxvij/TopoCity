@@ -66,6 +66,7 @@ $theme-colors: (
   border-radius:20px;
   width:600px;
   max-width:80%;
+  min-height: 400px;
   display:block;
   margin:auto;
   position: fixed;
@@ -73,6 +74,23 @@ $theme-colors: (
 transform: translateX(-50%);
   bottom:40px;
   box-shadow: 0 5px 10px rgba(154,160,185,.05), 0 15px 40px rgba(166,173,201,.2);
+}
+
+.loading {
+  opacity: 1;
+  animation: fadeInOut 1s ease-in-out infinite;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 1
+  }
+  50% {
+    opacity: 0.6
+  }
+  100% {
+    opacity: 1
+  }
 }
 // Import Bootstrap and its default variables
 @import '~bootstrap/scss/bootstrap.scss';

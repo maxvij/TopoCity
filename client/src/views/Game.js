@@ -17,12 +17,12 @@ export default class Game extends React.Component {
             currentFact: {},
             facts: [],
             initialized: false,
+            loading: true,
+            isNewFact: false
         }
     }
 
     componentDidMount() {
-        this.getFacts()
-        this.getNextFact()
     }
 
     componentWillMount() {
@@ -34,13 +34,18 @@ export default class Game extends React.Component {
     init = () => {
         fetch('/init').then(res => res.json()).then(data => {
             this.setState({
-                initialized: true
+                initialized: true,
+                loading: false
             });
         });
+        this.getFacts()
+        this.getNextFact()
+
     }
 
     logResponse = (fact) => {
         console.log('logging fact: ', fact)
+        this.setState({loading: true})
         fetch('/logresponse', {
             headers: {
                 'Accept': 'application/json',
@@ -50,18 +55,23 @@ export default class Game extends React.Component {
             body: {
                 'correct' : 'true'
             }
+        }).then(res => res.json()).then(data => {
+            this.setState({loading: false})
         })
         this.getNextFact()
     }
 
     getNextFact = () => {
+        this.setState({loading: true})
         fetch('/getnextfact').then(res => res.json()).then(data => {
             const splittedString = data.next_fact[1].split("-");
             console.log(splittedString)
             this.setState({
                 currentFact: data.next_fact,
+                isNewFact: data.new,
                 lng: Number(splittedString[0]),
-                lat: Number(splittedString[1])
+                lat: Number(splittedString[1]),
+                loading: false
             });
         });
     }
@@ -90,13 +100,13 @@ export default class Game extends React.Component {
                 </Map>
                 <div className="vote-panel">
                     <h1>What's the name of this city?</h1>
-                    <p>(Hint: it's {this.state.currentFact[2]})</p>
+                    <p>(Hint: it's {this.state.currentFact[2]}{this.state.isNewFact ? "*" : ""})</p>
                     <p>Long: {this.state.lat}</p>
                     <p>Lat: {this.state.lng}</p>
                     <div className="filler-20"></div>
                     <div className="max-400">
                         {console.log(this.state.currentFact)}
-                        {this.state.facts.map(fact => {
+                        {this.state.loading ? <div className="loading">Fetching...</div> : this.state.facts.map(fact => {
                             return <Button variant="blue" size="lg" color="blue" block onClick={this.logResponse} key={fact[0]}>{fact[2]}</Button>
                         })}
                         <div className="filler-20"></div>
