@@ -70,16 +70,17 @@ export default class Game extends React.Component {
     logResponse = (correct) => {
         console.log('LOGGING RESPONSE', correct)
         this.setState({loading: true})
+        let data = {
+            'correct' : correct ? "true" : "false",
+            'secondsPassed' : this.state.secondsPassed
+        }
         fetch('/logresponse', {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             method: 'POST',
-            body: {
-                'correct' : correct,
-                'secondsPassed' : this.state.secondsPassed
-            }
+            body: JSON.stringify(data)
         }).then(res => res.json()).then(data => {
             this.setState({loading: false})
         })

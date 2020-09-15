@@ -1,9 +1,11 @@
 import time
-from flask import Flask, request
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 from SpacingModel import SpacingModel
 from collections import namedtuple
 
 app = Flask(__name__)
+CORS(app)
 model = SpacingModel()
 
 Fact = namedtuple("Fact", "fact_id, question, answer")
@@ -34,18 +36,23 @@ def init():
 
 @app.route('/facts')
 def facts():
+    if len(model.facts) == 0:
+    	init()
     return {'facts': model.facts}
 
 
 @app.route('/responses')
 def responses():
+    if len(model.facts) == 0:
+    	init()
     return {'responses': model.responses}
 
 
 @app.route('/getnextfact')
 def get_next_fact():
+    if len(model.facts) == 0:
+    	init()
     global starttime
-    print(time.time() - starttime)
     next_fact, new = model.get_next_fact(time.time() - starttime)
     return {'next_fact': next_fact,
             'new': new}
@@ -53,9 +60,17 @@ def get_next_fact():
 
 @app.route('/logresponse', methods=['POST'])
 def log_response():
+    if len(model.facts) == 0:
+    	init()
     global starttime
+    if request.method == 'POST':
+    	print('Response log received')
+    	correctAnswer = False
+    	if request.json['correct'] == 'true':
+    		correctAnswer = True
+    		print(correctAnswer)
     next_fact, new = model.get_next_fact(time.time() - starttime)
     resp = Response(fact=next_fact, start_time=time.time() - starttime, rt=(time.time() - starttime) + 2000,
-                    correct=True)
+                    correct=correctAnswer)
     model.register_response(resp)
     return {'responses': model.responses}
