@@ -18,11 +18,19 @@ export default class Game extends React.Component {
             facts: [],
             initialized: false,
             loading: true,
-            isNewFact: false
+            isNewFact: false,
+            secondsPassed: 0,
+            intervalId: null
         }
     }
 
     componentDidMount() {
+        let intervalId = setInterval(this.addSecond, 1000);
+        this.setState({intervalId: intervalId})
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.state.intervalId)
     }
 
     componentWillMount() {
@@ -43,6 +51,21 @@ export default class Game extends React.Component {
 
     }
 
+    addSecond = () => {
+        this.setState({
+           secondsPassed: this.state.secondsPassed+1
+        });
+    }
+
+    resetTimer = () => {
+        clearInterval(this.state.intervalId)
+        let intervalId = setInterval(this.addSecond, 1000);
+        this.setState({
+            intervalId: intervalId,
+            secondsPassed: 0
+        })
+    }
+
     logResponse = (correct) => {
         this.setState({loading: true})
         fetch('/logresponse', {
@@ -58,6 +81,7 @@ export default class Game extends React.Component {
             this.setState({loading: false})
         })
         this.getNextFact()
+        this.resetTimer()
     }
 
     logCorrectResponse = () => {
@@ -105,11 +129,12 @@ export default class Game extends React.Component {
                     center={[this.state.lng, this.state.lat]}>
                 </Map>
                 <div className="timer-panel">
-                    <CountdownTimer count={600} size={12} hideDay hideHours noPoints labelSize={20} />
+                    <CountdownTimer ref="countdown" count={600} size={12} hideDay hideHours noPoints labelSize={20} />
                 </div>
                 <div className="vote-panel">
                     <h1>What's the name of this city?</h1>
                     <p>(Hint: it's {this.state.currentFact[2]}{this.state.isNewFact ? "*" : ""})</p>
+                    <p>{this.state.secondsPassed} seconds passed</p>
                     <p>Long: {this.state.lat}</p>
                     <p>Lat: {this.state.lng}</p>
                     <div className="filler-20"></div>
