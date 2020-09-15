@@ -47,7 +47,7 @@ class SpacingModel(object):
         self.responses.append(response)
 
 
-    def get_next_fact(self, current_time):
+    def get_next_fact(self, current_time) -> object:
         # type: (int) -> (Fact, bool)
         """
         Returns a tuple containing the fact that needs to be repeated most urgently and a boolean indicating whether this fact is new (True) or has been presented before (False).
