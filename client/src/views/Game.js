@@ -77,7 +77,8 @@ export default class Game extends React.Component {
             },
             method: 'POST',
             body: {
-                'correct' : correct
+                'correct' : correct,
+                'secondsPassed' : this.state.secondsPassed
             }
         }).then(res => res.json()).then(data => {
             this.setState({loading: false})
