@@ -69,8 +69,7 @@ def log_response():
     	if request.json['correct'] == 'true':
     		correctAnswer = True
     		print(correctAnswer)
-    next_fact, new = model.get_next_fact(time.time() - starttime)
-    resp = Response(fact=next_fact, start_time=time.time() - starttime, rt=(time.time() - starttime) + 2000,
-                    correct=correctAnswer)
-    model.register_response(resp)
+    		next_fact, new = model.get_next_fact(time.time() - starttime)
+    		resp = Response(fact=next_fact, start_time=time.time() - starttime, rt=request.json['secondsPassed'] * 1000, correct=correctAnswer)
+    		model.register_response(resp)
     return {'responses': model.responses}
