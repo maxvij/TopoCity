@@ -2,6 +2,7 @@ import React from 'react';
 import ReactMapboxGl, {Layer, Feature } from 'react-mapbox-gl';
 import Button from "react-bootstrap/Button";
 import CountdownTimer from "react-component-countdown-timer";
+import AnswerButton from "./AnswerButton";
 
 const Map = ReactMapboxGl({
     accessToken: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN
@@ -67,6 +68,7 @@ export default class Game extends React.Component {
     }
 
     logResponse = (correct) => {
+        console.log('LOGGING RESPONSE', correct)
         this.setState({loading: true})
         fetch('/logresponse', {
             headers: {
@@ -133,14 +135,11 @@ export default class Game extends React.Component {
                 </div>
                 <div className="vote-panel">
                     <h1>What's the name of this city?</h1>
-                    <p>(Hint: it's {this.state.currentFact[2]}{this.state.isNewFact ? "*" : ""})</p>
                     <p>{this.state.secondsPassed} seconds passed</p>
-                    <p>Long: {this.state.lat}</p>
-                    <p>Lat: {this.state.lng}</p>
                     <div className="filler-20"></div>
                     <div className="max-400">
-                        {this.state.loading ? <div className="loading">Fetching...</div> : this.state.facts.map(fact => {
-                            return <Button variant="blue" size="lg" color="blue" block onClick={this.logResponse} key={fact[0]}>{fact[2]}</Button>
+                        {this.state.loading ? <div className="loading">Fetching...</div> : this.state.facts.map((fact, index) => {
+                            return <AnswerButton key={index} name={fact[2]} correct={fact[2] === this.state.currentFact[2]} correctAction={this.logCorrectResponse} incorrectAction={this.logIncorrectResponse}>{fact[2]}</AnswerButton>
                         })}
                         <div className="filler-20"></div>
                     </div>
