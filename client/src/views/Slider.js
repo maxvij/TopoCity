@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import {SingleSlider} from 'react-slider-kit';
 import Button from 'react-bootstrap/Button';
-import "../custom.scss";
 
 export default class SimpleExample extends Component {
   constructor(props, context) {

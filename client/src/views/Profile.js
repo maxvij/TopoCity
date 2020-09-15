@@ -1,6 +1,5 @@
 import React from 'react'
 import Button from "react-bootstrap/Button";
-import "../custom.scss";
 
 class Profile extends React.Component {
     render() {

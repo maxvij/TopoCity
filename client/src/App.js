@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 
-import "./custom.scss";
+import "./assets/sass/custom.scss";
+import "./assets/sass/timer.sass";
 
 function App() {
     const [currentTime, setCurrentTime] = useState(0);

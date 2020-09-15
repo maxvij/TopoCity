@@ -1,7 +1,6 @@
 import React from 'react'
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import "../custom.scss";
 
 const useStateWithLocalStorage = localStorageKey => {
   const [value, setValue] = React.useState(
