@@ -2,7 +2,6 @@ import React, {useState} from 'react'
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { Typeahead } from 'react-bootstrap-typeahead';
-import "../custom.scss";
 import options from '../data';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 

@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Route, Link, BrowserRouter as Router } from 'react-router-dom'
 import './index.css';
-import "./custom.scss";
 import App from './App';
 import Duration from './views/Duration';
 import Fact from './views/Fact';

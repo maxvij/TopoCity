@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactMapboxGl, {Layer, Feature } from 'react-mapbox-gl';
-import "../custom.scss";
 import Button from "react-bootstrap/Button";
+import CountdownTimer from "react-component-countdown-timer";
 
 const Map = ReactMapboxGl({
     accessToken: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN
@@ -104,6 +104,9 @@ export default class Game extends React.Component {
                     zoomLevel={9}
                     center={[this.state.lng, this.state.lat]}>
                 </Map>
+                <div className="timer-panel">
+                    <CountdownTimer count={600} size={12} hideDay hideHours noPoints labelSize={20} />
+                </div>
                 <div className="vote-panel">
                     <h1>What's the name of this city?</h1>
                     <p>(Hint: it's {this.state.currentFact[2]}{this.state.isNewFact ? "*" : ""})</p>
