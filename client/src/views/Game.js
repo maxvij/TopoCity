@@ -2,6 +2,7 @@ import React from 'react';
 import ReactMapboxGl, {Layer, Feature } from 'react-mapbox-gl';
 import Button from "react-bootstrap/Button";
 import CountdownTimer from "react-component-countdown-timer";
+import AnswerButton from "./AnswerButton";
 
 const Map = ReactMapboxGl({
     accessToken: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN
@@ -18,11 +19,19 @@ export default class Game extends React.Component {
             facts: [],
             initialized: false,
             loading: true,
-            isNewFact: false
+            isNewFact: false,
+            secondsPassed: 0,
+            intervalId: null
         }
     }
 
     componentDidMount() {
+        let intervalId = setInterval(this.addSecond, 1000);
+        this.setState({intervalId: intervalId})
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.state.intervalId)
     }
 
     componentWillMount() {
@@ -43,7 +52,23 @@ export default class Game extends React.Component {
 
     }
 
+    addSecond = () => {
+        this.setState({
+           secondsPassed: this.state.secondsPassed+1
+        });
+    }
+
+    resetTimer = () => {
+        clearInterval(this.state.intervalId)
+        let intervalId = setInterval(this.addSecond, 1000);
+        this.setState({
+            intervalId: intervalId,
+            secondsPassed: 0
+        })
+    }
+
     logResponse = (correct) => {
+        console.log('LOGGING RESPONSE', correct)
         this.setState({loading: true})
         fetch('/logresponse', {
             headers: {
@@ -52,12 +77,14 @@ export default class Game extends React.Component {
             },
             method: 'POST',
             body: {
-                'correct' : correct
+                'correct' : correct,
+                'secondsPassed' : this.state.secondsPassed
             }
         }).then(res => res.json()).then(data => {
             this.setState({loading: false})
         })
         this.getNextFact()
+        this.resetTimer()
     }
 
     logCorrectResponse = () => {
@@ -105,17 +132,15 @@ export default class Game extends React.Component {
                     center={[this.state.lng, this.state.lat]}>
                 </Map>
                 <div className="timer-panel">
-                    <CountdownTimer count={600} size={12} hideDay hideHours noPoints labelSize={20} />
+                    <CountdownTimer ref="countdown" count={600} size={12} hideDay hideHours noPoints labelSize={20} />
                 </div>
                 <div className="vote-panel">
                     <h1>What's the name of this city?</h1>
-                    <p>(Hint: it's {this.state.currentFact[2]}{this.state.isNewFact ? "*" : ""})</p>
-                    <p>Long: {this.state.lat}</p>
-                    <p>Lat: {this.state.lng}</p>
+                    <p>{this.state.secondsPassed} seconds passed</p>
                     <div className="filler-20"></div>
                     <div className="max-400">
-                        {this.state.loading ? <div className="loading">Fetching...</div> : this.state.facts.map(fact => {
-                            return <Button variant="blue" size="lg" color="blue" block onClick={this.logResponse} key={fact[0]}>{fact[2]}</Button>
+                        {this.state.loading ? <div className="loading">Fetching...</div> : this.state.facts.map((fact, index) => {
+                            return <AnswerButton key={index} name={fact[2]} correct={fact[2] === this.state.currentFact[2]} correctAction={this.logCorrectResponse} incorrectAction={this.logIncorrectResponse}>{fact[2]}</AnswerButton>
                         })}
                         <div className="filler-20"></div>
                     </div>
