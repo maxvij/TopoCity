@@ -47,7 +47,6 @@ export default class Game extends React.Component {
     init = () => {
         fetch('/init').then(res => res.json()).then(data => {
             this.setState({
-                ...this.state,
                 initialized: true,
                 loading: false,
             });
@@ -60,7 +59,6 @@ export default class Game extends React.Component {
 
     addSecond = () => {
         this.setState({
-            ...this.state,
             secondsPassed: this.state.secondsPassed+1
         });
     }
@@ -69,7 +67,6 @@ export default class Game extends React.Component {
         clearInterval(this.state.intervalId)
         let intervalId = setInterval(this.addSecond, 1000);
         this.setState({
-            ...this.state,
             intervalId: intervalId,
             secondsPassed: 0
         })
@@ -81,7 +78,6 @@ export default class Game extends React.Component {
         console.log('LOGGING RESPONSE', correct)
         console.log('start time (ms): ', startTime)
         this.setState({
-            ...this.state,
             loading: true,
             responseTime: newResponseTime
         })
@@ -101,7 +97,6 @@ export default class Game extends React.Component {
             body: JSON.stringify(data)
         }).then(res => res.json()).then(data => {
             this.setState({
-                ...this.state,
                 loading: false
             })
         })
@@ -122,7 +117,6 @@ export default class Game extends React.Component {
         fetch('/getnextfact').then(res => res.json()).then(data => {
             const splittedString = data.next_fact[1].split("-");
             this.setState({
-                ...this.state,
                 currentFact: data.next_fact,
                 isNewFact: data.new,
                 lng: Number(splittedString[0]),
@@ -150,7 +144,6 @@ export default class Game extends React.Component {
             console.log('DATA')
             console.log(data)
             this.setState({
-                ...this.state,
                 activationLevels: data
             });
         });
