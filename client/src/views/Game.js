@@ -1,8 +1,8 @@
 import React from 'react';
-import ReactMapboxGl, {Layer, Feature } from 'react-mapbox-gl';
-import Button from "react-bootstrap/Button";
+import ReactMapboxGl, {Layer, Feature} from 'react-mapbox-gl';
 import CountdownTimer from "react-component-countdown-timer";
 import AnswerButton from "./AnswerButton";
+import Fireworks from "./Fireworks";
 
 const Map = ReactMapboxGl({
     accessToken: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN
@@ -22,26 +22,16 @@ export default class Game extends React.Component {
             initialized: false,
             loading: true,
             isNewFact: false,
-            secondsPassed: 0,
-            intervalId: null,
             startTime: new Date(),
             responseTime: new Date(),
             firstStartTime: new Date(),
             activationLevels: [],
+            answerCorrect: false
         }
     }
 
-    componentDidMount() {
-        let intervalId = setInterval(this.addSecond, 1000);
-        this.setState({intervalId: intervalId})
-    }
-
-    componentWillUnmount() {
-        clearInterval(this.state.intervalId)
-    }
-
     componentWillMount() {
-        if(!this.state.initialized) {
+        if (!this.state.initialized) {
             this.init()
         }
     }
@@ -58,33 +48,19 @@ export default class Game extends React.Component {
 
     }
 
-    addSecond = () => {
-        this.setState({
-            secondsPassed: this.state.secondsPassed+1
-        });
-    }
-
-    resetTimer = () => {
-        clearInterval(this.state.intervalId)
-        let intervalId = setInterval(this.addSecond, 1000);
-        this.setState({
-            intervalId: intervalId,
-            secondsPassed: 0
-        })
-    }
-
     logResponse = (correct) => {
         let startTime = this.state.startTime.getTime() - this.state.firstStartTime.getTime()
         let newResponseTime = new Date()
         this.setState({
             loading: true,
-            responseTime: newResponseTime
+            responseTime: newResponseTime,
+            answerCorrect: correct
         })
         let responseTime = newResponseTime - this.state.firstStartTime.getTime()
         let data = {
-            'correct' : correct ? "true" : "false",
-            'startTime' : startTime,
-            'responseTime' : responseTime,
+            'correct': correct ? "true" : "false",
+            'startTime': startTime,
+            'responseTime': responseTime,
         }
         fetch('/logresponse', {
             headers: {
@@ -99,7 +75,6 @@ export default class Game extends React.Component {
             })
         })
         this.getNextFact()
-        this.resetTimer()
     }
 
     logCorrectResponse = () => {
@@ -124,7 +99,7 @@ export default class Game extends React.Component {
             });
         });
         this.getResponses()
-        this.getEncounters()
+        // this.getEncounters()
         this.getActivationLevels()
     }
 
@@ -172,12 +147,12 @@ export default class Game extends React.Component {
                         right: 0,
                         bottom: 0
                     }}
-                    style="mapbox://styles/mapbox/streets-v11"
-                    zoomLevel={9}
+                    style="mapbox://styles/niklasmartin/ckf3wu17m13kb19ldd3g5rhd3/draft"
+                    zoomLevel={11}
                     center={[this.state.lng, this.state.lat]}>
                 </Map>
                 <div className="timer-panel">
-                    <CountdownTimer ref="countdown" count={600} size={12} hideDay hideHours noPoints labelSize={20} />
+                    <CountdownTimer ref="countdown" count={600} size={12} hideDay hideHours noPoints labelSize={20}/>
                 </div>
                 <div className="logger-panel">
                     <div className="panel-wrapper">
@@ -271,13 +246,20 @@ export default class Game extends React.Component {
                 </div>
                 <div className="vote-panel">
                     <h1>What's the name of this city?</h1>
-                    <p>{this.state.secondsPassed} seconds passed</p>
+                    <p>Last answer correct: {this.state.answerCorrect ? "yes" : "no"}</p>
                     <div className="filler-20"></div>
                     <div className="max-400">
-                        {this.state.loading ? <div className="loading">Fetching...</div> : this.state.facts.map((fact, index) => {
-                            return <AnswerButton key={index} name={fact[2]} correct={fact[2] === this.state.currentFact[2]} correctAction={this.logCorrectResponse} incorrectAction={this.logIncorrectResponse}>{fact[2]}</AnswerButton>
-                        })}
+                        {this.state.loading ?
+                            <div className="loading">Fetching...</div> : this.state.facts.map((fact, index) => {
+                                return <AnswerButton key={index} name={fact[2]}
+                                                     correct={fact[2] === this.state.currentFact[2]}
+                                                     correctAction={this.logCorrectResponse}
+                                                     incorrectAction={this.logIncorrectResponse}>{fact[2]}</AnswerButton>
+                            })}
                         <div className="filler-20"></div>
+                    </div>
+                    <div className="animation">
+                        <Fireworks answerCorrect={this.state.answerCorrect} answer={this.state.currentFact[2]}/>
                     </div>
                 </div>
             </div>

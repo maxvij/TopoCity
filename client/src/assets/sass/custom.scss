@@ -89,6 +89,12 @@ $theme-colors: (
 .vote-panel h1 {
   font-size: 26px;
 }
+.vote-panel .animation {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+}
 .loading {
   opacity: 1;
   height: 280px;
