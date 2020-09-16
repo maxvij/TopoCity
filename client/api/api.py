@@ -48,6 +48,15 @@ def responses():
     return {'responses': model.responses}
 
 
+@app.route('/encounters')
+def encounters():
+    response = {}
+    if model.encounters is None:
+        response = {}
+    else:
+        response = model.encounters
+    return {'encounters': response}
+
 @app.route('/getnextfact')
 def get_next_fact():
     if len(model.facts) == 0:
@@ -72,6 +81,7 @@ def log_activations():
         result.append(fact)
     return jsonify(result)
 
+
 @app.route('/logresponse', methods=['POST'])
 def log_response():
     if len(model.facts) == 0:
@@ -89,7 +99,8 @@ def log_response():
         print('Response Time: ')
         print(request.json['responseTime'])
         next_fact, new = model.get_next_fact(time.time() - starttime)
-        resp = Response(fact=next_fact, start_time=request.json['startTime'], rt=request.json['responseTime'] - request.json['startTime'],
+        resp = Response(fact=next_fact, start_time=request.json['startTime'],
+                        rt=request.json['responseTime'] - request.json['startTime'],
                         correct=correctAnswer)
         model.register_response(resp)
     return {'responses': model.responses}

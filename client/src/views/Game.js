@@ -17,6 +17,8 @@ export default class Game extends React.Component {
             zoom: 8,
             currentFact: {},
             facts: [],
+            responses: [],
+            encounters: [],
             initialized: false,
             loading: true,
             isNewFact: false,
@@ -25,7 +27,7 @@ export default class Game extends React.Component {
             startTime: new Date(),
             responseTime: new Date(),
             firstStartTime: new Date(),
-            activationLevels: []
+            activationLevels: [],
         }
     }
 
@@ -51,7 +53,6 @@ export default class Game extends React.Component {
                 loading: false,
             });
         });
-        console.log('Initialized start time (ms): ', this.state.firstStartTime.getTime())
         this.getFacts()
         this.getNextFact()
 
@@ -75,14 +76,11 @@ export default class Game extends React.Component {
     logResponse = (correct) => {
         let startTime = this.state.startTime.getTime() - this.state.firstStartTime.getTime()
         let newResponseTime = new Date()
-        console.log('LOGGING RESPONSE', correct)
-        console.log('start time (ms): ', startTime)
         this.setState({
             loading: true,
             responseTime: newResponseTime
         })
         let responseTime = newResponseTime - this.state.firstStartTime.getTime()
-        console.log('response time (ms): ', responseTime)
         let data = {
             'correct' : correct ? "true" : "false",
             'startTime' : startTime,
@@ -125,24 +123,37 @@ export default class Game extends React.Component {
                 startTime: new Date()
             });
         });
+        this.getResponses()
+        this.getEncounters()
         this.getActivationLevels()
-        console.log('new fact -- start time (ms): ', this.state.startTime.getTime())
     }
 
     getFacts = () => {
         fetch('/facts').then(res => res.json()).then(data => {
             this.setState({
-                ...this.state,
                 facts: data.facts
             });
         });
     }
 
+    getResponses = () => {
+        fetch('/responses').then(res => res.json()).then(data => {
+            this.setState({
+                responses: data.responses
+            });
+        });
+    }
+
+    getEncounters = () => {
+        fetch('/encounters').then(res => res.json()).then(data => {
+            this.setState({
+                encounters: data.encounters
+            });
+        });
+    }
+
     getActivationLevels = () => {
-        console.log('Getting activation levels')
         fetch('/activationLog').then(res => res.json()).then(data => {
-            console.log('DATA')
-            console.log(data)
             this.setState({
                 activationLevels: data
             });
@@ -169,30 +180,94 @@ export default class Game extends React.Component {
                     <CountdownTimer ref="countdown" count={600} size={12} hideDay hideHours noPoints labelSize={20} />
                 </div>
                 <div className="logger-panel">
-                    <div className="row">
-                        <div className="col-4">
-                            <p><strong>Fact_id</strong></p>
+                    <div className="panel-wrapper">
+                        <div className="row">
+                            <div className="col-4">
+                                <p><strong>Fact_id</strong></p>
+                            </div>
+                            <div className="col-4">
+                                <p><strong>Answer</strong></p>
+                            </div>
+                            <div className="col-4">
+                                <p><strong>Act. level</strong></p>
+                            </div>
                         </div>
-                        <div className="col-4">
-                            <p><strong>Answer</strong></p>
+                        {this.state.activationLevels.map((activation, index) => {
+                            return (<div className="row" key={index}>
+                                <div className="col-4">
+                                    <p>{activation[0]}</p>
+                                </div>
+                                <div className="col-4">
+                                    <p>{activation[2]}</p>
+                                </div>
+                                <div className="col-4">
+                                    <p>{activation[3]}</p>
+                                </div>
+                            </div>)
+                        })}
+                        <p>____Responses____</p>
+                        <div className="row">
+                            <div className="col-3">
+                                <p><strong>Answer</strong></p>
+                            </div>
+                            <div className="col-3">
+                                <p><strong>ST</strong></p>
+                            </div>
+                            <div className="col-3">
+                                <p><strong>RT</strong></p>
+                            </div>
+                            <div className="col-3">
+                                <p><strong>Correct</strong></p>
+                            </div>
                         </div>
-                        <div className="col-4">
-                            <p><strong>Act. level</strong></p>
+                        {this.state.responses.map((response, index) => {
+                            return (<div className="row" key={index}>
+                                <div className="col-3">
+                                    <p>{response[0][2]}</p>
+                                </div>
+                                <div className="col-3">
+                                    <p>{response[1]}</p>
+                                </div>
+                                <div className="col-3">
+                                    <p>{response[2]}</p>
+                                </div>
+                                <div className="col-3">
+                                    <p>{response[3] === true ? "correct" : "incorrect"}</p>
+                                </div>
+                            </div>)
+                        })}
+                        <p>____Encounters____</p>
+                        <div className="row">
+                            <div className="col-3">
+                                <p><strong>Activation</strong></p>
+                            </div>
+                            <div className="col-3">
+                                <p><strong>Time</strong></p>
+                            </div>
+                            <div className="col-3">
+                                <p><strong>RT</strong></p>
+                            </div>
+                            <div className="col-3">
+                                <p><strong>Decay</strong></p>
+                            </div>
                         </div>
+                        {this.state.encounters.map((encounter, index) => {
+                            return (<div className="row" key={index}>
+                                <div className="col-3">
+                                    <p>{encounter[0]}</p>
+                                </div>
+                                <div className="col-3">
+                                    <p>{encounter[1]}</p>
+                                </div>
+                                <div className="col-3">
+                                    <p>{encounter[2]}</p>
+                                </div>
+                                <div className="col-3">
+                                    <p>{encounter[3] === true ? "correct" : "incorrect"}</p>
+                                </div>
+                            </div>)
+                        })}
                     </div>
-                    <p>{this.state.activationLevels.map((activation) => {
-                        return (<div className="row">
-                            <div className="col-4">
-                                <p>{activation[0]}</p>
-                            </div>
-                            <div className="col-4">
-                                <p>{activation[2]}</p>
-                            </div>
-                            <div className="col-4">
-                                <p>{activation[3]}</p>
-                            </div>
-                        </div>)
-                    })}</p>
                 </div>
                 <div className="vote-panel">
                     <h1>What's the name of this city?</h1>

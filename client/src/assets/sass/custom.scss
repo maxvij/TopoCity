@@ -73,6 +73,8 @@ $theme-colors: (
 .logger-panel {
   right: 30px;
   top: 30px;
+  height: calc(100vh - 60px);
+  overflow-y: scroll;
   text-align: left !important;
 }
 .timer-panel {
