@@ -25,15 +25,13 @@ export default class Fireworks extends React.Component {
 
         console.log('autoplay', this.props.answerCorrect)
 
-        return <div>
-            <Lottie options={defaultOptions}
-                    height={32}
-                    width={64}
+        return <Lottie options={defaultOptions}
+                    height={400}
+                    width={400}
                     isStopped={this.state.isStopped}
                     isPaused={this.state.isPaused}
                     direction={1}
             />
-        </div>
     }
 }
 

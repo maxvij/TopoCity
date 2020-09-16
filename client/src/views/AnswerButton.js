@@ -4,7 +4,7 @@ import PropTypes from "prop-types"
 
 export default class AnswerButton extends React.Component {
     render () {
-        return (<Button variant="blue" size="lg" color="blue" block onClick={(this.props.correct ? this.props.correctAction : this.props.incorrectAction)}>{this.props.name}</Button>)
+        return (<Button variant={this.props.correct ? "green" : "blue"} size="lg" color="blue" block onClick={(this.props.correct ? this.props.correctAction : this.props.incorrectAction)}>{this.props.name}</Button>)
     }
 }
 
