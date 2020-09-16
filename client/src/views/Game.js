@@ -254,7 +254,9 @@ export default class Game extends React.Component {
                                 return <AnswerButton key={index} name={fact[2]}
                                                      correct={fact[2] === this.state.currentFact[2]}
                                                      correctAction={this.logCorrectResponse}
-                                                     incorrectAction={this.logIncorrectResponse}>{fact[2]}</AnswerButton>
+                                                     incorrectAction={this.logIncorrectResponse}
+                                                     isNew={fact[2] === this.state.currentFact[2] && this.state.isNewFact}
+                                >{fact[2]}</AnswerButton>
                             })}
                         <div className="filler-20"></div>
                     </div>
