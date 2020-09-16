@@ -21,7 +21,10 @@ export default class Game extends React.Component {
             loading: true,
             isNewFact: false,
             secondsPassed: 0,
-            intervalId: null
+            intervalId: null,
+            startTime: new Date(),
+            responseTime: new Date(),
+            firstStartTime: new Date()
         }
     }
 
@@ -43,10 +46,12 @@ export default class Game extends React.Component {
     init = () => {
         fetch('/init').then(res => res.json()).then(data => {
             this.setState({
+                ...this.state,
                 initialized: true,
-                loading: false
+                loading: false,
             });
         });
+        console.log('Initialized start time (ms): ', this.state.firstStartTime.getTime())
         this.getFacts()
         this.getNextFact()
 
@@ -54,7 +59,8 @@ export default class Game extends React.Component {
 
     addSecond = () => {
         this.setState({
-           secondsPassed: this.state.secondsPassed+1
+            ...this.state,
+            secondsPassed: this.state.secondsPassed+1
         });
     }
 
@@ -62,17 +68,28 @@ export default class Game extends React.Component {
         clearInterval(this.state.intervalId)
         let intervalId = setInterval(this.addSecond, 1000);
         this.setState({
+            ...this.state,
             intervalId: intervalId,
             secondsPassed: 0
         })
     }
 
     logResponse = (correct) => {
+        let startTime = this.state.startTime.getTime() - this.state.firstStartTime.getTime()
+        let newResponseTime = new Date()
         console.log('LOGGING RESPONSE', correct)
-        this.setState({loading: true})
+        console.log('start time (ms): ', startTime)
+        this.setState({
+            ...this.state,
+            loading: true,
+            responseTime: newResponseTime
+        })
+        let responseTime = newResponseTime - this.state.firstStartTime.getTime()
+        console.log('response time (ms): ', responseTime)
         let data = {
             'correct' : correct ? "true" : "false",
-            'secondsPassed' : this.state.secondsPassed
+            'startTime' : startTime,
+            'responseTime' : responseTime,
         }
         fetch('/logresponse', {
             headers: {
@@ -82,7 +99,10 @@ export default class Game extends React.Component {
             method: 'POST',
             body: JSON.stringify(data)
         }).then(res => res.json()).then(data => {
-            this.setState({loading: false})
+            this.setState({
+                ...this.state,
+                loading: false
+            })
         })
         this.getNextFact()
         this.resetTimer()
@@ -101,13 +121,16 @@ export default class Game extends React.Component {
         fetch('/getnextfact').then(res => res.json()).then(data => {
             const splittedString = data.next_fact[1].split("-");
             this.setState({
+                ...this.state,
                 currentFact: data.next_fact,
                 isNewFact: data.new,
                 lng: Number(splittedString[0]),
                 lat: Number(splittedString[1]),
-                loading: false
+                loading: false,
+                startTime: new Date()
             });
         });
+        console.log('new fact -- start time (ms): ', this.state.startTime.getTime())
     }
 
     getFacts = () => {
