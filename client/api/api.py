@@ -88,8 +88,8 @@ def log_response():
             print(request.json['startTime'])
             print('Response Time: ')
             print(request.json['responseTime'])
-            next_fact, new = model.get_next_fact(time.time() - starttime)
-            resp = Response(fact=next_fact, start_time=request.json['startTime'], rt=request.json['responseTime'],
-                            correct=correctAnswer)
-            model.register_response(resp)
+        next_fact, new = model.get_next_fact(time.time() - starttime)
+        resp = Response(fact=next_fact, start_time=request.json['startTime'], rt=request.json['responseTime'] - request.json['startTime'],
+                        correct=correctAnswer)
+        model.register_response(resp)
     return {'responses': model.responses}
