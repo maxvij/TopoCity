@@ -37,39 +37,59 @@ def init():
 @app.route('/facts')
 def facts():
     if len(model.facts) == 0:
-    	init()
+        init()
     return {'facts': model.facts}
 
 
 @app.route('/responses')
 def responses():
     if len(model.facts) == 0:
-    	init()
+        init()
     return {'responses': model.responses}
 
 
 @app.route('/getnextfact')
 def get_next_fact():
     if len(model.facts) == 0:
-    	init()
+        init()
     global starttime
     next_fact, new = model.get_next_fact(time.time() - starttime)
     return {'next_fact': next_fact,
             'new': new}
 
 
+@app.route('/activationLog')
+def log_activations():
+    if len(model.facts) == 0:
+        init()
+    result = []
+    for f in model.facts:
+        fact = []
+        fact.append(f.fact_id)
+        fact.append(f.question)
+        fact.append(f.answer)
+        fact.append(str(model.calculate_activation(time.time() - starttime, f)))
+        result.append(fact)
+    return jsonify(result)
+
 @app.route('/logresponse', methods=['POST'])
 def log_response():
     if len(model.facts) == 0:
-    	init()
+        init()
     global starttime
     if request.method == 'POST':
-    	print('Response log received')
-    	correctAnswer = False
-    	if request.json['correct'] == 'true':
-    		correctAnswer = True
-    		print(correctAnswer)
-    		next_fact, new = model.get_next_fact(time.time() - starttime)
-    		resp = Response(fact=next_fact, start_time=time.time() - starttime, rt=request.json['secondsPassed'] * 1000, correct=correctAnswer)
-    		model.register_response(resp)
+        print('Response log received')
+        correctAnswer = False
+        if request.json['correct'] == 'true':
+            correctAnswer = True
+            print('REQUEST: ')
+            print(request.json['correct'])
+            print('Start Time: ')
+            print(request.json['startTime'])
+            print('Response Time: ')
+            print(request.json['responseTime'])
+            next_fact, new = model.get_next_fact(time.time() - starttime)
+            resp = Response(fact=next_fact, start_time=request.json['startTime'], rt=request.json['responseTime'],
+                            correct=correctAnswer)
+            model.register_response(resp)
     return {'responses': model.responses}
