@@ -59,7 +59,7 @@ $theme-colors: (
   left: 0;
   right: 0;
 }
-.vote-panel, .timer-panel {
+.vote-panel, .timer-panel, .logger-panel {
   text-align:center;
   padding:20px;
   background:#fff;
@@ -69,6 +69,11 @@ $theme-colors: (
   position: fixed;
   box-shadow: 0 5px 10px rgba(154,160,185,.4), 0 15px 40px rgba(166,173,201,.2);
   width:400px;
+}
+.logger-panel {
+  right: 30px;
+  top: 30px;
+  text-align: left !important;
 }
 .timer-panel {
   top: 30px;

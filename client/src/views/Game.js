@@ -24,7 +24,8 @@ export default class Game extends React.Component {
             intervalId: null,
             startTime: new Date(),
             responseTime: new Date(),
-            firstStartTime: new Date()
+            firstStartTime: new Date(),
+            activationLevels: []
         }
     }
 
@@ -130,12 +131,28 @@ export default class Game extends React.Component {
                 startTime: new Date()
             });
         });
+        this.getActivationLevels()
         console.log('new fact -- start time (ms): ', this.state.startTime.getTime())
     }
 
     getFacts = () => {
         fetch('/facts').then(res => res.json()).then(data => {
-            this.setState({facts: data.facts});
+            this.setState({
+                ...this.state,
+                facts: data.facts
+            });
+        });
+    }
+
+    getActivationLevels = () => {
+        console.log('Getting activation levels')
+        fetch('/activationLog').then(res => res.json()).then(data => {
+            console.log('DATA')
+            console.log(data)
+            this.setState({
+                ...this.state,
+                activationLevels: data
+            });
         });
     }
 
@@ -157,6 +174,32 @@ export default class Game extends React.Component {
                 </Map>
                 <div className="timer-panel">
                     <CountdownTimer ref="countdown" count={600} size={12} hideDay hideHours noPoints labelSize={20} />
+                </div>
+                <div className="logger-panel">
+                    <div className="row">
+                        <div className="col-4">
+                            <p><strong>Fact_id</strong></p>
+                        </div>
+                        <div className="col-4">
+                            <p><strong>Answer</strong></p>
+                        </div>
+                        <div className="col-4">
+                            <p><strong>Act. level</strong></p>
+                        </div>
+                    </div>
+                    <p>{this.state.activationLevels.map((activation) => {
+                        return (<div className="row">
+                            <div className="col-4">
+                                <p>{activation[0]}</p>
+                            </div>
+                            <div className="col-4">
+                                <p>{activation[2]}</p>
+                            </div>
+                            <div className="col-4">
+                                <p>{activation[3]}</p>
+                            </div>
+                        </div>)
+                    })}</p>
                 </div>
                 <div className="vote-panel">
                     <h1>What's the name of this city?</h1>
