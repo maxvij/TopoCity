@@ -4,6 +4,7 @@ Learning the topography of the Netherlands using the SlimStampen model<br><br>
 How to run the app:<br>
 In terminal in client folder: npm start<br>
 In client/api folder: flask run<br>
+Go to http://localhost:3000/game <br>
 
 
 # How to use Git
