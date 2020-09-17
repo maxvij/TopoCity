@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Tabs from 'react-bootstrap/Tabs'
+import Tab from 'react-bootstrap/Tab'
 import ReactMapboxGl, {Layer, Feature} from 'react-mapbox-gl';
 import CountdownTimer from "react-component-countdown-timer";
 import AnswerButton from "./AnswerButton";
 import Fireworks from "./Fireworks";
+import { PlayArrow } from '@material-ui/icons';  
+import { Search } from '@material-ui/icons';  
+
 
 const Map = ReactMapboxGl({
     accessToken: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN
@@ -26,10 +31,10 @@ export default class Game extends React.Component {
             responseTime: new Date(),
             firstStartTime: new Date(),
             activationLevels: [],
-            answerCorrect: false
+            answerCorrect: false,
+            tab: 'play'
         }
     }
-
     componentWillMount() {
         if (!this.state.initialized) {
             this.init()
@@ -152,118 +157,136 @@ export default class Game extends React.Component {
                     center={[this.state.lng, this.state.lat]}>
                 </Map>
                 <div className="timer-panel">
-                    <CountdownTimer ref="countdown" count={600} size={12} hideDay hideHours noPoints labelSize={20}/>
+                    <CountdownTimer ref="countdown" count={600} size={6} hideDay hideHours noPoints labelSize={20}/>
                 </div>
-                <div className="logger-panel">
-                    <div className="panel-wrapper">
-                        <div className="row">
-                            <div className="col-4">
-                                <p><strong>Fact_id</strong></p>
+                <div className="right-panel">
+                    
+                    <Tabs
+                        id="controlled-tab-example"
+                        activeKey={this.state.tab}
+                        onSelect={(k) => this.setState({ tab: k })}
+                    >
+                    <Tab eventKey="play" title={<div><PlayArrow/> Play</div>}>
+                        <div className="vote-panel">
+                            <h1>What's the name of this city?</h1>
+                            <p>Last answer correct: {this.state.answerCorrect ? "yes" : "no"}</p>
+                            <div className="filler-20"></div>
+                            <div className="max-400">
+                                {this.state.loading ?
+                                    <div className="loading">Fetching...</div> : this.state.facts.map((fact, index) => {
+                                        return <AnswerButton key={index} name={fact[2]}
+                                                            correct={fact[2] === this.state.currentFact[2]}
+                                                            correctAction={this.logCorrectResponse}
+                                                            incorrectAction={this.logIncorrectResponse}
+                                                            isNew={fact[2] === this.state.currentFact[2] && this.state.isNewFact}
+                                        >{fact[2]}</AnswerButton>
+                                    })}
+                                <div className="filler-20"></div>
                             </div>
-                            <div className="col-4">
-                                <p><strong>Answer</strong></p>
-                            </div>
-                            <div className="col-4">
-                                <p><strong>Act. level</strong></p>
+                            <div className="animation">
+                                <Fireworks answerCorrect={this.state.answerCorrect} answer={this.state.currentFact[2]}/>
                             </div>
                         </div>
-                        {this.state.activationLevels.map((activation, index) => {
-                            return (<div className="row" key={index}>
-                                <div className="col-4">
-                                    <p>{activation[0]}</p>
+                    </Tab>
+                                <Tab eventKey="inspect" title={<div><Search/> Inspect</div>}>
+                        <div className="logger-panel">
+                            <div className="panel-wrapper">
+                                <div className="row">
+                                    <div className="col-4">
+                                        <p><strong>Fact_id</strong></p>
+                                    </div>
+                                    <div className="col-4">
+                                        <p><strong>Answer</strong></p>
+                                    </div>
+                                    <div className="col-4">
+                                        <p><strong>Act. level</strong></p>
+                                    </div>
                                 </div>
-                                <div className="col-4">
-                                    <p>{activation[2]}</p>
+                                {this.state.activationLevels.map((activation, index) => {
+                                    return (<div className="row" key={index}>
+                                        <div className="col-4">
+                                            <p>{activation[0]}</p>
+                                        </div>
+                                        <div className="col-4">
+                                            <p>{activation[2]}</p>
+                                        </div>
+                                        <div className="col-4">
+                                            <p>{activation[3]}</p>
+                                        </div>
+                                    </div>)
+                                })}
+                                <p>____Responses____</p>
+                                <div className="row">
+                                    <div className="col-3">
+                                        <p><strong>Answer</strong></p>
+                                    </div>
+                                    <div className="col-3">
+                                        <p><strong>ST</strong></p>
+                                    </div>
+                                    <div className="col-3">
+                                        <p><strong>RT</strong></p>
+                                    </div>
+                                    <div className="col-3">
+                                        <p><strong>Correct</strong></p>
+                                    </div>
                                 </div>
-                                <div className="col-4">
-                                    <p>{activation[3]}</p>
+                                {this.state.responses.map((response, index) => {
+                                    return (<div className="row" key={index}>
+                                        <div className="col-3">
+                                            <p>{response[0][2]}</p>
+                                        </div>
+                                        <div className="col-3">
+                                            <p>{response[1]}</p>
+                                        </div>
+                                        <div className="col-3">
+                                            <p>{response[2]}</p>
+                                        </div>
+                                        <div className="col-3">
+                                            <p>{response[3] === true ? "correct" : "incorrect"}</p>
+                                        </div>
+                                    </div>)
+                                })}
+                                <p>____Encounters____</p>
+                                <div className="row">
+                                    <div className="col-3">
+                                        <p><strong>Activation</strong></p>
+                                    </div>
+                                    <div className="col-3">
+                                        <p><strong>Time</strong></p>
+                                    </div>
+                                    <div className="col-3">
+                                        <p><strong>RT</strong></p>
+                                    </div>
+                                    <div className="col-3">
+                                        <p><strong>Decay</strong></p>
+                                    </div>
                                 </div>
-                            </div>)
-                        })}
-                        <p>____Responses____</p>
-                        <div className="row">
-                            <div className="col-3">
-                                <p><strong>Answer</strong></p>
-                            </div>
-                            <div className="col-3">
-                                <p><strong>ST</strong></p>
-                            </div>
-                            <div className="col-3">
-                                <p><strong>RT</strong></p>
-                            </div>
-                            <div className="col-3">
-                                <p><strong>Correct</strong></p>
+                                {this.state.encounters.map((encounter, index) => {
+                                    return (<div className="row" key={index}>
+                                        <div className="col-3">
+                                            <p>{encounter[0]}</p>
+                                        </div>
+                                        <div className="col-3">
+                                            <p>{encounter[1]}</p>
+                                        </div>
+                                        <div className="col-3">
+                                            <p>{encounter[2]}</p>
+                                        </div>
+                                        <div className="col-3">
+                                            <p>{encounter[3] === true ? "correct" : "incorrect"}</p>
+                                        </div>
+                                    </div>)
+                                })}
                             </div>
                         </div>
-                        {this.state.responses.map((response, index) => {
-                            return (<div className="row" key={index}>
-                                <div className="col-3">
-                                    <p>{response[0][2]}</p>
-                                </div>
-                                <div className="col-3">
-                                    <p>{response[1]}</p>
-                                </div>
-                                <div className="col-3">
-                                    <p>{response[2]}</p>
-                                </div>
-                                <div className="col-3">
-                                    <p>{response[3] === true ? "correct" : "incorrect"}</p>
-                                </div>
-                            </div>)
-                        })}
-                        <p>____Encounters____</p>
-                        <div className="row">
-                            <div className="col-3">
-                                <p><strong>Activation</strong></p>
-                            </div>
-                            <div className="col-3">
-                                <p><strong>Time</strong></p>
-                            </div>
-                            <div className="col-3">
-                                <p><strong>RT</strong></p>
-                            </div>
-                            <div className="col-3">
-                                <p><strong>Decay</strong></p>
-                            </div>
-                        </div>
-                        {this.state.encounters.map((encounter, index) => {
-                            return (<div className="row" key={index}>
-                                <div className="col-3">
-                                    <p>{encounter[0]}</p>
-                                </div>
-                                <div className="col-3">
-                                    <p>{encounter[1]}</p>
-                                </div>
-                                <div className="col-3">
-                                    <p>{encounter[2]}</p>
-                                </div>
-                                <div className="col-3">
-                                    <p>{encounter[3] === true ? "correct" : "incorrect"}</p>
-                                </div>
-                            </div>)
-                        })}
-                    </div>
+                    
+                    </Tab>
+                    
+                </Tabs>
+                    
                 </div>
-                <div className="vote-panel">
-                    <h1>What's the name of this city?</h1>
-                    <p>Last answer correct: {this.state.answerCorrect ? "yes" : "no"}</p>
-                    <div className="filler-20"></div>
-                    <div className="max-400">
-                        {this.state.loading ?
-                            <div className="loading">Fetching...</div> : this.state.facts.map((fact, index) => {
-                                return <AnswerButton key={index} name={fact[2]}
-                                                     correct={fact[2] === this.state.currentFact[2]}
-                                                     correctAction={this.logCorrectResponse}
-                                                     incorrectAction={this.logIncorrectResponse}
-                                                     isNew={fact[2] === this.state.currentFact[2] && this.state.isNewFact}
-                                >{fact[2]}</AnswerButton>
-                            })}
-                        <div className="filler-20"></div>
-                    </div>
-                    <div className="animation">
-                        <Fireworks answerCorrect={this.state.answerCorrect} answer={this.state.currentFact[2]}/>
-                    </div>
-                </div>
+                
+                
             </div>
         )
     }

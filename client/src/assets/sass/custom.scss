@@ -60,14 +60,7 @@ $theme-colors: (
   right: 0;
 }
 .vote-panel, .timer-panel, .logger-panel {
-  text-align:center;
-  padding:20px;
-  background:#fff;
-  border-radius:20px;
-  display:block;
-  margin:auto;
-  position: fixed;
-  box-shadow: 0 5px 10px rgba(154,160,185,.4), 0 15px 40px rgba(166,173,201,.2);
+  padding:40px 20px;
   width:400px;
 }
 .logger-panel {
@@ -80,6 +73,15 @@ $theme-colors: (
 .timer-panel {
   top: 30px;
   left: 30px;
+  width:200px;
+  text-align:center;
+  padding:20px;
+  background:#fff;
+  border-radius:20px;
+  display:block;
+  margin:auto;
+  position: fixed;
+  box-shadow: 0 5px 10px rgba(154,160,185,.4), 0 15px 40px rgba(166,173,201,.2);
 }
 .vote-panel {
   min-height: 400px;
@@ -102,6 +104,18 @@ $theme-colors: (
   height: 280px;
   animation: fadeInOut 1s ease-in-out infinite;
 }
+.right-panel {
+  height: 100vh;
+  position:fixed;
+  width:400px;
+  top:0;
+  right:0;
+  background: white;
+  -webkit-box-shadow: -7px 0px 15px -5px rgba(0,0,0,0.2);
+  -moz-box-shadow: -7px 0px 15px -5px rgba(0,0,0,0.2);
+  box-shadow: -7px 0px 15px -5px rgba(0,0,0,0.2);
+}
+
 
 @keyframes fadeInOut {
   0% {
@@ -116,3 +130,23 @@ $theme-colors: (
 }
 // Import Bootstrap and its default variables
 @import '~bootstrap/scss/bootstrap.scss';
+
+.nav-tabs .nav-link {
+  display: block;
+  padding: 1rem 3rem;
+  width: 50%;
+  text-align: center;
+  border: 1px solid transparent;
+  border-top-left-radius: 0rem;
+  border-top-right-radius: 0rem;
+  border-top: 0px solid white;
+}
+.nav-tabs .nav-link:hover {
+  color: #333;
+  opacity:.75;
+}
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+  color: #118AB2;
+  background-color: #fff;
+  border-color: #dee2e6 #dee2e6 #fff;
+}
