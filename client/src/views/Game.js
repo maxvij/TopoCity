@@ -5,7 +5,7 @@ import ReactMapboxGl from 'react-mapbox-gl';
 import CountdownTimer from "react-component-countdown-timer";
 import AnswerButton from "./AnswerButton";
 import Fireworks from "./Fireworks";
-import { PlayArrow } from '@material-ui/icons';  
+import { PlayArrow } from '@material-ui/icons';
 import { Search } from '@material-ui/icons';
 
 
@@ -171,7 +171,8 @@ export default class Game extends React.Component {
 
     render () {
         return (
-            <div>
+          <div>
+            {this.state.initialized === false ? <div className="center-box"><p>Initializing...</p></div> : <div>
                 <Map
                     className="map-container"
                     containerStyle={{
@@ -189,7 +190,7 @@ export default class Game extends React.Component {
                     <CountdownTimer ref="countdown" count={600} size={6} hideDay hideHours noPoints labelSize={20}/>
                 </div>
                 <div className="right-panel">
-                    
+
                     <Tabs
                         id="controlled-tab-example"
                         activeKey={this.state.tab}
@@ -307,15 +308,11 @@ export default class Game extends React.Component {
                                 })}
                             </div>
                         </div>
-                    
                     </Tab>
-                    
                 </Tabs>
-                    
                 </div>
-                
-                
-            </div>
+            </div>}
+          </div>
         )
     }
 }
