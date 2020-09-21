@@ -202,13 +202,17 @@ export default class Game extends React.Component {
                             <p>Last answer correct: {this.state.answerCorrect ? "yes" : "no"}</p>
                             <div className="filler-20"></div>
                             <div className="max-400">
-                                {this.state.answerOptions.map((fact, index) => {
+                                {this.state.loading ?
+                                  <div className="loading">
+                                    <p>Fetching...</p>
+                                  </div>
+                                  : this.state.answerOptions.map((fact, index) => {
                                         return <AnswerButton key={index} name={fact[2]}
                                                             correct={fact[2] === this.state.currentFact[2]}
                                                             correctAction={this.logCorrectResponse}
                                                             incorrectAction={this.logIncorrectResponse}
                                                             isNew={fact[2] === this.state.currentFact[2] && this.state.isNewFact}
-                                        >{this.state.loading ? "..." : fact[2]}</AnswerButton>
+                                        >{fact[2]}</AnswerButton>
                                     })}
                                 <div className="filler-20"></div>
                             </div>

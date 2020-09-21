@@ -23,8 +23,6 @@ export default class Fireworks extends React.Component {
             }
         };
 
-        console.log('autoplay', this.props.answerCorrect)
-
         return <Lottie options={defaultOptions}
                     height={400}
                     width={400}
