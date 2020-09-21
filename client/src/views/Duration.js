@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import RubberSlider from "@shwilliam/react-rubber-slider";
 
 import "@shwilliam/react-rubber-slider/dist/styles.css";
-import "./styles.css";
 
 export default function App() {
   const [value, setValue] = useState(50);
