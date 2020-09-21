@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
-import ReactMapboxGl, {Layer, Feature} from 'react-mapbox-gl';
+import ReactMapboxGl from 'react-mapbox-gl';
 import CountdownTimer from "react-component-countdown-timer";
 import AnswerButton from "./AnswerButton";
 import Fireworks from "./Fireworks";
@@ -152,7 +152,7 @@ export default class Game extends React.Component {
                         right: 0,
                         bottom: 0
                     }}
-                    style="mapbox://styles/niklasmartin/ckf3wu17m13kb19ldd3g5rhd3/draft"
+                    style={"mapbox://styles/niklasmartin/ckf3wu17m13kb19ldd3g5rhd3/draft"}
                     zoomLevel={11}
                     center={[this.state.lng, this.state.lat]}>
                 </Map>

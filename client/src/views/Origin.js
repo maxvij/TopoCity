@@ -5,12 +5,12 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import options from '../data';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
-const useStateWithLocalStorage = localStorageKey => {
+const useStateWithLocalStorage = (localStorageKey) => {
   const [value, setValue] = React.useState(
     localStorage.getItem(localStorageKey) || ''
   );
  
-  React.useEffect(() => {
+  React.useEffect((localStorageKey) => {
     localStorage.setItem(localStorageKey, value);
   }, [value]);
  
@@ -18,11 +18,10 @@ const useStateWithLocalStorage = localStorageKey => {
 };
 
 const Origin = () => { 
-    const [value, setValue] = useStateWithLocalStorage(
+    const [setValue] = useStateWithLocalStorage(
       'topo_name'
     );
     const [multiSelections, setMultiSelections] = useState([]);
-    const onChange = event => setValue(event.target.value);
     return (
       <div className="center-box" >
           <h1>Where have you lived before?</h1>

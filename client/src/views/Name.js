@@ -2,12 +2,12 @@ import React from 'react'
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
-const useStateWithLocalStorage = localStorageKey => {
+const useStateWithLocalStorage = (localStorageKey) => {
   const [value, setValue] = React.useState(
     localStorage.getItem(localStorageKey) || ''
   );
  
-  React.useEffect(() => {
+  React.useEffect((localStorageKey) => {
     localStorage.setItem(localStorageKey, value);
   }, [value]);
  
@@ -29,7 +29,7 @@ const Name = () => {
             <Form> 
               <Form.Group controlId="formBasicEmail">
                 <Form.Label>Your name:</Form.Label>
-                <Form.Control type="text" value={value} type="text" onChange={onChange} size="lg" placeholder="e.g. Lord Voldemort" />
+                <Form.Control type="text" value={value} onChange={onChange} size="lg" placeholder="e.g. Lord Voldemort" />
               </Form.Group>             
               <Button href="../origin" variant="yellow" size="lg" color="blue" block>
               Let's go!
