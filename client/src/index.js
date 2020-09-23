@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom';
 import { Route, BrowserRouter as Router } from 'react-router-dom'
 import './index.css';
 import App from './App';
-import Duration from './views/Duration';
-import Fact from './views/Fact';
-import Game from './views/Game';
-import Name from './views/Name';
-import Origin from './views/Origin';
-import Profile from './views/Profile';
-import Slider from './views/Slider';
+import Duration from './components/Duration';
+import Fact from './components/Fact';
+import Game from './components/Game';
+import Name from './components/Name';
+import Origin from './components/Origin';
+import Profile from './components/Profile';
+import Slider from './components/Slider';
 import * as serviceWorker from './serviceWorker';
 
 const routing = (
