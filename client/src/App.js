@@ -1,21 +1,25 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 
 import "./assets/sass/custom.scss";
 import "./assets/sass/timer.sass";
+import {Switch, Route, BrowserRouter} from "react-router-dom";
+import Profile from "./components/Profile";
+import Game from "./components/Game";
 
 function App() {
-    const [currentTime, setCurrentTime] = useState(0);
-
-    useEffect(() => {
-        fetch('/time').then(res => res.json()).then(data => {
-            setCurrentTime(data.time);
-        });
-    }, []);
-
     return (
-        <div className="App">
-
-        </div>
+        <BrowserRouter>
+            <div className="app">
+                <Switch>
+                    <Route exact path="/">
+                        <Profile />
+                    </Route>
+                    <Route path="/game">
+                        <Game />
+                    </Route>
+                </Switch>
+            </div>
+        </BrowserRouter>
     );
 }
 
