@@ -7,7 +7,7 @@ import AnswerButton from "./AnswerButton";
 import Fireworks from "./Fireworks";
 import {PlayArrow} from '@material-ui/icons';
 import {Search} from '@material-ui/icons';
-
+import {getShuffledAnswerOptions} from "./helpers/multiplechoice";
 
 const Map = ReactMapboxGl({
     accessToken: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN
@@ -102,26 +102,11 @@ export default class Game extends React.Component {
                 lat: Number(splittedString[1]),
                 loading: false,
                 startTime: new Date(),
-                answerOptions: this.getShuffledAnswerOptions(data.next_fact)
+                answerOptions: getShuffledAnswerOptions(this.state.facts, data.next_fact)
             });
         });
         this.getResponses()
         this.getActivationLevels()
-    }
-
-    getShuffledAnswerOptions = (nextFact) => {
-        // Get list of all incorrect answers
-        let incorrectAnswers = this.state.facts.filter((fact) => {
-            return fact[2] !== nextFact[2]
-        })
-        // Shuffle list of incorrect answers
-        let answerOptions = this.shuffle(incorrectAnswers)
-        // Limit list of incorrect answers to 2
-        answerOptions = answerOptions.slice(0, 2)
-        // Add the correct answer
-        answerOptions.push(nextFact)
-        // Shuffle once more
-        return this.shuffle(answerOptions)
     }
 
     getFacts = () => {
@@ -146,18 +131,6 @@ export default class Game extends React.Component {
                 activationLevels: data
             });
         });
-    }
-
-    /**
-     * Shuffles array in place. ES6 version
-     * @param {Array} a items An array containing the items.
-     */
-    shuffle = (a) => {
-        for (let i = a.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [a[i], a[j]] = [a[j], a[i]];
-        }
-        return a;
     }
 
     render() {
