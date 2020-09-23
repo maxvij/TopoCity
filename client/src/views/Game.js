@@ -23,7 +23,6 @@ export default class Game extends React.Component {
             currentFact: {},
             facts: [],
             responses: [],
-            encounters: [],
             initialized: false,
             loading: true,
             isNewFact: false,
@@ -107,7 +106,6 @@ export default class Game extends React.Component {
             });
         });
         this.getResponses()
-        // this.getEncounters()
         this.getActivationLevels()
     }
 
@@ -138,14 +136,6 @@ export default class Game extends React.Component {
         fetch('/responses').then(res => res.json()).then(data => {
             this.setState({
                 responses: data.responses
-            });
-        });
-    }
-
-    getEncounters = () => {
-        fetch('/encounters').then(res => res.json()).then(data => {
-            this.setState({
-                encounters: data.encounters
             });
         });
     }
@@ -191,9 +181,8 @@ export default class Game extends React.Component {
                         <CountdownTimer ref="countdown" count={600} size={6} hideDay hideHours noPoints labelSize={20}/>
                     </div>
                     <div className="right-panel">
-
                         <Tabs
-                            id="controlled-tab-example"
+                            id="tabs"
                             activeKey={this.state.tab}
                             onSelect={(k) => this.setState({tab: k})}
                         >
@@ -278,37 +267,6 @@ export default class Game extends React.Component {
                                                 </div>
                                                 <div className="col-3">
                                                     <p>{response[3] === true ? "correct" : "incorrect"}</p>
-                                                </div>
-                                            </div>)
-                                        })}
-                                        <p>____Encounters____</p>
-                                        <div className="row">
-                                            <div className="col-3">
-                                                <p><strong>Activation</strong></p>
-                                            </div>
-                                            <div className="col-3">
-                                                <p><strong>Time</strong></p>
-                                            </div>
-                                            <div className="col-3">
-                                                <p><strong>RT</strong></p>
-                                            </div>
-                                            <div className="col-3">
-                                                <p><strong>Decay</strong></p>
-                                            </div>
-                                        </div>
-                                        {this.state.encounters.map((encounter, index) => {
-                                            return (<div className="row" key={index}>
-                                                <div className="col-3">
-                                                    <p>{encounter[0]}</p>
-                                                </div>
-                                                <div className="col-3">
-                                                    <p>{encounter[1]}</p>
-                                                </div>
-                                                <div className="col-3">
-                                                    <p>{encounter[2]}</p>
-                                                </div>
-                                                <div className="col-3">
-                                                    <p>{encounter[3] === true ? "correct" : "incorrect"}</p>
                                                 </div>
                                             </div>)
                                         })}
