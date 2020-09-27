@@ -4,6 +4,8 @@ import "./assets/sass/custom.scss";
 import "./assets/sass/timer.sass";
 import {Switch, Route, BrowserRouter} from "react-router-dom";
 import Profile from "./components/Profile";
+import Origin from "./components/Origin";
+import Async from "./components/AsynLoader";
 import Game from "./components/Game";
 
 function App() {
@@ -13,6 +15,12 @@ function App() {
                 <Switch>
                     <Route exact path="/">
                         <Profile />
+                    </Route>
+                    <Route exact path="/origin">
+                        <Origin />
+                    </Route>
+                    <Route exact path="/origin2">
+                        <Async />
                     </Route>
                     <Route path="/game">
                         <Game />

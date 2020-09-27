@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from SpacingModel import SpacingModel
 from collections import namedtuple
+import pandas as pd
 
 app = Flask(__name__)
 CORS(app)
@@ -104,3 +105,15 @@ def log_response():
                         correct=correctAnswer)
         model.register_response(resp)
     return {'responses': model.responses}
+
+
+@app.route('/citynames')
+def city_names():
+    if len(model.facts) == 0:
+        init()
+    # read city names
+    cities = pd.read_csv('City_info.csv')
+    city_names = cities['Woonplaats'].unique()
+    json = pd.Series(city_names).to_json(orient='records')
+    return json
+    
