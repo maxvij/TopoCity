@@ -7,7 +7,9 @@ import pandas as pd
 import json
 from pytrends.request import TrendReq
 import requests
+from statistics import mean
 
+pytrend = TrendReq()
 startTime = time.time()
 #pytrend = TrendReq(hl='en-GB', tz=360)
 
@@ -134,7 +136,7 @@ def getInitialAlphas():
         cities = cities.loc[(cities['Latitude'] != 'No info') & (cities['Longtitude'] != 'No info')]
         # create new dataframe
         #cities_len = len(cities)
-        columns = ['City']
+        columns = ['City', 'Popularity']
         for index, city in enumerate(cleanup):
             columns.append(cleanup[index]) 
         distances = []
@@ -142,6 +144,11 @@ def getInitialAlphas():
         for city in sample:
             row = []
             row.append(city)
+            kw_list = [city]
+            popularity = pytrend.build_payload(kw_list, cat=0, timeframe='today 5-y', geo='', gprop='')
+            interest_df = pytrend.interest_over_time()
+            interest = mean(interest_df[city])
+            row.append(int(round(interest)))
             for index, home in enumerate(cleanup):              
                 uri = "https://www.distance24.org/route.json?stops=" + str(city).strip() + '|' + str(home).strip()
                 url = uri.strip()
@@ -157,3 +164,29 @@ def getInitialAlphas():
         df = pd.DataFrame(distances, columns = columns)         
         return df.to_json(orient='records')
         #return pd.Series(cities['Woonplaats']).to_json(orient='records')
+
+@app.route('/popularity', methods=['POST'])
+def popularity():
+    if request.method == 'POST':
+        cities = request.args.get('cities')
+        cleanup = [x.strip() for x in cities.split(',')]
+        # read city names
+        cities = pd.read_csv('City_info.csv')
+        # remove empty locations
+        cities = cities.loc[(cities['Latitude'] != 'No info') & (cities['Longtitude'] != 'No info')]
+        # create new dataframe
+        #cities_len = len(cities)
+        columns = ['City', 'Popularity']
+        for index, city in enumerate(cleanup):
+            columns.append(cleanup[index]) 
+        distances = []
+        sample = cities['Woonplaats'][:30]
+        for city in sample:
+            kw_list = [city]
+            popularity = pytrend.build_payload(kw_list, cat=0, timeframe='today 5-y', geo='', gprop='')
+            interest_df = pytrend.interest_over_time()
+            interest = mean(interest_df[city])
+            #return interest_df.to_json(orient="records")
+            distances.append(interest)
+        return pd.Series(distances).to_json(orient='values')
+        
