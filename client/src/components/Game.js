@@ -8,6 +8,7 @@ import Fireworks from "./Fireworks";
 import {PlayArrow} from '@material-ui/icons';
 import {Search} from '@material-ui/icons';
 import {getShuffledAnswerOptions} from "./helpers/multiplechoice";
+import Button from "react-bootstrap/Button";
 
 const Map = ReactMapboxGl({
     accessToken: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN
@@ -25,6 +26,8 @@ export default class Game extends React.Component {
             responses: [],
             initialized: false,
             loading: true,
+            training: true,
+            trainingFacts: [],
             isNewFact: false,
             startTime: new Date(),
             responseTime: new Date(),
@@ -50,8 +53,6 @@ export default class Game extends React.Component {
             });
         });
         this.getFacts()
-        this.getNextFact()
-
     }
 
     logResponse = (correct) => {
@@ -109,11 +110,32 @@ export default class Game extends React.Component {
         this.getActivationLevels()
     }
 
+    startTraining = () => {
+        let trainingFact = this.state.trainingFacts[0]
+        const splittedString = trainingFact[1].split("-");
+        this.setState({
+            currentFact: trainingFact,
+            lng: Number(splittedString[0]),
+            lat: Number(splittedString[1]),
+        })
+    }
+
+    endTraining = () => {
+        this.getNextFact()
+        this.setState({
+            training: false,
+            trainingFacts: [],
+        })
+    }
+
     getFacts = () => {
         fetch('/facts').then(res => res.json()).then(data => {
             this.setState({
-                facts: data.facts
+                facts: data.facts,
+                trainingFacts: data.facts
             });
+            this.startTraining()
+            // this.getNextFact()
         });
     }
 
@@ -133,7 +155,56 @@ export default class Game extends React.Component {
         });
     }
 
+    markFactAsTrained = () => {
+        if(this.state.trainingFacts.length === 1) {
+            this.endTraining()
+        } else {
+            let slicedTrainingFacts = this.state.trainingFacts.slice(0, 0).concat(this.state.trainingFacts.slice(1, this.state.trainingFacts.length))
+            let trainingFact = slicedTrainingFacts[0]
+            const splittedString = trainingFact[1].split("-");
+            this.setState({
+                trainingFacts: slicedTrainingFacts,
+                currentFact: trainingFact,
+                lng: Number(splittedString[0]),
+                lat: Number(splittedString[1]),
+            })
+        }
+    }
+
     render() {
+        const multipleChoice = (<div className="vote-panel">
+            <h1>What's the name of this city?</h1>
+            <p>Last answer correct: {this.state.answerCorrect ? "yes" : "no"}</p>
+            <div className="filler-20"></div>
+            <div className="max-400">
+                {this.state.loading ?
+                  <div className="loading">
+                      <p>Fetching...</p>
+                  </div>
+                  : this.state.answerOptions.map((fact, index) => {
+                      return <AnswerButton key={index} name={fact[2]}
+                                           correct={fact[2] === this.state.currentFact[2]}
+                                           correctAction={this.logCorrectResponse}
+                                           incorrectAction={this.logIncorrectResponse}
+                                           isNew={fact[2] === this.state.currentFact[2] && this.state.isNewFact}
+                      >{fact[2]}</AnswerButton>
+                  })}
+                <div className="filler-20"></div>
+            </div>
+        </div>);
+
+        const trainingChoice = (<div className="vote-panel">
+              <h1>The name of this city is:</h1>
+              <p>{this.state.currentFact[2]}</p>
+              <div className="filler-20"></div>
+              <div className="max-400">
+                  <Button variant="green" size="lg" color="blue" block onClick={this.markFactAsTrained}>Ok, got it!</Button>
+                  <div className="filler-20"></div>
+                  <a onClick={this.endTraining}>Skip training</a>
+              </div>
+          </div>
+        )
+
         return (
             <div>
                 {this.state.initialized === false ? <div className="center-box"><p>Initializing...</p></div> : <div>
@@ -150,9 +221,7 @@ export default class Game extends React.Component {
                         zoomLevel={11}
                         center={[this.state.lng, this.state.lat]}>
                     </Map>
-                    <div className="timer-panel">
-                        <CountdownTimer ref="countdown" count={600} size={6} hideDay hideHours noPoints labelSize={20}/>
-                    </div>
+                    {this.state.training === false ? <div className="timer-panel"><CountdownTimer ref="countdown" count={600} size={6} hideDay hideHours noPoints labelSize={20}/></div> : ''}
                     <div className="right-panel">
                         <Tabs
                             id="tabs"
@@ -160,30 +229,7 @@ export default class Game extends React.Component {
                             onSelect={(k) => this.setState({tab: k})}
                         >
                             <Tab eventKey="play" title={<div><PlayArrow/> Play</div>}>
-                                <div className="vote-panel">
-                                    <h1>What's the name of this city?</h1>
-                                    <p>Last answer correct: {this.state.answerCorrect ? "yes" : "no"}</p>
-                                    <div className="filler-20"></div>
-                                    <div className="max-400">
-                                        {this.state.loading ?
-                                            <div className="loading">
-                                                <p>Fetching...</p>
-                                            </div>
-                                            : this.state.answerOptions.map((fact, index) => {
-                                                return <AnswerButton key={index} name={fact[2]}
-                                                                     correct={fact[2] === this.state.currentFact[2]}
-                                                                     correctAction={this.logCorrectResponse}
-                                                                     incorrectAction={this.logIncorrectResponse}
-                                                                     isNew={fact[2] === this.state.currentFact[2] && this.state.isNewFact}
-                                                >{fact[2]}</AnswerButton>
-                                            })}
-                                        <div className="filler-20"></div>
-                                    </div>
-                                    <div className="animation">
-                                        <Fireworks answerCorrect={this.state.answerCorrect}
-                                                   answer={this.state.currentFact[2]}/>
-                                    </div>
-                                </div>
+                                {this.state.training === false ? multipleChoice : trainingChoice}
                             </Tab>
                             <Tab eventKey="inspect" title={<div><Search/> Inspect</div>}>
                                 <div className="logger-panel">
