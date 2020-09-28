@@ -15,6 +15,7 @@
     "d3": "^6.1.1",
     "es6-promise": "^4.2.8",
     "isomorphic-fetch": "^3.0.0",
+    "json": "^10.0.0",
     "mapbox-gl": "^1.12.0",
     "node-sass": "^4.14.1",
     "pandas": "0.0.3",
