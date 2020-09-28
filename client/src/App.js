@@ -6,6 +6,7 @@ import {Switch, Route, BrowserRouter} from "react-router-dom";
 import Profile from "./components/Profile";
 import Origin from "./components/Origin";
 import Async from "./components/AsynLoader";
+import Initialize from "./components/Initialize";
 import Game from "./components/Game";
 
 function App() {
@@ -21,6 +22,9 @@ function App() {
                     </Route>
                     <Route exact path="/origin2">
                         <Async />
+                    </Route>
+                    <Route exact path="/initialize">
+                        <Initialize />
                     </Route>
                     <Route path="/game">
                         <Game />
