@@ -34,12 +34,18 @@ def init():
     global starttime
     starttime = time.time()
     if len(model.facts) == 0:
-        model.add_fact(Fact(1, "4.8896900-52.3740300", "Amsterdam"))
-        model.add_fact(Fact(2, "6.5625000-52.9966700", "Assen"))
-        model.add_fact(Fact(3, "6.5666700-53.2191700", "Groningen"))
-        model.add_fact(Fact(4, "5.2916700-52.7033300", "Enkhuizen"))
-        model.add_fact(Fact(5, "5.9694400-52.2100000", "Apeldoorn"))
-        model.add_fact(Fact(6, "4.7486100-52.6316700", "Alkmaar"))
+        # Woonplaatsen,Provincie,Landsdeel,Gemeente,Lattitude,Longitude,Population,Coordinates
+        # 12,Assen,Drenthe,Noord-Nederland          ,Assen                              ,52.983333333333334,6.55,68798,"52° 59′ NB, 6° 33′ OL"
+        # read city names
+        cities = pd.read_csv('cities_20k.csv')
+        # remove empty locations
+        cities = cities.loc[(cities['Latitude'] != 'No info') & (cities['Longitude'] != 'No info')]
+        # create new dataframe
+        cities.drop(['Provincie', 'Landsdeel', 'Gemeente', 'Coordinates'], axis=1, inplace=True)
+
+        for index, row in cities.iterrows():
+            combinedLongLat = str(row['Longitude']) + "-" + str(row['Latitude'])
+            model.add_fact(Fact(index, combinedLongLat, row['Woonplaatsen']))
     return {'facts': model.facts}
 
 
