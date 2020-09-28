@@ -195,5 +195,5 @@ def popularity():
             #return interest_df.to_json(orient="records")
             distances.append(interest)
         return pd.Series(distances).to_json(orient='values')
-        
+
         #return pd.Series(cities['Woonplaats']).to_json(orient='records')
