@@ -155,7 +155,7 @@ def getInitialAlphas():
             interest_df = pytrend.interest_over_time()
             interest = mean(interest_df[city])
             row.append(int(round(interest)))
-            for index, home in enumerate(cleanup):              
+            for index, home in enumerate(cleanup):
                 uri = "https://www.distance24.org/route.json?stops=" + str(city).strip() + '|' + str(home).strip()
                 url = uri.strip()
                 try:
@@ -196,3 +196,4 @@ def popularity():
             distances.append(interest)
         return pd.Series(distances).to_json(orient='values')
         
+        #return pd.Series(cities['Woonplaats']).to_json(orient='records')
