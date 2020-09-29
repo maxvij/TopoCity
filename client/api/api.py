@@ -107,12 +107,14 @@ def log_response():
         correctAnswer = False
         if request.json['correct'] == 'true':
             correctAnswer = True
-        print('REQUEST: ')
-        print(correctAnswer)
+        print('--------')
         print('Start Time: ')
         print(request.json['startTime'])
+        print('--------')
+        print('--------')
         print('Response Time: ')
-        print(request.json['responseTime'])
+        print(request.json['responseTime'] - request.json['startTime'])
+        print('--------')
         next_fact, new = model.get_next_fact(time.time() - starttime)
         resp = Response(fact=next_fact, start_time=request.json['startTime'],
                         rt=request.json['responseTime'] - request.json['startTime'],

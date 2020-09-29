@@ -63,7 +63,7 @@ export default class Game extends React.Component {
             responseTime: newResponseTime,
             answerCorrect: correct
         })
-        let responseTime = newResponseTime - this.state.firstStartTime.getTime()
+        let responseTime = newResponseTime.getTime() - this.state.firstStartTime.getTime()
         let data = {
             'correct': correct ? "true" : "false",
             'startTime': startTime,
