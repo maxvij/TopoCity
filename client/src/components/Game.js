@@ -27,6 +27,7 @@ export default class Game extends React.Component {
             initialized: false,
             loading: true,
             training: true,
+            trainingStarted: false,
             trainingFacts: [],
             isNewFact: false,
             startTime: new Date(),
@@ -117,6 +118,7 @@ export default class Game extends React.Component {
             currentFact: trainingFact,
             lng: Number(splittedString[0]),
             lat: Number(splittedString[1]),
+            trainingStarted: true
         })
     }
 
@@ -134,8 +136,6 @@ export default class Game extends React.Component {
                 facts: data.facts,
                 trainingFacts: data.facts
             });
-            this.startTraining()
-            // this.getNextFact()
         });
     }
 
@@ -193,6 +193,66 @@ export default class Game extends React.Component {
             </div>
         </div>);
 
+        const logPanel = (<div className="logger-panel">
+            <div className="panel-wrapper">
+                <div className="row">
+                    <div className="col-4">
+                        <p><strong>Fact_id</strong></p>
+                    </div>
+                    <div className="col-4">
+                        <p><strong>Answer</strong></p>
+                    </div>
+                    <div className="col-4">
+                        <p><strong>Act. level</strong></p>
+                    </div>
+                </div>
+                {this.state.activationLevels.map((activation, index) => {
+                    return (<div className="row" key={index}>
+                        <div className="col-4">
+                            <p>{activation[0]}</p>
+                        </div>
+                        <div className="col-4">
+                            <p>{activation[2]}</p>
+                        </div>
+                        <div className="col-4">
+                            <p>{activation[3]}</p>
+                        </div>
+                    </div>)
+                })}
+                <p>____Responses____</p>
+                <div className="row">
+                    <div className="col-3">
+                        <p><strong>Answer</strong></p>
+                    </div>
+                    <div className="col-3">
+                        <p><strong>ST</strong></p>
+                    </div>
+                    <div className="col-3">
+                        <p><strong>RT</strong></p>
+                    </div>
+                    <div className="col-3">
+                        <p><strong>Correct</strong></p>
+                    </div>
+                </div>
+                {this.state.responses.map((response, index) => {
+                    return (<div className="row" key={index}>
+                        <div className="col-3">
+                            <p>{response[0][2]}</p>
+                        </div>
+                        <div className="col-3">
+                            <p>{response[1]}</p>
+                        </div>
+                        <div className="col-3">
+                            <p>{response[2]}</p>
+                        </div>
+                        <div className="col-3">
+                            <p>{response[3] === true ? "correct" : "incorrect"}</p>
+                        </div>
+                    </div>)
+                })}
+            </div>
+        </div>)
+
         const trainingChoice = (<div className="vote-panel">
               <h1>The name of this city is:</h1>
               <p>{this.state.currentFact[2]}</p>
@@ -205,95 +265,54 @@ export default class Game extends React.Component {
           </div>
         )
 
+        const mapBox = (
+          <Map
+            className="map-container"
+            containerStyle={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0
+            }}
+            style={"mapbox://styles/niklasmartin/ckf3wu17m13kb19ldd3g5rhd3"}
+            zoomLevel={11}
+            center={[this.state.lng, this.state.lat]}>
+          </Map>
+        )
+
+        const gameContent = (<div>
+            {mapBox}
+            {this.state.training === false ? <div className="timer-panel"><CountdownTimer ref="countdown" count={600} size={6} hideDay hideHours noPoints labelSize={20}/></div> : ''}
+            <div className="right-panel">
+                <Tabs
+                  id="tabs"
+                  activeKey={this.state.tab}
+                  onSelect={(k) => this.setState({tab: k})}
+                >
+                    <Tab eventKey="play" title={<div><PlayArrow/> Play</div>}>
+                        {this.state.training === false ? multipleChoice : trainingChoice}
+                    </Tab>
+                    <Tab eventKey="inspect" title={<div><Search/> Inspect</div>}>
+                        {logPanel}
+                    </Tab>
+                </Tabs>
+            </div>
+        </div>
+        )
+
+        const trainingIntro = (
+          <div className="center-box">
+              <h3>Welcome to TopoCity</h3>
+              <p>We will start with a training phase. Memorize each city name and location, before we start the testing session of 10 minutes.</p>
+              <Button variant="green" size="lg" color="blue" block onClick={this.startTraining}>Start training!</Button>
+          </div>
+        )
+
         return (
             <div>
                 {this.state.initialized === false ? <div className="center-box"><p>Initializing...</p></div> : <div>
-                    <Map
-                        className="map-container"
-                        containerStyle={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0
-                        }}
-                        style={"mapbox://styles/niklasmartin/ckf3wu17m13kb19ldd3g5rhd3"}
-                        zoomLevel={11}
-                        center={[this.state.lng, this.state.lat]}>
-                    </Map>
-                    {this.state.training === false ? <div className="timer-panel"><CountdownTimer ref="countdown" count={600} size={6} hideDay hideHours noPoints labelSize={20}/></div> : ''}
-                    <div className="right-panel">
-                        <Tabs
-                            id="tabs"
-                            activeKey={this.state.tab}
-                            onSelect={(k) => this.setState({tab: k})}
-                        >
-                            <Tab eventKey="play" title={<div><PlayArrow/> Play</div>}>
-                                {this.state.training === false ? multipleChoice : trainingChoice}
-                            </Tab>
-                            <Tab eventKey="inspect" title={<div><Search/> Inspect</div>}>
-                                <div className="logger-panel">
-                                    <div className="panel-wrapper">
-                                        <div className="row">
-                                            <div className="col-4">
-                                                <p><strong>Fact_id</strong></p>
-                                            </div>
-                                            <div className="col-4">
-                                                <p><strong>Answer</strong></p>
-                                            </div>
-                                            <div className="col-4">
-                                                <p><strong>Act. level</strong></p>
-                                            </div>
-                                        </div>
-                                        {this.state.activationLevels.map((activation, index) => {
-                                            return (<div className="row" key={index}>
-                                                <div className="col-4">
-                                                    <p>{activation[0]}</p>
-                                                </div>
-                                                <div className="col-4">
-                                                    <p>{activation[2]}</p>
-                                                </div>
-                                                <div className="col-4">
-                                                    <p>{activation[3]}</p>
-                                                </div>
-                                            </div>)
-                                        })}
-                                        <p>____Responses____</p>
-                                        <div className="row">
-                                            <div className="col-3">
-                                                <p><strong>Answer</strong></p>
-                                            </div>
-                                            <div className="col-3">
-                                                <p><strong>ST</strong></p>
-                                            </div>
-                                            <div className="col-3">
-                                                <p><strong>RT</strong></p>
-                                            </div>
-                                            <div className="col-3">
-                                                <p><strong>Correct</strong></p>
-                                            </div>
-                                        </div>
-                                        {this.state.responses.map((response, index) => {
-                                            return (<div className="row" key={index}>
-                                                <div className="col-3">
-                                                    <p>{response[0][2]}</p>
-                                                </div>
-                                                <div className="col-3">
-                                                    <p>{response[1]}</p>
-                                                </div>
-                                                <div className="col-3">
-                                                    <p>{response[2]}</p>
-                                                </div>
-                                                <div className="col-3">
-                                                    <p>{response[3] === true ? "correct" : "incorrect"}</p>
-                                                </div>
-                                            </div>)
-                                        })}
-                                    </div>
-                                </div>
-                            </Tab>
-                        </Tabs>
-                    </div>
+                    {this.state.trainingStarted ? gameContent : trainingIntro}
                 </div>}
             </div>
         )
