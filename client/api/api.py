@@ -37,7 +37,7 @@ def init():
         # Woonplaatsen,Provincie,Landsdeel,Gemeente,Lattitude,Longitude,Population,Coordinates
         # 12,Assen,Drenthe,Noord-Nederland          ,Assen                              ,52.983333333333334,6.55,68798,"52° 59′ NB, 6° 33′ OL"
         # read city names
-        cities = pd.read_csv('cities_20k.csv')
+        cities = pd.read_csv('cities_10k.csv')
         # remove empty locations
         cities = cities.loc[(cities['Latitude'] != 'No info') & (cities['Longitude'] != 'No info')]
         # create new dataframe
