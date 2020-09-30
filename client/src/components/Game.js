@@ -217,7 +217,7 @@ export default class Game extends React.Component {
                     bottom: 0
                 }}
                 style={"mapbox://styles/niklasmartin/ckf3wu17m13kb19ldd3g5rhd3"}
-                zoomLevel={9}
+                zoom={[8.5]}
                 center={[this.state.lng, this.state.lat]}>
             </Map>
         )
