@@ -1,7 +1,5 @@
 
 import React, {useState, useEffect} from 'react'
-import { ReactComponent as Loader } from '../assets/loader.svg';
-
 
 function Initialize() {
     const [error, setError] = useState(null);
@@ -12,15 +10,12 @@ function Initialize() {
     // this useEffect will run once
     // similar to componentDidMount()
     useEffect(() => {
-        const uri = 'http://localhost:5000/initialalphas?cities=groningen,amsterdam';
-        fetch(uri, {
-            method: 'post'
-          })
+      fetch("https://api.example.com/items")
         .then(res => res.json())
         .then(
           (result) => {
             setIsLoaded(true);
-            // setItems(result.items);
+            setItems(result.items);
           },
           // Note: it's important to handle errors here
           // instead of a catch() block so that we don't swallow
@@ -37,7 +32,7 @@ function Initialize() {
     } else if (!isLoaded) {
       return (
         <div className="scene">
-            <Loader />
+            Loading...
             </div>
       );
     } else {
