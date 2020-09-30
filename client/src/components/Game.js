@@ -9,6 +9,7 @@ import {PlayArrow} from '@material-ui/icons';
 import {Search} from '@material-ui/icons';
 import {getShuffledAnswerOptions} from "./helpers/multiplechoice";
 import Button from "react-bootstrap/Button";
+import LogPanel from "./LogPanel";
 
 const Map = ReactMapboxGl({
     accessToken: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN
@@ -193,66 +194,6 @@ export default class Game extends React.Component {
             </div>
         </div>);
 
-        const logPanel = (<div className="logger-panel">
-            <div className="panel-wrapper">
-                <div className="row">
-                    <div className="col-4">
-                        <p><strong>Fact_id</strong></p>
-                    </div>
-                    <div className="col-4">
-                        <p><strong>Answer</strong></p>
-                    </div>
-                    <div className="col-4">
-                        <p><strong>Act. level</strong></p>
-                    </div>
-                </div>
-                {this.state.activationLevels.map((activation, index) => {
-                    return (<div className="row" key={index}>
-                        <div className="col-4">
-                            <p>{activation[0]}</p>
-                        </div>
-                        <div className="col-4">
-                            <p>{activation[2]}</p>
-                        </div>
-                        <div className="col-4">
-                            <p>{activation[3]}</p>
-                        </div>
-                    </div>)
-                })}
-                <p>____Responses____</p>
-                <div className="row">
-                    <div className="col-3">
-                        <p><strong>Answer</strong></p>
-                    </div>
-                    <div className="col-3">
-                        <p><strong>ST</strong></p>
-                    </div>
-                    <div className="col-3">
-                        <p><strong>RT</strong></p>
-                    </div>
-                    <div className="col-3">
-                        <p><strong>Correct</strong></p>
-                    </div>
-                </div>
-                {this.state.responses.map((response, index) => {
-                    return (<div className="row" key={index}>
-                        <div className="col-3">
-                            <p>{response[0][2]}</p>
-                        </div>
-                        <div className="col-3">
-                            <p>{response[1]}</p>
-                        </div>
-                        <div className="col-3">
-                            <p>{response[2]}</p>
-                        </div>
-                        <div className="col-3">
-                            <p>{response[3] === true ? "correct" : "incorrect"}</p>
-                        </div>
-                    </div>)
-                })}
-            </div>
-        </div>)
-
         const trainingChoice = (<div className="vote-panel">
               <h1>The name of this city is:</h1>
               <p>{this.state.currentFact[2]}</p>
@@ -294,7 +235,7 @@ export default class Game extends React.Component {
                         {this.state.training === false ? multipleChoice : trainingChoice}
                     </Tab>
                     <Tab eventKey="inspect" title={<div><Search/> Inspect</div>}>
-                        {logPanel}
+                        <LogPanel responses={this.state.responses} activationLevels={this.state.activationLevels} />
                     </Tab>
                 </Tabs>
             </div>
