@@ -11,7 +11,11 @@ import Button from "react-bootstrap/Button";
 import LogPanel from "./LogPanel";
 
 const Map = ReactMapboxGl({
-    accessToken: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN
+    accessToken: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN,
+    minZoom: 7,
+    maxZoom: 9,
+    scrollZoom: false,
+    interactive: false,
 })
 
 export default class Game extends React.Component {
