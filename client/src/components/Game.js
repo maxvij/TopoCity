@@ -30,8 +30,9 @@ export default class Game extends React.Component {
             responses: [],
             initialized: false,
             loading: true,
-            training: true,
             trainingStarted: false,
+            trainingFinished: false,
+            gameStarted: false,
             trainingFacts: [],
             isNewFact: false,
             startTime: new Date(),
@@ -115,6 +116,12 @@ export default class Game extends React.Component {
         this.getActivationLevels()
     }
 
+    startGame = () => {
+        this.setState({
+            gameStarted: true
+        })
+    }
+
     startTraining = () => {
         let trainingFact = this.state.trainingFacts[0]
         const splittedString = trainingFact[1].split("-");
@@ -130,6 +137,7 @@ export default class Game extends React.Component {
         this.getNextFact()
         this.setState({
             training: false,
+            trainingFinished: true,
             trainingFacts: [],
         })
     }
@@ -161,7 +169,7 @@ export default class Game extends React.Component {
 
     markFactAsTrained = () => {
         if (this.state.trainingFacts.length === 1) {
-            this.endTraining()
+            // Finish training
         } else {
             let slicedTrainingFacts = this.state.trainingFacts.slice(0, 0).concat(this.state.trainingFacts.slice(1, this.state.trainingFacts.length))
             let trainingFact = slicedTrainingFacts[0]
@@ -228,9 +236,10 @@ export default class Game extends React.Component {
 
         const gameContent = (<div>
                 {mapBox}
-                {this.state.training === false ?
-                    <div className="timer-panel"><CountdownTimer ref="countdown" count={600} size={6} hideDay hideHours
-                                                                 noPoints labelSize={20}/></div> : ''}
+                <div className="timer-panel">
+                    <CountdownTimer ref="countdown" count={600} size={6} hideDay hideHours
+                                                             noPoints labelSize={20}/>
+                </div>
                 <div className="right-panel">
                     <Tabs
                         id="tabs"
@@ -238,7 +247,7 @@ export default class Game extends React.Component {
                         onSelect={(k) => this.setState({tab: k})}
                     >
                         <Tab eventKey="play" title={<div><PlayArrow/> Play</div>}>
-                            {this.state.training === false ? multipleChoice : trainingChoice}
+                            {multipleChoice}
                         </Tab>
                         <Tab eventKey="inspect" title={<div><Search/> Inspect</div>}>
                             <LogPanel responses={this.state.responses} activationLevels={this.state.activationLevels}/>
@@ -247,6 +256,13 @@ export default class Game extends React.Component {
                 </div>
             </div>
         )
+
+        const trainingContent = (<div>
+            {mapBox}
+            <div className="right-panel">
+                {trainingChoice}
+            </div>
+        </div>)
 
         const trainingIntro = (
             <div className="center-box">
@@ -260,10 +276,21 @@ export default class Game extends React.Component {
             </div>
         )
 
+        const gameIntro = (
+            <div className="center-box">
+                <div className="max-400">
+                    <h3>Ready for the test?</h3>
+                    <p>We will now start the testing phase. <br /> The testing session will take 10 minutes. <br /> Are you ready?</p>
+                    <Button variant="green" size="lg" color="blue" block onClick={this.startGame}>Start
+                        testing!</Button>
+                </div>
+            </div>
+        )
+
         return (
             <div>
                 {this.state.initialized === false ? <div className="center-box"><p>Initializing...</p></div> : <div>
-                    {this.state.trainingStarted ? gameContent : trainingIntro}
+                    {this.state.trainingStarted ? (this.state.trainingFinished ? (this.state.gameStarted ? gameContent : gameIntro) : trainingContent) : trainingIntro}
                 </div>}
             </div>
         )
