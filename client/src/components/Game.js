@@ -4,7 +4,6 @@ import Tab from 'react-bootstrap/Tab'
 import ReactMapboxGl from 'react-mapbox-gl';
 import CountdownTimer from "react-component-countdown-timer";
 import AnswerButton from "./AnswerButton";
-import Fireworks from "./Fireworks";
 import {PlayArrow} from '@material-ui/icons';
 import {Search} from '@material-ui/icons';
 import {getShuffledAnswerOptions} from "./helpers/multiplechoice";
@@ -157,7 +156,7 @@ export default class Game extends React.Component {
     }
 
     markFactAsTrained = () => {
-        if(this.state.trainingFacts.length === 1) {
+        if (this.state.trainingFacts.length === 1) {
             this.endTraining()
         } else {
             let slicedTrainingFacts = this.state.trainingFacts.slice(0, 0).concat(this.state.trainingFacts.slice(1, this.state.trainingFacts.length))
@@ -179,75 +178,82 @@ export default class Game extends React.Component {
             <div className="filler-20"></div>
             <div className="max-400">
                 {this.state.loading ?
-                  <div className="loading">
-                      <p>Fetching...</p>
-                  </div>
-                  : this.state.answerOptions.map((fact, index) => {
-                      return <AnswerButton key={index} name={fact[2]}
-                                           correct={fact[2] === this.state.currentFact[2]}
-                                           correctAction={this.logCorrectResponse}
-                                           incorrectAction={this.logIncorrectResponse}
-                                           isNew={fact[2] === this.state.currentFact[2] && this.state.isNewFact}
-                      >{fact[2]}</AnswerButton>
-                  })}
+                    <div className="loading">
+                        <p>Fetching...</p>
+                    </div>
+                    : this.state.answerOptions.map((fact, index) => {
+                        return <AnswerButton key={index} name={fact[2]}
+                                             correct={fact[2] === this.state.currentFact[2]}
+                                             correctAction={this.logCorrectResponse}
+                                             incorrectAction={this.logIncorrectResponse}
+                                             isNew={fact[2] === this.state.currentFact[2] && this.state.isNewFact}
+                        >{fact[2]}</AnswerButton>
+                    })}
                 <div className="filler-20"></div>
             </div>
         </div>);
 
         const trainingChoice = (<div className="vote-panel">
-              <h1>The name of this city is:</h1>
-              <p>{this.state.currentFact[2]}</p>
-              <div className="filler-20"></div>
-              <div className="max-400">
-                  <Button variant="green" size="lg" color="blue" block onClick={this.markFactAsTrained}>Ok, got it!</Button>
-                  <div className="filler-20"></div>
-                  <a onClick={this.endTraining}>Skip training</a>
-              </div>
-          </div>
+                <h1>The name of this city is:</h1>
+                <p>{this.state.currentFact[2]}</p>
+                <div className="filler-20"></div>
+                <div className="max-400">
+                    <Button variant="green" size="lg" color="blue" block onClick={this.markFactAsTrained}>Ok, got
+                        it!</Button>
+                    <div className="filler-20"></div>
+                    <a onClick={this.endTraining}>Skip training</a>
+                </div>
+            </div>
         )
 
         const mapBox = (
-          <Map
-            className="map-container"
-            containerStyle={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0
-            }}
-            style={"mapbox://styles/niklasmartin/ckf3wu17m13kb19ldd3g5rhd3"}
-            zoomLevel={11}
-            center={[this.state.lng, this.state.lat]}>
-          </Map>
+            <Map
+                className="map-container"
+                containerStyle={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0
+                }}
+                style={"mapbox://styles/niklasmartin/ckf3wu17m13kb19ldd3g5rhd3"}
+                zoomLevel={9}
+                center={[this.state.lng, this.state.lat]}>
+            </Map>
         )
 
         const gameContent = (<div>
-            {mapBox}
-            {this.state.training === false ? <div className="timer-panel"><CountdownTimer ref="countdown" count={600} size={6} hideDay hideHours noPoints labelSize={20}/></div> : ''}
-            <div className="right-panel">
-                <Tabs
-                  id="tabs"
-                  activeKey={this.state.tab}
-                  onSelect={(k) => this.setState({tab: k})}
-                >
-                    <Tab eventKey="play" title={<div><PlayArrow/> Play</div>}>
-                        {this.state.training === false ? multipleChoice : trainingChoice}
-                    </Tab>
-                    <Tab eventKey="inspect" title={<div><Search/> Inspect</div>}>
-                        <LogPanel responses={this.state.responses} activationLevels={this.state.activationLevels} />
-                    </Tab>
-                </Tabs>
+                {mapBox}
+                {this.state.training === false ?
+                    <div className="timer-panel"><CountdownTimer ref="countdown" count={600} size={6} hideDay hideHours
+                                                                 noPoints labelSize={20}/></div> : ''}
+                <div className="right-panel">
+                    <Tabs
+                        id="tabs"
+                        activeKey={this.state.tab}
+                        onSelect={(k) => this.setState({tab: k})}
+                    >
+                        <Tab eventKey="play" title={<div><PlayArrow/> Play</div>}>
+                            {this.state.training === false ? multipleChoice : trainingChoice}
+                        </Tab>
+                        <Tab eventKey="inspect" title={<div><Search/> Inspect</div>}>
+                            <LogPanel responses={this.state.responses} activationLevels={this.state.activationLevels}/>
+                        </Tab>
+                    </Tabs>
+                </div>
             </div>
-        </div>
         )
 
         const trainingIntro = (
-          <div className="center-box">
-              <h3>Welcome to TopoCity</h3>
-              <p>We will start with a training phase. Memorize each city name and location, before we start the testing session of 10 minutes.</p>
-              <Button variant="green" size="lg" color="blue" block onClick={this.startTraining}>Start training!</Button>
-          </div>
+            <div className="center-box">
+                <div className="max-400">
+                    <h3>Welcome to TopoCity</h3>
+                    <p>We will start with a training phase. <br /> Memorize each city name and location, before we start the
+                        testing session of 10 minutes.</p>
+                    <Button variant="green" size="lg" color="blue" block onClick={this.startTraining}>Start
+                        training!</Button>
+                </div>
+            </div>
         )
 
         return (
