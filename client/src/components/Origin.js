@@ -13,7 +13,7 @@ const Origin = () => {
   const handleSearch = (query) => {
     setIsLoading(true);
 
-    fetch('http://localhost:5000/citynames')
+    fetch('/citynames')
       .then((resp) => resp.json())
       .then((result) => {
         setOptions(result);

@@ -12,7 +12,7 @@ function Initialize() {
     // this useEffect will run once
     // similar to componentDidMount()
     useEffect(() => {
-        const uri = 'http://localhost:5000/initializeuser?cities=Groningen,Amsterdam';
+        const uri = '/initializeuser?cities=Groningen,Amsterdam';
         fetch(uri, {
             method: 'post'
           })
