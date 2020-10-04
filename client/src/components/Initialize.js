@@ -1,5 +1,7 @@
+import React, {useState, useEffect} from 'react';
+import {Redirect} from 'react-router-dom';
+import { ReactComponent as Loader } from '../assets/loader.svg';
 
-import React, {useState, useEffect} from 'react'
 
 function Initialize() {
     const [error, setError] = useState(null);
@@ -10,12 +12,16 @@ function Initialize() {
     // this useEffect will run once
     // similar to componentDidMount()
     useEffect(() => {
-      fetch("https://api.example.com/items")
+        const uri = 'http://localhost:5000/initializeuser?cities=Groningen,Amsterdam';
+        fetch(uri, {
+            method: 'post'
+          })
         .then(res => res.json())
         .then(
           (result) => {
             setIsLoaded(true);
-            setItems(result.items);
+
+            // setItems(result.items);
           },
           // Note: it's important to handle errors here
           // instead of a catch() block so that we don't swallow
@@ -31,13 +37,19 @@ function Initialize() {
       return <div>Error: {error.message}</div>;
     } else if (!isLoaded) {
       return (
-        <div className="scene">
-            Loading...
+        <div className="center-box">
+            <div class="max-400">
+              <h2>Calculating distances to other cities and initializing individual forgetting rates for each city...</h2>
             </div>
+            <div className="scene">
+            <Loader />
+            </div>
+        </div>
+        
       );
     } else {
       return (
-        <div>Done</div>
+         <Redirect to='../game' />
       );
     }
   }
