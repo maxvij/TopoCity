@@ -1,7 +1,7 @@
 import React from 'react';
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
-import ReactMapboxGl from 'react-mapbox-gl';
+import ReactMapboxGl, {Feature, Layer} from 'react-mapbox-gl';
 import CountdownTimer from "react-component-countdown-timer";
 import AnswerButton from "./AnswerButton";
 import {PlayArrow} from '@material-ui/icons';
@@ -218,20 +218,24 @@ export default class Game extends React.Component {
             </div>
         )
 
-        const mapBox = (
-            <Map
-                className="map-container"
-                containerStyle={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0
-                }}
-                style={"mapbox://styles/niklasmartin/ckf3wu17m13kb19ldd3g5rhd3"}
-                zoom={[8.5]}
-                center={[this.state.lng, this.state.lat]}>
-            </Map>
+        const mapBox = (<>
+                <Map
+                    className="map-container"
+                    containerStyle={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0
+                    }}
+                    style={"mapbox://styles/niklasmartin/ckf3wu17m13kb19ldd3g5rhd3"}
+                    zoom={[8.5]}
+                    center={[this.state.lng, this.state.lat]}>
+                    <Layer type="symbol" id="marker" layout={{'icon-image':'za-provincial-2', 'icon-anchor':'center'}}>
+                        <Feature coordinates={[this.state.lng, this.state.lat]} />
+                    </Layer>
+                </Map>
+            </>
         )
 
         const gameContent = (<div>
