@@ -8,6 +8,7 @@ import json
 from pytrends.request import TrendReq
 import requests
 from statistics import mean
+from scipy import stats
 
 pytrend = TrendReq()
 startTime = time.time()
@@ -172,6 +173,57 @@ def getInitialAlphas():
         df = pd.DataFrame(distances, columns = columns)         
         return df.to_json(orient='records')
         #return pd.Series(cities['Woonplaats']).to_json(orient='records')
+
+@app.route('/initializeuser', methods=['POST'])
+def initializeUser():
+    if request.method == 'POST':
+        # put home cities into an array
+        homes = request.args.get('cities')
+        homes = [x.strip() for x in homes.split(',')]
+        # read city matrix
+        cities = pd.read_csv('city_matrix_new.csv')
+        columns = ['City', 'Popularity']
+        for index, city in enumerate(homes):
+            columns.append(homes[index]) 
+        columns.append("min_distance")
+        columns.append('percentile_popularity')
+        columns.append("initial_alpha")
+        popularities = []
+        distances = []
+        for city in cities['City']:
+            row = []
+            # city col
+            row.append(city)
+            # popularity col
+            popularity = cities.loc[cities['City'] == city, 'Popularity']
+            popularities.append(float(popularity))
+            row.append(float(popularity))
+            # distances of city to homes
+            dists = []
+            for index, home in enumerate(homes):
+                distance = cities.loc[cities['City'] == city, home]
+                dists.append(float(distance))
+                row.append(float(distance))
+            min_dist = min(dists)
+            row.append(min_dist)
+            pops = cities['Popularity'] 
+            pop_score = stats.percentileofscore(pops, float(popularity))
+            row.append(pop_score)
+            reduction_popularity = 0.075 * (pop_score/100)
+            reduction_distance = 0 
+            if min_dist < 100 and min_dist > 1:
+                reduction_distance = 0.075 * (1/min_dist)
+            elif min_dist <= 1:
+                reduction_distance = 0.075
+            total_reduction = reduction_popularity + reduction_distance
+            initial_alpha = .4 - total_reduction
+            row.append(initial_alpha)
+            distances.append(row)
+        df = pd.DataFrame(distances, columns = columns)
+        #df['popularity_score'] = 0
+        df.drop(df.columns.difference(['City','initial_alpha']), 1, inplace=True)    
+        return df.to_json(orient="records")
+
 
 @app.route('/popularity', methods=['POST'])
 def popularity():
