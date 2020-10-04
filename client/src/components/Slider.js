@@ -35,7 +35,7 @@ export default class SimpleExample extends Component {
                 onChangeComplete={this.handleOnChange}
             />     
             <div className="filler-40"></div>     
-            <Button href="../game" variant="yellow" size="lg" color="blue" block>
+            <Button href="../initialize" variant="yellow" size="lg" color="blue" block>
             Let's go!
             </Button>
             

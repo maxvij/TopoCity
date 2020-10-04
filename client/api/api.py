@@ -129,8 +129,8 @@ def city_names():
     if len(model.facts) == 0:
         init()
     # read city names
-    cities = pd.read_csv('City_info.csv')
-    city_names = cities['Woonplaats'].unique()
+    cities = pd.read_csv('Cities_10k.csv')
+    city_names = cities['Woonplaatsen'].unique()
     json = pd.Series(city_names).to_json(orient='records')
     return json
     
@@ -221,7 +221,7 @@ def initializeUser():
             distances.append(row)
         df = pd.DataFrame(distances, columns = columns)
         #df['popularity_score'] = 0
-        df.drop(df.columns.difference(['City','initial_alpha']), 1, inplace=True)    
+        #df.drop(df.columns.difference(['City','initial_alpha']), 1, inplace=True)    
         return df.to_json(orient="records")
 
 

@@ -8,6 +8,8 @@ import Origin from "./components/Origin";
 import Async from "./components/AsynLoader";
 import Initialize from "./components/Initialize";
 import Game from "./components/Game";
+import Name from "./components/Name";
+import Slider from "./components/Slider";
 
 function App() {
     return (
@@ -19,6 +21,12 @@ function App() {
                     </Route>
                     <Route exact path="/origin">
                         <Origin />
+                    </Route>
+                    <Route exact path="/name">
+                        <Name />
+                    </Route>
+                    <Route exact path="/slider">
+                        <Slider />
                     </Route>
                     <Route exact path="/origin2">
                         <Async />
