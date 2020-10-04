@@ -8,6 +8,7 @@ import json
 from pytrends.request import TrendReq
 import requests
 from statistics import mean
+from scipy import stats
 
 pytrend = TrendReq()
 startTime = time.time()
@@ -34,12 +35,18 @@ def init():
     global starttime
     starttime = time.time()
     if len(model.facts) == 0:
-        model.add_fact(Fact(1, "4.8896900-52.3740300", "Amsterdam"))
-        model.add_fact(Fact(2, "6.5625000-52.9966700", "Assen"))
-        model.add_fact(Fact(3, "6.5666700-53.2191700", "Groningen"))
-        model.add_fact(Fact(4, "5.2916700-52.7033300", "Enkhuizen"))
-        model.add_fact(Fact(5, "5.9694400-52.2100000", "Apeldoorn"))
-        model.add_fact(Fact(6, "4.7486100-52.6316700", "Alkmaar"))
+        # Woonplaatsen,Provincie,Landsdeel,Gemeente,Lattitude,Longitude,Population,Coordinates
+        # 12,Assen,Drenthe,Noord-Nederland          ,Assen                              ,52.983333333333334,6.55,68798,"52° 59′ NB, 6° 33′ OL"
+        # read city names
+        cities = pd.read_csv('cities_20k.csv')
+        # remove empty locations
+        cities = cities.loc[(cities['Latitude'] != 'No info') & (cities['Longitude'] != 'No info')]
+        # create new dataframe
+        cities.drop(['Provincie', 'Landsdeel', 'Gemeente', 'Coordinates'], axis=1, inplace=True)
+
+        for index, row in cities.iterrows():
+            combinedLongLat = str(row['Longitude']) + "-" + str(row['Latitude'])
+            model.add_fact(Fact(index, combinedLongLat, row['Woonplaatsen']))
     return {'facts': model.facts}
 
 
@@ -149,7 +156,7 @@ def getInitialAlphas():
             interest_df = pytrend.interest_over_time()
             interest = mean(interest_df[city])
             row.append(int(round(interest)))
-            for index, home in enumerate(cleanup):              
+            for index, home in enumerate(cleanup):
                 uri = "https://www.distance24.org/route.json?stops=" + str(city).strip() + '|' + str(home).strip()
                 url = uri.strip()
                 try:
@@ -189,4 +196,38 @@ def popularity():
             #return interest_df.to_json(orient="records")
             distances.append(interest)
         return pd.Series(distances).to_json(orient='values')
+        #return pd.Series(cities['Woonplaats']).to_json(orient='records')
+
+@app.route('/initializeProfile',methods=['POST'])
+def initializeProfile():
+    if request.method == 'POST':
+        cities = request.args.get('cities')
+        cities = [x.strip() for x in cities.split(',')]
+        name = request.args.get('name')
+        duration = request.args.get('duration')       
+        # read city names
+        city_matrix = pd.read_csv('city_matrix_new.csv')
+        #population = city_matrix['Popularity']
+        columns = ['City', 'Popularity']
+        for index, city in enumerate(cities):
+            columns.append(cities[index]) 
+        # find distances to each city   
+        distances = []
+        for i_c, city in city_matrix.iterrows():
+            row = []
+            row.append(city['City'])
+            population = city['Popularity']
+            row.append(population)
+            for i_h, home in enumerate(cities):
+                distance = city_matrix.loc[city_matrix['City'] == city['City'], home]
+                row.append(distance)
+            distances.append(row)
+        df = pd.DataFrame(distances, columns = columns)   
+        return df.to_json(orient='records')
+        # load popularity
+
+        # make adjustment
         
+        # connect to db
+
+        # insert user profile: {user_id:{name, homes, initial_alphas:{}, seshions:{start, duration, final_activations={}}}}
