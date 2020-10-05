@@ -246,10 +246,10 @@ export default class Game extends React.Component {
                     <Layer type="symbol" id="marker" layout={{'icon-image':'za-provincial-2', 'icon-anchor':'center'}}>
                         <Feature coordinates={[this.state.lng, this.state.lat]} />
                     </Layer>
-                    <Layer type="symbol" id="marker" layout={{'icon-image':'rectangle-blue-2', 'icon-anchor':'center'}}>
-                        {this.state.activationLevels.length > 0 && this.state.activationLevels.filter(activation => activation[3] !== "-inf").map((activeCity) => {
+                    <Layer type="symbol" id="activecities" layout={{'icon-image':'rectangle-blue-2', 'icon-anchor':'center'}}>
+                        {this.state.activationLevels.length > 0 && this.state.activationLevels.filter(activation => (activation[3] !== "-inf" && activation[3] !== null)).map((activeCity) => {
                             let splittedString = activeCity[1].split('-')
-                            return <Feature coordinates={[Number(splittedString[0]), Number(splittedString[1])]} />
+                            return <Feature key={activeCity[1]} coordinates={[Number(splittedString[0]), Number(splittedString[1])]} />
                         })}
                     </Layer>
                 </Map>
