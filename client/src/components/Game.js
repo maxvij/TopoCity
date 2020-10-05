@@ -26,6 +26,7 @@ export default class Game extends React.Component {
             lat: 52.3740300,
             zoom: 8,
             currentFact: {},
+            activationLevel: 0,
             facts: [],
             responses: [],
             initialized: false,
@@ -111,7 +112,16 @@ export default class Game extends React.Component {
             });
         });
         this.getResponses()
+        this.getActivationLevel()
         this.getActivationLevels()
+    }
+
+    getActivationLevel = () => {
+        fetch('/getactivationlevel').then(res => res.json()).then(data => {
+            this.setState({
+                activationLevel: data.activation,
+            });
+        });
     }
 
     startGame = () => {
@@ -188,6 +198,7 @@ export default class Game extends React.Component {
         const multipleChoice = (<div className="vote-panel">
             <h1>What's the name of this city?</h1>
             <p>Last answer correct: {this.state.answerCorrect ? "yes" : "no"}</p>
+            <p>Activation level for this fact: {this.state.activationLevel}</p>
             <div className="filler-20"></div>
             <div className="max-400">
                 {this.state.loading ?

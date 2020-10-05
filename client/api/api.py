@@ -5,6 +5,7 @@ from SpacingModel import SpacingModel, Fact, Response
 from collections import namedtuple
 import pandas as pd
 import json
+import numpy
 from pytrends.request import TrendReq
 import requests
 from statistics import mean
@@ -94,6 +95,14 @@ def get_next_fact():
     return {'next_fact': next_fact,
             'new': new}
 
+@app.route('/getactivationlevel')
+def getactivationlevel():
+    global starttime
+    global next_fact
+    activationLevel = model.calculate_activation((time.time_ns() // 1000000) - starttime, next_fact)
+    if numpy.isinf(activationLevel):
+        activationLevel = "-Inf"
+    return {'activation':activationLevel}
 
 @app.route('/activationLog')
 def log_activations():

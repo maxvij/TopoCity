@@ -17,7 +17,6 @@ export default class LogPanel extends React.Component {
           </div>
         </div>
         {this.props.activationLevels.map((activation, index) => {
-          console.log(activation)
           return (<div className="row" key={index}>
             <div className="col-4">
               <p>{activation[0]}</p>
