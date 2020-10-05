@@ -131,6 +131,8 @@ export default class Game extends React.Component {
         fetch('/start').then(res => res.json()).then(data => {
             console.log('Started model with start time: ', data)
         });
+        setInterval(this.getActivationLevels, 500);
+        setInterval(this.getActivationLevel, 500);
     }
 
     startTraining = () => {
@@ -243,14 +245,14 @@ export default class Game extends React.Component {
                     style={"mapbox://styles/niklasmartin/ckf3wu17m13kb19ldd3g5rhd3"}
                     zoom={[8.5]}
                     center={[this.state.lng, this.state.lat]}>
-                    <Layer type="symbol" id="marker" layout={{'icon-image':'za-provincial-2', 'icon-anchor':'center'}}>
-                        <Feature coordinates={[this.state.lng, this.state.lat]} />
-                    </Layer>
                     <Layer type="symbol" id="activecities" layout={{'icon-image':'rectangle-blue-2', 'icon-anchor':'center'}}>
                         {this.state.activationLevels.length > 0 && this.state.activationLevels.filter(activation => (activation[3] !== "-inf" && activation[3] !== null)).map((activeCity) => {
                             let splittedString = activeCity[1].split('-')
                             return <Feature key={activeCity[1]} coordinates={[Number(splittedString[0]), Number(splittedString[1])]} />
                         })}
+                    </Layer>
+                    <Layer type="symbol" id="marker" layout={{'icon-image':'za-provincial-2', 'icon-anchor':'center'}}>
+                        <Feature coordinates={[this.state.lng, this.state.lat]} />
                     </Layer>
                 </Map>
             </>
