@@ -1,7 +1,7 @@
 import time
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from SpacingModel import SpacingModel
+from SpacingModel import SpacingModel, Fact, Response
 from collections import namedtuple
 import pandas as pd
 import json
@@ -12,24 +12,28 @@ from scipy import stats
 
 pytrend = TrendReq()
 #pytrend = TrendReq(hl='en-GB', tz=360)
-starttime = 0
+initTime = time.time_ns() // 1000000
+starttime = initTime
+questionPresentedTime = initTime
+responseTime = initTime
 app = Flask(__name__)
 CORS(app)
+next_fact = 0
+new = True
 model = SpacingModel()
-
-Fact = namedtuple("Fact", "fact_id, question, answer")
-Answer = namedtuple("Response", "fact, start_time, rt, correct")
-Encounter = namedtuple("Encounter", "activation, time, reaction_time, decay")
 
 @app.route('/time')
 def get_current_time():
-    return {'time': time.time()}
+    return {'time': time.time_ns() // 1000000}
 
 
 @app.route('/init')
 def init():
     print('Initializing model...')
     print('Length of model.facts: ', len(model.facts))
+    print('Resetting log file starttimes.txt')
+    with open("starttimes.txt", "w") as text_file:
+        text_file.flush()
     if len(model.facts) == 0:
         # Woonplaatsen,Provincie,Landsdeel,Gemeente,Lattitude,Longitude,Population,Coordinates
         # 12,Assen,Drenthe,Noord-Nederland          ,Assen                              ,52.983333333333334,6.55,68798,"52° 59′ NB, 6° 33′ OL"
@@ -49,7 +53,7 @@ def init():
 @app.route('/start')
 def start():
     global starttime
-    starttime = time.time()
+    starttime = time.time_ns() // 1000000
     print('Started model with start time: ')
     print(starttime)
     return {'start_time': starttime}
@@ -82,7 +86,11 @@ def get_next_fact():
     if len(model.facts) == 0:
         init()
     global starttime
-    next_fact, new = model.get_next_fact(time.time() - starttime)
+    global questionPresentedTime
+    global next_fact
+    global new
+    questionPresentedTime = time.time_ns() // 1000000
+    next_fact, new = model.get_next_fact(questionPresentedTime - starttime)
     return {'next_fact': next_fact,
             'new': new}
 
@@ -97,26 +105,31 @@ def log_activations():
         fact.append(f.fact_id)
         fact.append(f.question)
         fact.append(f.answer)
-        fact.append(str(model.calculate_activation(time.time() - starttime, f)))
+        fact.append(str(model.calculate_activation(time.time_ns() // 1000000 - starttime, f)))
         result.append(fact)
     return jsonify(result)
 
 
 @app.route('/logresponse', methods=['POST'])
 def log_response():
+    global next_fact
+    global new
+    global responseTime
+    global questionPresentedTime
+    global initTime
     if len(model.facts) == 0:
         init()
-    global starttime
     if request.method == 'POST':
+        with open("starttimes.txt", "a") as text_file:
+            print("Start times: {}".format(questionPresentedTime - initTime), file=text_file)
         print('Response logged')
         print(request.json)
         correctAnswer = False
-        responseTime = request.json['responseTime'] - request.json['startTime']
         if request.json['correct'] == 'true':
             correctAnswer = True
-        next_fact, new = model.get_next_fact(time.time() - starttime)
-        resp = Answer(fact=next_fact, start_time=request.json['startTime'],
-                        rt=responseTime,
+        responseTime = time.time_ns() // 1000000
+        resp = Response(fact=next_fact, start_time=questionPresentedTime - initTime,
+                        rt=responseTime - questionPresentedTime,
                         correct=correctAnswer)
         print(resp[1])
         print(resp[2])
