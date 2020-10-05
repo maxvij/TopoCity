@@ -101,7 +101,7 @@ export default class Game extends React.Component {
     getNextFact = () => {
         this.setState({loading: true})
         fetch('/getnextfact').then(res => res.json()).then(data => {
-            const splittedString = data.next_fact[1].split("-");
+            const splittedString = data.next_fact.question.split("-");
             this.setState({
                 currentFact: data.next_fact,
                 isNewFact: data.new,
@@ -124,7 +124,8 @@ export default class Game extends React.Component {
 
     startTraining = () => {
         let trainingFact = this.state.trainingFacts[0]
-        const splittedString = trainingFact[1].split("-");
+        const splittedString = trainingFact.question.split("-");
+        console.log(splittedString)
         this.setState({
             currentFact: trainingFact,
             lng: Number(splittedString[0]),
@@ -173,7 +174,7 @@ export default class Game extends React.Component {
         } else {
             let slicedTrainingFacts = this.state.trainingFacts.slice(0, 0).concat(this.state.trainingFacts.slice(1, this.state.trainingFacts.length))
             let trainingFact = slicedTrainingFacts[0]
-            const splittedString = trainingFact[1].split("-");
+            const splittedString = trainingFact.question.split("-");
             this.setState({
                 trainingFacts: slicedTrainingFacts,
                 currentFact: trainingFact,
@@ -194,12 +195,12 @@ export default class Game extends React.Component {
                         <p>Fetching...</p>
                     </div>
                     : this.state.answerOptions.map((fact, index) => {
-                        return <AnswerButton key={index} name={fact[2]}
-                                             correct={fact[2] === this.state.currentFact[2]}
+                        return <AnswerButton key={index} name={fact.answer}
+                                             correct={fact.question === this.state.currentFact.question}
                                              correctAction={this.logCorrectResponse}
                                              incorrectAction={this.logIncorrectResponse}
-                                             isNew={fact[2] === this.state.currentFact[2] && this.state.isNewFact}
-                        >{fact[2]}</AnswerButton>
+                                             isNew={fact.question === this.state.currentFact.question && this.state.isNewFact}
+                        >{fact.answer}</AnswerButton>
                     })}
                 <div className="filler-20"></div>
             </div>
@@ -207,7 +208,7 @@ export default class Game extends React.Component {
 
         const trainingChoice = (<div className="vote-panel">
                 <h1>The name of this city is:</h1>
-                <p>{this.state.currentFact[2]}</p>
+                <p>{this.state.currentFact.answer}</p>
                 <div className="filler-20"></div>
                 <div className="max-400">
                     <Button variant="green" size="lg" color="blue" block onClick={this.markFactAsTrained}>Ok, got
@@ -239,7 +240,7 @@ export default class Game extends React.Component {
         )
 
         const gameContent = (<div>
-                {mapBox}
+                {mapBox}l
                 <div className="timer-panel">
                     <CountdownTimer ref="countdown" count={600} size={6} hideDay hideHours
                                                              noPoints labelSize={20}/>

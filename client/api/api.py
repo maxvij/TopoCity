@@ -129,7 +129,7 @@ def city_names():
     if len(model.facts) == 0:
         init()
     # read city names
-    cities = pd.read_csv('Cities_10k.csv')
+    cities = pd.read_csv('cities_10k.csv')
     city_names = cities['Woonplaatsen'].unique()
     json = pd.Series(city_names).to_json(orient='records')
     return json
