@@ -120,6 +120,9 @@ export default class Game extends React.Component {
         this.setState({
             gameStarted: true
         })
+        fetch('/start').then(res => res.json()).then(data => {
+            console.log('Started model with start time: ', data)
+        });
     }
 
     startTraining = () => {

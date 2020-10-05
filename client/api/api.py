@@ -11,9 +11,8 @@ from statistics import mean
 from scipy import stats
 
 pytrend = TrendReq()
-startTime = time.time()
 #pytrend = TrendReq(hl='en-GB', tz=360)
-
+starttime = 0
 app = Flask(__name__)
 CORS(app)
 model = SpacingModel()
@@ -22,9 +21,6 @@ Fact = namedtuple("Fact", "fact_id, question, answer")
 Response = namedtuple("Response", "fact, start_time, rt, correct")
 Encounter = namedtuple("Encounter", "activation, time, reaction_time, decay")
 
-starttime = 0
-
-
 @app.route('/time')
 def get_current_time():
     return {'time': time.time()}
@@ -32,8 +28,6 @@ def get_current_time():
 
 @app.route('/init')
 def init():
-    global starttime
-    starttime = time.time()
     if len(model.facts) == 0:
         # Woonplaatsen,Provincie,Landsdeel,Gemeente,Lattitude,Longitude,Population,Coordinates
         # 12,Assen,Drenthe,Noord-Nederland          ,Assen                              ,52.983333333333334,6.55,68798,"52° 59′ NB, 6° 33′ OL"
@@ -49,6 +43,13 @@ def init():
             model.add_fact(Fact(index, combinedLongLat, row['Woonplaatsen']))
     return {'facts': model.facts}
 
+@app.route('/start')
+def start():
+    global starttime
+    starttime = time.time()
+    print('Started model with start time: ')
+    print(starttime)
+    return {'start_time': starttime}
 
 @app.route('/facts')
 def facts():
