@@ -45,7 +45,6 @@ export default class LogPanel extends React.Component {
           </div>
         </div>
         {this.props.responses.map((response, index) => {
-          console.log(response)
           return (<div className="row" key={index}>
             <div className="col-3">
               <p>{response.fact.answer}</p>

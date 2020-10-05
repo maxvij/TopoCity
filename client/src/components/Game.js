@@ -34,7 +34,7 @@ export default class Game extends React.Component {
             trainingFinished: false,
             gameStarted: false,
             trainingFacts: [],
-            isNewFact: false,
+            isNewFact: true,
             startTime: new Date(),
             responseTime: new Date(),
             firstStartTime: new Date(),
@@ -125,7 +125,6 @@ export default class Game extends React.Component {
     startTraining = () => {
         let trainingFact = this.state.trainingFacts[0]
         const splittedString = trainingFact.question.split("-");
-        console.log(splittedString)
         this.setState({
             currentFact: trainingFact,
             lng: Number(splittedString[0]),
@@ -199,7 +198,7 @@ export default class Game extends React.Component {
                                              correct={fact.question === this.state.currentFact.question}
                                              correctAction={this.logCorrectResponse}
                                              incorrectAction={this.logIncorrectResponse}
-                                             isNew={fact.question === this.state.currentFact.question && this.state.isNewFact}
+                                             isNew={(fact.question === this.state.currentFact.question) && this.state.isNewFact}
                         >{fact.answer}</AnswerButton>
                     })}
                 <div className="filler-20"></div>
