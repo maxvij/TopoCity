@@ -26,6 +26,7 @@ export default class Game extends React.Component {
             lat: 52.3740300,
             zoom: 8,
             currentFact: {},
+            activationLevel: 0,
             facts: [],
             responses: [],
             initialized: false,
@@ -34,7 +35,7 @@ export default class Game extends React.Component {
             trainingFinished: false,
             gameStarted: false,
             trainingFacts: [],
-            isNewFact: false,
+            isNewFact: true,
             startTime: new Date(),
             responseTime: new Date(),
             firstStartTime: new Date(),
@@ -52,11 +53,9 @@ export default class Game extends React.Component {
     }
 
     init = () => {
-        fetch('/init').then(res => res.json()).then(data => {
-            this.setState({
-                initialized: true,
-                loading: false,
-            });
+        this.setState({
+            initialized: true,
+            loading: false,
         });
         this.getFacts()
     }
@@ -113,13 +112,27 @@ export default class Game extends React.Component {
             });
         });
         this.getResponses()
+        this.getActivationLevel()
         this.getActivationLevels()
+    }
+
+    getActivationLevel = () => {
+        fetch('/getactivationlevel').then(res => res.json()).then(data => {
+            this.setState({
+                activationLevel: data.activation,
+            });
+        });
     }
 
     startGame = () => {
         this.setState({
             gameStarted: true
         })
+        fetch('/start').then(res => res.json()).then(data => {
+            console.log('Started model with start time: ', data)
+        });
+        setInterval(this.getActivationLevels, 500);
+        setInterval(this.getActivationLevel, 500);
     }
 
     startTraining = () => {
@@ -187,6 +200,7 @@ export default class Game extends React.Component {
         const multipleChoice = (<div className="vote-panel">
             <h1>What's the name of this city?</h1>
             <p>Last answer correct: {this.state.answerCorrect ? "yes" : "no"}</p>
+            <p>Activation level for this fact: {this.state.activationLevel}</p>
             <div className="filler-20"></div>
             <div className="max-400">
                 {this.state.loading ?
@@ -198,7 +212,7 @@ export default class Game extends React.Component {
                                              correct={fact[2] === this.state.currentFact[2]}
                                              correctAction={this.logCorrectResponse}
                                              incorrectAction={this.logIncorrectResponse}
-                                             isNew={fact[2] === this.state.currentFact[2] && this.state.isNewFact}
+                                             isNew={(fact[2] === this.state.currentFact[2]) && this.state.isNewFact}
                         >{fact[2]}</AnswerButton>
                     })}
                 <div className="filler-20"></div>
@@ -231,7 +245,25 @@ export default class Game extends React.Component {
                     style={"mapbox://styles/niklasmartin/ckf3wu17m13kb19ldd3g5rhd3"}
                     zoom={[8.5]}
                     center={[this.state.lng, this.state.lat]}>
-                    <Layer type="symbol" id="marker" layout={{'icon-image':'za-provincial-2', 'icon-anchor':'center'}}>
+                    <Layer type="symbol" id="activecities-green" layout={{'icon-image':'rectangle-green-2', 'icon-anchor':'center'}}>
+                        {this.state.activationLevels.length > 0 && this.state.activationLevels.filter(activation => (activation[3] !== "-inf" && activation[3] > 0)).map((activeCity) => {
+                            let splittedString = activeCity[1].split('-')
+                            return <Feature key={activeCity[1]} coordinates={[Number(splittedString[0]), Number(splittedString[1])]} />
+                        })}
+                    </Layer>
+                    <Layer type="symbol" id="activecities-red" layout={{'icon-image':'rectangle-red-2', 'icon-anchor':'center'}}>
+                        {this.state.activationLevels.length > 0 && this.state.activationLevels.filter(activation => (activation[3] !== "-inf" && activation[3] < -0.5)).map((activeCity) => {
+                            let splittedString = activeCity[1].split('-')
+                            return <Feature key={activeCity[1]} coordinates={[Number(splittedString[0]), Number(splittedString[1])]} />
+                        })}
+                    </Layer>
+                    <Layer type="symbol" id="activecities-yellow" layout={{'icon-image':'rectangle-yellow-2', 'icon-anchor':'center'}}>
+                        {this.state.activationLevels.length > 0 && this.state.activationLevels.filter(activation => (activation[3] !== "-inf" && activation[3] < 0 && activation[3] >= -0.5)).map((activeCity) => {
+                            let splittedString = activeCity[1].split('-')
+                            return <Feature key={activeCity[1]} coordinates={[Number(splittedString[0]), Number(splittedString[1])]} />
+                        })}
+                    </Layer>
+                    <Layer type="symbol" id="marker" layout={{'icon-image':'br-state-2', 'icon-anchor':'center'}}>
                         <Feature coordinates={[this.state.lng, this.state.lat]} />
                     </Layer>
                 </Map>
@@ -239,7 +271,7 @@ export default class Game extends React.Component {
         )
 
         const gameContent = (<div>
-                {mapBox}
+                {mapBox}l
                 <div className="timer-panel">
                     <CountdownTimer ref="countdown" count={600} size={6} hideDay hideHours
                                                              noPoints labelSize={20}/>
