@@ -47,16 +47,16 @@ export default class LogPanel extends React.Component {
         {this.props.responses.map((response, index) => {
           return (<div className="row" key={index}>
             <div className="col-3">
-              <p>{response.fact.answer}</p>
+              <p>{response[0][2]}</p>
             </div>
             <div className="col-3">
-              <p>{response.start_time}</p>
+              <p>{response[1]}</p>
             </div>
             <div className="col-3">
-              <p>{response.rt}</p>
+              <p>{response[2]}</p>
             </div>
             <div className="col-3">
-              <p>{response.correct === true ? "correct" : "incorrect"}</p>
+              <p>{response[3] === true ? "correct" : "incorrect"}</p>
             </div>
           </div>)
         })}
