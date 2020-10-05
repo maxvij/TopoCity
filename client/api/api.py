@@ -18,7 +18,7 @@ CORS(app)
 model = SpacingModel()
 
 Fact = namedtuple("Fact", "fact_id, question, answer")
-Response = namedtuple("Response", "fact, start_time, rt, correct")
+Answer = namedtuple("Response", "fact, start_time, rt, correct")
 Encounter = namedtuple("Encounter", "activation, time, reaction_time, decay")
 
 @app.route('/time')
@@ -28,6 +28,8 @@ def get_current_time():
 
 @app.route('/init')
 def init():
+    print('Initializing model...')
+    print('Length of model.facts: ', len(model.facts))
     if len(model.facts) == 0:
         # Woonplaatsen,Provincie,Landsdeel,Gemeente,Lattitude,Longitude,Population,Coordinates
         # 12,Assen,Drenthe,Noord-Nederland          ,Assen                              ,52.983333333333334,6.55,68798,"52° 59′ NB, 6° 33′ OL"
@@ -41,6 +43,7 @@ def init():
         for index, row in cities.iterrows():
             combinedLongLat = str(row['Longitude']) + "-" + str(row['Latitude'])
             model.add_fact(Fact(index, combinedLongLat, row['Woonplaatsen']))
+    print(len(model.facts), ' facts added to the model')
     return {'facts': model.facts}
 
 @app.route('/start')
@@ -105,22 +108,19 @@ def log_response():
         init()
     global starttime
     if request.method == 'POST':
-        print('Response log received')
+        print('Response logged')
+        print(request.json)
         correctAnswer = False
+        responseTime = request.json['responseTime'] - request.json['startTime']
         if request.json['correct'] == 'true':
             correctAnswer = True
-        print('--------')
-        print('Start Time: ')
-        print(request.json['startTime'])
-        print('--------')
-        print('--------')
-        print('Response Time: ')
-        print(request.json['responseTime'] - request.json['startTime'])
-        print('--------')
         next_fact, new = model.get_next_fact(time.time() - starttime)
-        resp = Response(fact=next_fact, start_time=request.json['startTime'],
-                        rt=request.json['responseTime'] - request.json['startTime'],
+        resp = Answer(fact=next_fact, start_time=request.json['startTime'],
+                        rt=responseTime,
                         correct=correctAnswer)
+        print(resp[1])
+        print(resp[2])
+        print(resp[3])
         model.register_response(resp)
     return {'responses': model.responses}
 

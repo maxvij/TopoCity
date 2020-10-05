@@ -52,11 +52,9 @@ export default class Game extends React.Component {
     }
 
     init = () => {
-        fetch('/init').then(res => res.json()).then(data => {
-            this.setState({
-                initialized: true,
-                loading: false,
-            });
+        this.setState({
+            initialized: true,
+            loading: false,
         });
         this.getFacts()
     }
