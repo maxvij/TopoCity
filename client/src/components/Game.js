@@ -245,13 +245,25 @@ export default class Game extends React.Component {
                     style={"mapbox://styles/niklasmartin/ckf3wu17m13kb19ldd3g5rhd3"}
                     zoom={[8.5]}
                     center={[this.state.lng, this.state.lat]}>
-                    <Layer type="symbol" id="activecities" layout={{'icon-image':'rectangle-blue-2', 'icon-anchor':'center'}}>
-                        {this.state.activationLevels.length > 0 && this.state.activationLevels.filter(activation => (activation[3] !== "-inf" && activation[3] !== null)).map((activeCity) => {
+                    <Layer type="symbol" id="activecities-green" layout={{'icon-image':'rectangle-green-2', 'icon-anchor':'center'}}>
+                        {this.state.activationLevels.length > 0 && this.state.activationLevels.filter(activation => (activation[3] !== "-inf" && activation[3] > 0)).map((activeCity) => {
                             let splittedString = activeCity[1].split('-')
                             return <Feature key={activeCity[1]} coordinates={[Number(splittedString[0]), Number(splittedString[1])]} />
                         })}
                     </Layer>
-                    <Layer type="symbol" id="marker" layout={{'icon-image':'za-provincial-2', 'icon-anchor':'center'}}>
+                    <Layer type="symbol" id="activecities-red" layout={{'icon-image':'rectangle-red-2', 'icon-anchor':'center'}}>
+                        {this.state.activationLevels.length > 0 && this.state.activationLevels.filter(activation => (activation[3] !== "-inf" && activation[3] < -0.5)).map((activeCity) => {
+                            let splittedString = activeCity[1].split('-')
+                            return <Feature key={activeCity[1]} coordinates={[Number(splittedString[0]), Number(splittedString[1])]} />
+                        })}
+                    </Layer>
+                    <Layer type="symbol" id="activecities-yellow" layout={{'icon-image':'rectangle-yellow-2', 'icon-anchor':'center'}}>
+                        {this.state.activationLevels.length > 0 && this.state.activationLevels.filter(activation => (activation[3] !== "-inf" && activation[3] < 0 && activation[3] >= -0.5)).map((activeCity) => {
+                            let splittedString = activeCity[1].split('-')
+                            return <Feature key={activeCity[1]} coordinates={[Number(splittedString[0]), Number(splittedString[1])]} />
+                        })}
+                    </Layer>
+                    <Layer type="symbol" id="marker" layout={{'icon-image':'br-state-2', 'icon-anchor':'center'}}>
                         <Feature coordinates={[this.state.lng, this.state.lat]} />
                     </Layer>
                 </Map>
