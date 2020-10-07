@@ -41,6 +41,7 @@ export default class Game extends React.Component {
             firstStartTime: new Date(),
             activationLevels: [],
             answerCorrect: false,
+            errorMessages: [],
             tab: 'play',
             answerOptions: []
         }
@@ -85,7 +86,9 @@ export default class Game extends React.Component {
             this.setState({
                 loading: false
             })
-        })
+        }).catch((error) => {
+            this.logError('Unable to log the response', error)
+        });
         this.getNextFact()
     }
 
@@ -110,6 +113,8 @@ export default class Game extends React.Component {
                 startTime: new Date(),
                 answerOptions: getShuffledAnswerOptions(this.state.facts, data.next_fact)
             });
+        }).catch((error) => {
+            this.logError('Unable to fetch the next fact', error)
         });
         this.getResponses()
         this.getActivationLevel()
@@ -121,6 +126,8 @@ export default class Game extends React.Component {
             this.setState({
                 activationLevel: data.activation,
             });
+        }).catch((error) => {
+            this.logError('Unable to fetch the activation level', error)
         });
     }
 
@@ -130,6 +137,8 @@ export default class Game extends React.Component {
         })
         fetch('/start').then(res => res.json()).then(data => {
             console.log('Started model with start time: ', data)
+        }).catch((error) => {
+            this.logError('Unable to start the model', error)
         });
         setInterval(this.getActivationLevels, 500);
         setInterval(this.getActivationLevel, 500);
@@ -161,6 +170,8 @@ export default class Game extends React.Component {
                 facts: data.facts,
                 trainingFacts: data.facts
             });
+        }).catch((error) => {
+            this.logError('Unable to fetch facts', error)
         });
     }
 
@@ -169,6 +180,8 @@ export default class Game extends React.Component {
             this.setState({
                 responses: data.responses
             });
+        }).catch((error) => {
+            this.logError('Unable to fetch responses', error)
         });
     }
 
@@ -177,6 +190,8 @@ export default class Game extends React.Component {
             this.setState({
                 activationLevels: data
             });
+        }).catch((error) => {
+            this.logError('Unable to fetch activation levels', error)
         });
     }
 
@@ -194,6 +209,16 @@ export default class Game extends React.Component {
                 lat: Number(splittedString[1]),
             })
         }
+    }
+
+    logError = (errorMsg, error) => {
+        console.log('Error: ', errorMsg)
+        console.log('Error: ', error)
+        let prevErrors = this.state.errorMessages
+        prevErrors.push(errorMsg)
+        this.setState({
+            errorMessages: prevErrors
+        })
     }
 
     render() {
