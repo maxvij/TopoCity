@@ -11,6 +11,3 @@ export default class Feedback extends React.Component {
         </div>)
     }
 }
-
-
-
