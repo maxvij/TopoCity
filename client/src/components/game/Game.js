@@ -139,7 +139,6 @@ export default class Game extends React.Component {
             this.logError('Unable to start the model', error)
         });
         setInterval(this.getActivationLevels, 500);
-        setInterval(this.getActivationLevel, 500);
     }
 
     startTraining = () => {

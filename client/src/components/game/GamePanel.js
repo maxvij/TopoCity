@@ -1,14 +1,43 @@
 import AnswerButton from "../AnswerButton";
 import React from "react";
+import Button from "react-bootstrap/Button";
 
 export default class GamePanel extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            value: ''
+        }
+    }
+
+    handleSubmit = (event) => {
+        event.preventDefault();
+        let correctAnswer = this.props.currentFact[2].toLowerCase();
+        let inputAnswer = this.state.value.replace(/\s/g, '').toLowerCase();
+        if(correctAnswer === inputAnswer) {
+            this.props.logCorrectResponse()
+        } else {
+            this.props.logIncorrectResponse()
+        }
+        this.clearInput()
+    }
+
+    handleChange = (event) => {
+        this.setState({
+            value: event.target.value
+        })
+    }
+
+    clearInput = () => {
+        this.setState({
+            value: ''
+        })
+    }
+
     render() {
-        return (<div className="vote-panel">
-            <h1>What's the name of this city?</h1>
-            <p>Activation level for this fact: <br /><strong>{this.props.activationLevel}</strong></p>
-            <div className="filler-20"></div>
-            <div className="max-400">
-                {this.props.loading ?
+        const multipleChoice = (<>
+            {this.props.loading ?
                     <div className="loading">
                         <p>Fetching...</p>
                     </div>
@@ -20,6 +49,19 @@ export default class GamePanel extends React.Component {
                                              isNew={(fact[2] === this.props.currentFact[2]) && this.props.isNewFact}
                         >{fact[2]}</AnswerButton>
                     })}
+        </>)
+
+        const textInput = (<form>
+            <input autoFocus={true} type="text" name="answer" id="answer" onChange={this.handleChange} value={this.state.value}/>
+            <Button type="submit" variant="blue" size="lg" color="blue" block onClick={this.handleSubmit}>Submit</Button>
+        </form>)
+
+        return (<div className="vote-panel" id={this.props.currentFact[2]}>
+            <h1>What's the name of this city?</h1>
+            <p>Activation level for this fact: <br /><strong>{this.props.activationLevel}</strong></p>
+            <div className="filler-20"></div>
+            <div className="max-400">
+                {this.props.activationLevel > 0 ? textInput : multipleChoice}
                 <div className="filler-20"></div>
             </div>
         </div>)
