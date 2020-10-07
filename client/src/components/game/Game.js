@@ -2,11 +2,9 @@ import React from 'react';
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
 import CountdownTimer from "react-component-countdown-timer";
-import AnswerButton from "../AnswerButton";
 import {PlayArrow} from '@material-ui/icons';
 import {Search} from '@material-ui/icons';
 import {getShuffledAnswerOptions} from "../helpers/multiplechoice";
-import Button from "react-bootstrap/Button";
 import LogPanel from "../LogPanel";
 import MapContainer from "./MapContainer";
 import ErrorPanel from "./ErrorPanel";
