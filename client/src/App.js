@@ -11,6 +11,7 @@ import Initialize from "./components/Initialize";
 import Game from "./components/Game";
 import Name from "./components/Name";
 import Slider from "./components/Slider";
+import Province from "./components/Province";
 
 function App() {
     return (
@@ -28,6 +29,9 @@ function App() {
                     </Route>
                     <Route exact path="/slider">
                         <Slider />
+                    </Route>
+                    <Route exact path="/province">
+                        <Province />
                     </Route>
                     <Route exact path="/origin2">
                         <Async />

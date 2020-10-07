@@ -1,44 +1,58 @@
 import React from 'react'
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
+import {Button, Container, Row, Col} from "react-bootstrap";
+import {withRouter} from 'react-router-dom';
 
-const useStateWithLocalStorage = (localStorageKey) => {
-  const [value, setValue] = React.useState(
-    localStorage.getItem(localStorageKey) || ''
-  );
- 
-  React.useEffect((localStorageKey) => {
-    localStorage.setItem(localStorageKey, value);
-  }, [value]);
- 
-  return [value, setValue];
-};
+class Province extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleSelect = this.handleSelect.bind(this);
+        this.state = {
+            provinces: [],
+            province: ''
+        }
+      }
+    
+    handleSelect(province) {
+        this.setState({ province: province })
+        localStorage.setItem('province', province);
+        console.log(province)
+        this.props.history.push('/slider');
+    }
+    componentDidMount() {
+        fetch('/provinces')
+        .then(res => res.json())
+        .then((data) => {
+            this.setState({ provinces: data })
+            console.log(this.state.provinces)
+            
+        })
+        .catch(console.log)
+    }
+    render() {
+        return (
+            <div className="center-box">   
+                <div className="max-600">
+                    <h1>What province do you want to study today?</h1>
+                    <div className="filler-40"></div>
+                    <Container>
+                        {/* Stack the columns on mobile by making one full-width and the other half-width */}
+                        <Row>             
+                        {this.state.provinces.map((province) => (
+                        <Col xs={6} md={6}>
+                            <Button variant="blue" onClick={() => this.handleSelect(province)} size="lg" color="blue" block>
+                                {province}
+                            </Button>
+                            <div className="filler-20"></div> 
 
-const Province = () => {
-  
-  
-    const [value, setValue] = useStateWithLocalStorage(
-      'topo_name'
-    );
-    const onChange = event => setValue(event.target.value);
-    return (
-      <div className="center-box" >
-          <h1>How do you want to be called?</h1>
-          <div className="filler-40"></div>
-          <div className="max-400">         
-            <Form> 
-              <Form.Group controlId="formBasicEmail">
-                <Form.Label>Your name:</Form.Label>
-                <Form.Control type="text" value={value} onChange={onChange} size="lg" placeholder="e.g. Lord Voldemort" />
-              </Form.Group>             
-              <Button href="../origin" variant="yellow" size="lg" color="blue" block>
-              Let's go!
-              </Button>
-            </Form> 
-          </div>
-      </div>
-      
-  );
-  
+                        </Col>
+                        ))}
+                        </Row>
+                    </Container>
+                    </div>
+            </div>
+
+        );
+    }
 }
-export default Province;
+
+export default withRouter(Province)

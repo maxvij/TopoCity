@@ -14,6 +14,7 @@ export default class SimpleExample extends Component {
     this.setState({
       value: value
     })
+    localStorage.setItem('duration', value);
   }
 
   render() {
@@ -31,7 +32,7 @@ export default class SimpleExample extends Component {
                 tooltips={'always'}
                 postfix='min'
                 onChangeStart={() => console.log('start drag')}
-                onChange={(value)=>console.log('drag value: ', value)}
+                onChange={(value) => this.handleOnChange}
                 onChangeComplete={this.handleOnChange}
             />     
             <div className="filler-40"></div>     
