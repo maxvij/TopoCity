@@ -21,15 +21,22 @@
         position: relative
         font-size: 28px
         line-height: 30px
-        top: 50%
+        top: 30%
+        margin: 0
         color: white
         transform: translateY(-50%)
+        &.fact
+          font-size: 16px
+          position: relative
+          top: initial
+          margin: 0
+          transform: none
     li:last-child
       width: 360px
       height: 82px
       display: inline-block
       text-align: center
-      animation: fadeOut 2s ease-in-out
+      animation: fadeOut 5s ease-in-out
       animation-fill-mode: forwards
       opacity: 1
       &.green

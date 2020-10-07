@@ -229,7 +229,8 @@ export default class Game extends React.Component {
     showFeedback = (correct) => {
         let message = {
             correct: correct,
-            message: correct ? 'Good job!' : 'Too bad...'
+            message: correct ? 'Good job!' : 'Too bad...',
+            fact: this.state.currentFact
         }
         let prevMessages = this.state.feedbackMessages
         prevMessages.push(message)
