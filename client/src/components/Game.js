@@ -86,10 +86,10 @@ export default class Game extends React.Component {
             this.setState({
                 loading: false
             })
+            this.getNextFact()
         }).catch((error) => {
             this.logError('Unable to log the response', error)
         });
-        this.getNextFact()
     }
 
     logCorrectResponse = () => {
