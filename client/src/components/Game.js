@@ -320,7 +320,7 @@ export default class Game extends React.Component {
         const feedbackMessages = (<div className="feedback-messages">
             <ul>
                 {this.state.feedbackMessages.map((feedbackMsg, index) => {
-                    return <li key={index} className={"alert" + (feedbackMsg.correct ? " green" : " red")}>{feedbackMsg.message}</li>
+                    return <li key={index} className={"alert" + (feedbackMsg.correct ? " green" : " red")}><p>{feedbackMsg.message}</p></li>
                 })}
             </ul>
         </div> )
