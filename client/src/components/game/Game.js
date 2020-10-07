@@ -1,22 +1,18 @@
 import React from 'react';
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
-import ReactMapboxGl, {Feature, Layer} from 'react-mapbox-gl';
 import CountdownTimer from "react-component-countdown-timer";
-import AnswerButton from "./AnswerButton";
 import {PlayArrow} from '@material-ui/icons';
 import {Search} from '@material-ui/icons';
-import {getShuffledAnswerOptions} from "./helpers/multiplechoice";
-import Button from "react-bootstrap/Button";
-import LogPanel from "./LogPanel";
-
-const Map = ReactMapboxGl({
-    accessToken: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN,
-    minZoom: 7,
-    maxZoom: 9,
-    scrollZoom: false,
-    interactive: false,
-})
+import {getShuffledAnswerOptions} from "../helpers/multiplechoice";
+import LogPanel from "../LogPanel";
+import MapContainer from "./MapContainer";
+import ErrorPanel from "./ErrorPanel";
+import Feedback from "./Feedback";
+import GameIntro from "./GameIntro";
+import TrainingIntro from "./TrainingIntro";
+import TrainingPanel from "./TrainingPanel";
+import GamePanel from "./GamePanel";
 
 export default class Game extends React.Component {
     constructor(props) {
@@ -24,7 +20,6 @@ export default class Game extends React.Component {
         this.state = {
             lng: 4.8896900,
             lat: 52.3740300,
-            zoom: 8,
             currentFact: {},
             activationLevel: 0,
             facts: [],
@@ -237,97 +232,9 @@ export default class Game extends React.Component {
     }
 
     render() {
-        const multipleChoice = (<div className="vote-panel">
-            <h1>What's the name of this city?</h1>
-            <p>Activation level for this fact: <br /><strong>{this.state.activationLevel}</strong></p>
-            <div className="filler-20"></div>
-            <div className="max-400">
-                {this.state.loading ?
-                    <div className="loading">
-                        <p>Fetching...</p>
-                    </div>
-                    : this.state.answerOptions.map((fact, index) => {
-                        return <AnswerButton key={index} name={fact[2]}
-                                             correct={fact[2] === this.state.currentFact[2]}
-                                             correctAction={this.logCorrectResponse}
-                                             incorrectAction={this.logIncorrectResponse}
-                                             isNew={(fact[2] === this.state.currentFact[2]) && this.state.isNewFact}
-                        >{fact[2]}</AnswerButton>
-                    })}
-                <div className="filler-20"></div>
-            </div>
-        </div>);
-
-        const trainingChoice = (<div className="vote-panel">
-                <h1>The name of this city is:</h1>
-                <p>{this.state.currentFact[2]}</p>
-                <div className="filler-20"></div>
-                <div className="max-400">
-                    <Button variant="green" size="lg" color="blue" block onClick={this.markFactAsTrained}>Ok, got
-                        it!</Button>
-                    <div className="filler-20"></div>
-                    <a onClick={this.endTraining}>Skip training</a>
-                </div>
-            </div>
-        )
-
-        const mapBox = (<>
-                <Map
-                    className="map-container"
-                    containerStyle={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0
-                    }}
-                    style={"mapbox://styles/niklasmartin/ckf3wu17m13kb19ldd3g5rhd3"}
-                    zoom={[8.5]}
-                    center={[this.state.lng, this.state.lat]}>
-                    <Layer type="symbol" id="activecities-green" layout={{'icon-image':'rectangle-green-2', 'icon-anchor':'center'}}>
-                        {this.state.activationLevels.length > 0 && this.state.activationLevels.filter(activation => (activation[3] !== "-inf" && activation[3] > 0)).map((activeCity) => {
-                            let splittedString = activeCity[1].split('-')
-                            return <Feature key={activeCity[1]} coordinates={[Number(splittedString[0]), Number(splittedString[1])]} />
-                        })}
-                    </Layer>
-                    <Layer type="symbol" id="activecities-red" layout={{'icon-image':'rectangle-red-2', 'icon-anchor':'center'}}>
-                        {this.state.activationLevels.length > 0 && this.state.activationLevels.filter(activation => (activation[3] !== "-inf" && activation[3] < -0.5)).map((activeCity) => {
-                            let splittedString = activeCity[1].split('-')
-                            return <Feature key={activeCity[1]} coordinates={[Number(splittedString[0]), Number(splittedString[1])]} />
-                        })}
-                    </Layer>
-                    <Layer type="symbol" id="activecities-yellow" layout={{'icon-image':'rectangle-yellow-2', 'icon-anchor':'center'}}>
-                        {this.state.activationLevels.length > 0 && this.state.activationLevels.filter(activation => (activation[3] !== "-inf" && activation[3] < 0 && activation[3] >= -0.5)).map((activeCity) => {
-                            let splittedString = activeCity[1].split('-')
-                            return <Feature key={activeCity[1]} coordinates={[Number(splittedString[0]), Number(splittedString[1])]} />
-                        })}
-                    </Layer>
-                    <Layer type="symbol" id="marker" layout={{'icon-image':'br-state-2', 'icon-anchor':'center'}}>
-                        <Feature coordinates={[this.state.lng, this.state.lat]} />
-                    </Layer>
-                </Map>
-            </>
-        )
-
-        const errorPanel = (<div className="error-panel">
-            <ul>
-                {this.state.errorMessages.map(errorMsg => {
-                    return <li>{errorMsg}</li>
-                })}
-            </ul>
-        </div> )
-
-        const feedbackMessages = (<div className="feedback-messages">
-            <ul>
-                {this.state.feedbackMessages.map((feedbackMsg, index) => {
-                    return <li key={index} className={"alert" + (feedbackMsg.correct ? " green" : " red")}><p>{feedbackMsg.message}</p></li>
-                })}
-            </ul>
-        </div> )
-
         const gameContent = (<div>
-                {feedbackMessages}
-                {mapBox}
+                <Feedback feedbackMessages={this.state.feedbackMessages} />
+                <MapContainer center={[this.state.lng, this.state.lat]} activationLevels={this.state.activationLevels}/>
                 <div className="timer-panel">
                     <CountdownTimer ref="countdown" count={600} size={6} hideDay hideHours
                                                              noPoints labelSize={20}/>
@@ -339,8 +246,8 @@ export default class Game extends React.Component {
                         onSelect={(k) => this.setState({tab: k})}
                     >
                         <Tab eventKey="play" title={<div><PlayArrow/> Play</div>}>
-                            {multipleChoice}
-                            {errorPanel}
+                            <GamePanel activationLevel={this.state.activationLevel} loading={this.state.loading} answerOptions={this.state.answerOptions} currentFact={this.state.currentFact} isNewFact={this.state.isNewFact} logCorrectResponse={this.logCorrectResponse} logIncorrectResponse={this.logIncorrectResponse}/>
+                            <ErrorPanel errorMessages={this.state.errorMessages} />
                         </Tab>
                         <Tab eventKey="inspect" title={<div><Search/> Inspect</div>}>
                             <LogPanel responses={this.state.responses} activationLevels={this.state.activationLevels}/>
@@ -351,39 +258,16 @@ export default class Game extends React.Component {
         )
 
         const trainingContent = (<div>
-            {mapBox}
+            <MapContainer center={[this.state.lng, this.state.lat]} activationLevels={this.state.activationLevels}/>
             <div className="right-panel">
-                {trainingChoice}
+                <TrainingPanel currentFact={this.state.currentFact} markFactAsTrained={this.markFactAsTrained} endTraining={this.endTraining}/>
             </div>
         </div>)
-
-        const trainingIntro = (
-            <div className="center-box">
-                <div className="max-400">
-                    <h3>Welcome to TopoCity</h3>
-                    <p>We will start with a training phase. <br /> Memorize each city name and location, before we start the
-                        testing session of 10 minutes.</p>
-                    <Button variant="green" size="lg" color="blue" block onClick={this.startTraining}>Start
-                        training!</Button>
-                </div>
-            </div>
-        )
-
-        const gameIntro = (
-            <div className="center-box">
-                <div className="max-400">
-                    <h3>Ready for the test?</h3>
-                    <p>We will now start the testing phase. <br /> The testing session will take 10 minutes. <br /> Are you ready?</p>
-                    <Button variant="green" size="lg" color="blue" block onClick={this.startGame}>Start
-                        testing!</Button>
-                </div>
-            </div>
-        )
 
         return (
             <div>
                 {this.state.initialized === false ? <div className="center-box"><p>Initializing...</p></div> : <div>
-                    {this.state.trainingStarted ? (this.state.trainingFinished ? (this.state.gameStarted ? gameContent : gameIntro) : trainingContent) : trainingIntro}
+                    {this.state.trainingStarted ? (this.state.trainingFinished ? (this.state.gameStarted ? gameContent : <GameIntro startGame={this.startGame} />) : trainingContent) : <TrainingIntro startTraining={this.startTraining} />}
                 </div>}
             </div>
         )

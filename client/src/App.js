@@ -8,7 +8,7 @@ import Profile from "./components/Profile";
 import Origin from "./components/Origin";
 import Async from "./components/AsynLoader";
 import Initialize from "./components/Initialize";
-import Game from "./components/Game";
+import Game from "./components/game/Game";
 import Name from "./components/Name";
 import Slider from "./components/Slider";
 import Province from "./components/Province";
