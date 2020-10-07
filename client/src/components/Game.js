@@ -41,6 +41,8 @@ export default class Game extends React.Component {
             firstStartTime: new Date(),
             activationLevels: [],
             answerCorrect: false,
+            errorMessages: [],
+            feedbackMessages: [],
             tab: 'play',
             answerOptions: []
         }
@@ -85,15 +87,19 @@ export default class Game extends React.Component {
             this.setState({
                 loading: false
             })
-        })
-        this.getNextFact()
+            this.getNextFact()
+        }).catch((error) => {
+            this.logError('Unable to log the response', error)
+        });
     }
 
     logCorrectResponse = () => {
+        this.showFeedback(true)
         this.logResponse(true)
     }
 
     logIncorrectResponse = () => {
+        this.showFeedback(false)
         this.logResponse(false)
     }
 
@@ -110,6 +116,8 @@ export default class Game extends React.Component {
                 startTime: new Date(),
                 answerOptions: getShuffledAnswerOptions(this.state.facts, data.next_fact)
             });
+        }).catch((error) => {
+            this.logError('Unable to fetch the next fact', error)
         });
         this.getResponses()
         this.getActivationLevel()
@@ -121,6 +129,8 @@ export default class Game extends React.Component {
             this.setState({
                 activationLevel: data.activation,
             });
+        }).catch((error) => {
+            this.logError('Unable to fetch the activation level', error)
         });
     }
 
@@ -130,6 +140,8 @@ export default class Game extends React.Component {
         })
         fetch('/start').then(res => res.json()).then(data => {
             console.log('Started model with start time: ', data)
+        }).catch((error) => {
+            this.logError('Unable to start the model', error)
         });
         setInterval(this.getActivationLevels, 500);
         setInterval(this.getActivationLevel, 500);
@@ -161,6 +173,8 @@ export default class Game extends React.Component {
                 facts: data.facts,
                 trainingFacts: data.facts
             });
+        }).catch((error) => {
+            this.logError('Unable to fetch facts', error)
         });
     }
 
@@ -169,6 +183,8 @@ export default class Game extends React.Component {
             this.setState({
                 responses: data.responses
             });
+        }).catch((error) => {
+            this.logError('Unable to fetch responses', error)
         });
     }
 
@@ -177,6 +193,8 @@ export default class Game extends React.Component {
             this.setState({
                 activationLevels: data
             });
+        }).catch((error) => {
+            this.logError('Unable to fetch activation levels', error)
         });
     }
 
@@ -196,11 +214,32 @@ export default class Game extends React.Component {
         }
     }
 
+    logError = (errorMsg, error) => {
+        console.log('Error: ', errorMsg)
+        console.log('Error: ', error)
+        let prevErrors = this.state.errorMessages
+        prevErrors.push(errorMsg)
+        this.setState({
+            errorMessages: prevErrors
+        })
+    }
+
+    showFeedback = (correct) => {
+        let message = {
+            correct: correct,
+            message: correct ? 'Good job!' : 'Too bad...'
+        }
+        let prevMessages = this.state.feedbackMessages
+        prevMessages.push(message)
+        this.setState({
+            feedbackMessages: prevMessages
+        })
+    }
+
     render() {
         const multipleChoice = (<div className="vote-panel">
             <h1>What's the name of this city?</h1>
-            <p>Last answer correct: {this.state.answerCorrect ? "yes" : "no"}</p>
-            <p>Activation level for this fact: {this.state.activationLevel}</p>
+            <p>Activation level for this fact: <br /><strong>{this.state.activationLevel}</strong></p>
             <div className="filler-20"></div>
             <div className="max-400">
                 {this.state.loading ?
@@ -270,8 +309,25 @@ export default class Game extends React.Component {
             </>
         )
 
+        const errorPanel = (<div className="error-panel">
+            <ul>
+                {this.state.errorMessages.map(errorMsg => {
+                    return <li>{errorMsg}</li>
+                })}
+            </ul>
+        </div> )
+
+        const feedbackMessages = (<div className="feedback-messages">
+            <ul>
+                {this.state.feedbackMessages.map((feedbackMsg, index) => {
+                    return <li key={index} className={"alert" + (feedbackMsg.correct ? " green" : " red")}><p>{feedbackMsg.message}</p></li>
+                })}
+            </ul>
+        </div> )
+
         const gameContent = (<div>
-                {mapBox}l
+                {feedbackMessages}
+                {mapBox}
                 <div className="timer-panel">
                     <CountdownTimer ref="countdown" count={600} size={6} hideDay hideHours
                                                              noPoints labelSize={20}/>
@@ -284,6 +340,7 @@ export default class Game extends React.Component {
                     >
                         <Tab eventKey="play" title={<div><PlayArrow/> Play</div>}>
                             {multipleChoice}
+                            {errorPanel}
                         </Tab>
                         <Tab eventKey="inspect" title={<div><Search/> Inspect</div>}>
                             <LogPanel responses={this.state.responses} activationLevels={this.state.activationLevels}/>

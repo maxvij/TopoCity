@@ -2,6 +2,7 @@ import React from 'react';
 
 import "./assets/sass/custom.scss";
 import "./assets/sass/timer.sass";
+import "./assets/sass/feedback.sass";
 import {Switch, Route, BrowserRouter} from "react-router-dom";
 import Profile from "./components/Profile";
 import Origin from "./components/Origin";
