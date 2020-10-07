@@ -16,10 +16,10 @@ export default class MapContainer extends React.Component {
         this.state = {
             radius: 10,
             initialOpacity: 1,
-            initialRadius: 10,
+            initialRadius: 15,
             framesPerSecond: 30,
             opacity: 1,
-            maxRadius: 30,
+            maxRadius: 35,
             timerEl: null
         };
     }
