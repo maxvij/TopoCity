@@ -234,7 +234,7 @@ export default class Game extends React.Component {
     render() {
         const gameContent = (<div>
                 <Feedback feedbackMessages={this.state.feedbackMessages} />
-                <MapContainer center={[this.state.lng, this.state.lat]} activationLevels={this.state.activationLevels}/>
+                <MapContainer center={[this.state.lng, this.state.lat]} activationLevels={this.state.activationLevels} facts={this.state.facts}/>
                 <div className="timer-panel">
                     <CountdownTimer ref="countdown" count={600} size={6} hideDay hideHours
                                                              noPoints labelSize={20}/>
@@ -258,7 +258,7 @@ export default class Game extends React.Component {
         )
 
         const trainingContent = (<div>
-            <MapContainer center={[this.state.lng, this.state.lat]} activationLevels={this.state.activationLevels}/>
+            <MapContainer center={[this.state.lng, this.state.lat]} activationLevels={this.state.activationLevels} facts={this.state.facts}/>
             <div className="right-panel">
                 <TrainingPanel currentFact={this.state.currentFact} markFactAsTrained={this.markFactAsTrained} endTraining={this.endTraining}/>
             </div>

@@ -17,7 +17,7 @@ export default class MapContainer extends React.Component {
             radius: 10,
             initialOpacity: 1,
             initialRadius: 10,
-            framesPerSecond: 60,
+            framesPerSecond: 30,
             opacity: 1,
             maxRadius: 30,
             timerEl: null
@@ -87,7 +87,7 @@ export default class MapContainer extends React.Component {
             center={this.props.center}
             onStyleLoad={this.onStyleLoad}
         >
-            <MapLayers activationLevels={this.props.activationLevels} />
+            <MapLayers activationLevels={this.props.activationLevels} facts={this.props.facts}/>
             <Source
                 id="point"
                 geoJsonSource={{
