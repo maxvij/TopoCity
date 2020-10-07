@@ -11,22 +11,33 @@ import requests
 from statistics import mean
 from scipy import stats
 
-pytrend = TrendReq()
-#pytrend = TrendReq(hl='en-GB', tz=360)
-initTime = time.time_ns() // 1000000
-starttime = initTime
-questionPresentedTime = initTime
-responseTime = initTime
+# Initialize flask aapp
 app = Flask(__name__)
 CORS(app)
+
+# Initialize PyTrend
+pytrend = TrendReq()
+#pytrend = TrendReq(hl='en-GB', tz=360)
+
+# Timing function
+time_in_ms = lambda: int(time.time() * 1000)
+
+# Initialize timing variables
+init_time = time_in_ms()
+starttime = 0
+question_presented_time = 0
+response_time = 0
+
+# Next facts
 next_fact = 0
 new = True
+
+# Initialize model
 model = SpacingModel()
 
 @app.route('/time')
 def get_current_time():
-    return {'time': time.time_ns() // 1000000}
-
+    return {'time': time_in_ms()}
 
 @app.route('/init')
 def init():
@@ -53,8 +64,14 @@ def init():
 
 @app.route('/start')
 def start():
+    global init_time
     global starttime
-    starttime = time.time_ns() // 1000000
+    global question_presented_time
+    global response_time
+    # Initialize timing variables
+    starttime = time_in_ms() - init_time
+    question_presented_time = starttime
+    response_time = starttime
     print('Started model with start time: ')
     print(starttime)
     return {'start_time': starttime}
@@ -65,13 +82,11 @@ def facts():
         init()
     return {'facts': model.facts}
 
-
 @app.route('/responses')
 def responses():
     if len(model.facts) == 0:
         init()
     return {'responses': model.responses}
-
 
 @app.route('/encounters')
 def encounters():
@@ -87,11 +102,11 @@ def get_next_fact():
     if len(model.facts) == 0:
         init()
     global starttime
-    global questionPresentedTime
+    global question_presented_time
     global next_fact
     global new
-    questionPresentedTime = time.time_ns() // 1000000
-    next_fact, new = model.get_next_fact(questionPresentedTime - starttime)
+    question_presented_time = time_in_ms() - starttime
+    next_fact, new = model.get_next_fact(question_presented_time)
     return {'next_fact': next_fact,
             'new': new}
 
@@ -99,7 +114,7 @@ def get_next_fact():
 def getactivationlevel():
     global starttime
     global next_fact
-    activationLevel = model.calculate_activation((time.time_ns() // 1000000) - starttime, next_fact)
+    activationLevel = model.calculate_activation(time_in_ms() - starttime, next_fact)
     if numpy.isinf(activationLevel):
         activationLevel = "-Inf"
     return {'activation':activationLevel}
@@ -114,38 +129,35 @@ def log_activations():
         fact.append(f.fact_id)
         fact.append(f.question)
         fact.append(f.answer)
-        fact.append(str(model.calculate_activation(time.time_ns() // 1000000 - starttime, f)))
+        fact.append(str(model.calculate_activation(time_in_ms() - starttime, f)))
         result.append(fact)
     return jsonify(result)
-
 
 @app.route('/logresponse', methods=['POST'])
 def log_response():
     global next_fact
     global new
-    global responseTime
-    global questionPresentedTime
-    global initTime
+    global response_time
+    global question_presented_time
     if len(model.facts) == 0:
         init()
     if request.method == 'POST':
         with open("starttimes.txt", "a") as text_file:
-            print("Start times: {}".format(questionPresentedTime - initTime), file=text_file)
+            print("Start times: {}".format(question_presented_time), file=text_file)
         print('Response logged')
         print(request.json)
         correctAnswer = False
         if request.json['correct'] == 'true':
             correctAnswer = True
-        responseTime = time.time_ns() // 1000000
-        resp = Response(fact=next_fact, start_time=questionPresentedTime - initTime,
-                        rt=responseTime - questionPresentedTime,
+        response_time = time_in_ms()
+        resp = Response(fact=next_fact, start_time=question_presented_time,
+                        rt=response_time - question_presented_time,
                         correct=correctAnswer)
         print(resp[1])
         print(resp[2])
         print(resp[3])
         model.register_response(resp)
     return {'responses': model.responses}
-
 
 @app.route('/citynames')
 def city_names():
@@ -246,7 +258,6 @@ def initializeUser():
         #df['popularity_score'] = 0
         #df.drop(df.columns.difference(['City','initial_alpha']), 1, inplace=True)    
         return df.to_json(orient="records")
-
 
 @app.route('/popularity', methods=['POST'])
 def popularity():
