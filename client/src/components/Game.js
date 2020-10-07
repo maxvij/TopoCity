@@ -224,8 +224,7 @@ export default class Game extends React.Component {
     render() {
         const multipleChoice = (<div className="vote-panel">
             <h1>What's the name of this city?</h1>
-            <p>Last answer correct: {this.state.answerCorrect ? "yes" : "no"}</p>
-            <p>Activation level for this fact: {this.state.activationLevel}</p>
+            <p>Activation level for this fact: <br /><strong>{this.state.activationLevel}</strong></p>
             <div className="filler-20"></div>
             <div className="max-400">
                 {this.state.loading ?
@@ -295,6 +294,14 @@ export default class Game extends React.Component {
             </>
         )
 
+        const errorPanel = (<div className="error-panel">
+            <ul>
+                {this.state.errorMessages.map(errorMsg => {
+                    return <li>{errorMsg}</li>
+                })}
+            </ul>
+        </div> )
+
         const gameContent = (<div>
                 {mapBox}l
                 <div className="timer-panel">
@@ -309,6 +316,7 @@ export default class Game extends React.Component {
                     >
                         <Tab eventKey="play" title={<div><PlayArrow/> Play</div>}>
                             {multipleChoice}
+                            {errorPanel}
                         </Tab>
                         <Tab eventKey="inspect" title={<div><Search/> Inspect</div>}>
                             <LogPanel responses={this.state.responses} activationLevels={this.state.activationLevels}/>

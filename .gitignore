@@ -1,3 +1,6 @@
+# Log files
+client/api/starttimes.txt
+
 # Node modules
 node_modules
 client/node_modules
