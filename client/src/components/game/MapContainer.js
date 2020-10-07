@@ -60,6 +60,10 @@ export default class MapContainer extends React.Component {
         })
     }
 
+    componentWillMount() {
+        clearTimeout(this.state.timerEl)
+    }
+
     componentWillUnmount() {
         clearTimeout(this.state.timerEl)
     }
