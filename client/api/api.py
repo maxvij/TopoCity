@@ -168,7 +168,17 @@ def city_names():
     city_names = cities['Woonplaatsen'].unique()
     json = pd.Series(city_names).to_json(orient='records')
     return json
-    
+
+@app.route('/provinces')
+def provinces():
+    if len(model.facts) == 0:
+        init()
+    # read city names
+    cities = pd.read_csv('cities_10k.csv')
+    provinces = cities['Provincie'].unique()
+    json = pd.Series(provinces).to_json(orient='records')
+    return json
+
 @app.route('/initialalphas', methods=['POST'])
 def getInitialAlphas():
      if request.method == 'POST':
