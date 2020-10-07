@@ -42,6 +42,7 @@ export default class Game extends React.Component {
             activationLevels: [],
             answerCorrect: false,
             errorMessages: [],
+            feedbackMessages: [],
             tab: 'play',
             answerOptions: []
         }
@@ -93,10 +94,12 @@ export default class Game extends React.Component {
     }
 
     logCorrectResponse = () => {
+        this.showFeedback(true)
         this.logResponse(true)
     }
 
     logIncorrectResponse = () => {
+        this.showFeedback(false)
         this.logResponse(false)
     }
 
@@ -221,6 +224,18 @@ export default class Game extends React.Component {
         })
     }
 
+    showFeedback = (correct) => {
+        let message = {
+            correct: correct,
+            message: correct ? 'Good job!' : 'Too bad...'
+        }
+        let prevMessages = this.state.feedbackMessages
+        prevMessages.push(message)
+        this.setState({
+            feedbackMessages: prevMessages
+        })
+    }
+
     render() {
         const multipleChoice = (<div className="vote-panel">
             <h1>What's the name of this city?</h1>
@@ -302,8 +317,17 @@ export default class Game extends React.Component {
             </ul>
         </div> )
 
+        const feedbackMessages = (<div className="feedback-messages">
+            <ul>
+                {this.state.feedbackMessages.map((feedbackMsg, index) => {
+                    return <li key={index} className={"alert" + (feedbackMsg.correct ? " green" : " red")}>{feedbackMsg.message}</li>
+                })}
+            </ul>
+        </div> )
+
         const gameContent = (<div>
-                {mapBox}l
+                {feedbackMessages}
+                {mapBox}
                 <div className="timer-panel">
                     <CountdownTimer ref="countdown" count={600} size={6} hideDay hideHours
                                                              noPoints labelSize={20}/>
