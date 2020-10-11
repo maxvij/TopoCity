@@ -3,17 +3,17 @@ import math
 import pandas as pd
 from collections import namedtuple
 
-Fact = namedtuple("Fact", "fact_id, question, answer")
+# Add initial aplha to a fact
+Fact = namedtuple("Fact", "fact_id, question, answer, inalpha")
 Response = namedtuple("Response", "fact, start_time, rt, correct")
 Encounter = namedtuple("Encounter", "activation, time, reaction_time, decay")
-
 
 class SpacingModel(object):
 
     # Model constants
     LOOKAHEAD_TIME = 15000
     FORGET_THRESHOLD = -0.8
-    DEFAULT_ALPHA = 0.3
+    #DEFAULT_ALPHA = 0.3
     C = 0.25
     F = 1.0
 
@@ -82,12 +82,15 @@ class SpacingModel(object):
         encounters = []
 
         responses_for_fact = [r for r in self.responses if r.fact.fact_id == fact.fact_id and r.start_time < time]
-        alpha = self.DEFAULT_ALPHA
+        #alpha = self.DEFAULT_ALPHA
+
+        # change the default alpha to the initial alpha
+        alpha = fact.inalpha
 
         # Calculate the activation by running through the sequence of previous responses
         for response in responses_for_fact:
             activation = self.calculate_activation_from_encounters(encounters, response.start_time)
-            encounters.append(Encounter(activation, response.start_time, self.normalise_reaction_time(response), self.DEFAULT_ALPHA))
+            encounters.append(Encounter(activation, response.start_time, self.normalise_reaction_time(response), fact.inalpha))
             alpha = self.estimate_alpha(encounters, activation, response, alpha)
 
             # Update decay estimates of previous encounters
@@ -105,12 +108,15 @@ class SpacingModel(object):
         encounters = []
 
         responses_for_fact = [r for r in self.responses if r.fact.fact_id == fact.fact_id and r.start_time < time]
-        alpha = self.DEFAULT_ALPHA
+        #alpha = self.DEFAULT_ALPHA
+
+        # change the default alpha to the initial alpha
+        alpha = fact.inalpha
 
         # Calculate the activation by running through the sequence of previous responses
         for response in responses_for_fact:
             activation = self.calculate_activation_from_encounters(encounters, response.start_time)
-            encounters.append(Encounter(activation, response.start_time, self.normalise_reaction_time(response), self.DEFAULT_ALPHA))
+            encounters.append(Encounter(activation, response.start_time, self.normalise_reaction_time(response), fact.inalpha))
             alpha = self.estimate_alpha(encounters, activation, response, alpha)
 
             # Update decay estimates of previous encounters
@@ -132,8 +138,10 @@ class SpacingModel(object):
         """
         Estimate the rate of forgetting parameter (alpha) for an item.
         """
+
+        # change the default alpha to the initial alpha
         if len(encounters) < 3:
-            return(self.DEFAULT_ALPHA)
+            return(fact.inalpha)
 
         a_fit = previous_alpha
         reading_time = self.get_reading_time(response.fact.question)
