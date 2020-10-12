@@ -10,10 +10,22 @@ from pytrends.request import TrendReq
 import requests
 from statistics import mean
 from scipy import stats
+from flaskext.mysql import MySQL
+from datetime import datetime
 
 # Initialize flask aapp
 app = Flask(__name__)
 CORS(app)
+
+# Database - DO NOT DELETE!!!
+app.config['SECRET_KEY'] = 'julius-jeroen'
+mysql = MySQL()
+# MySQL configurations - DO NOT DELETE!!!
+app.config['MYSQL_DATABASE_USER'] = 'sql7369271'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'eHNg15Fujm'
+app.config['MYSQL_DATABASE_DB'] = 'sql7369271'
+app.config['MYSQL_DATABASE_HOST'] = 'sql7.freesqldatabase.com'
+mysql.init_app(app)
 
 # Initialize PyTrend
 pytrend = TrendReq()
@@ -27,6 +39,8 @@ init_time = time_in_ms()
 starttime = 0
 question_presented_time = 0
 response_time = 0
+province = ''
+duration = 10
 
 # Next facts
 next_fact = 0
@@ -35,12 +49,52 @@ new = True
 # Initialize model
 model = SpacingModel()
 
+
 @app.route('/time')
 def get_current_time():
     return {'time': time_in_ms()}
 
+@app.route('/initsession', methods=['POST'])
+def initSession():
+    if request.method == 'POST':
+        global province
+        global duration
+        global user_id
+        province = request.args.get('province')
+        duration = request.args.get('duration')
+        user_id = request.args.get('user_id')
+        datetime_now = datetime.now()
+        datetime_now= datetime_now.strftime('%Y-%m-%d %H:%M:%S')
+        # insert into db
+        connection = mysql.connect()
+        query = """ INSERT INTO learning_session
+                    (user_id, duration, start, province)
+                    VALUES (%s,%s,%s,%s)"""
+        data = (user_id, duration, datetime_now, province)
+        try:
+            # update book title
+            cursor = connection.cursor()
+            cursor.execute(query, data)
+            # get new user id
+            learning_session_id = connection.insert_id()
+            # accept the changes
+            connection.commit()
+            data = {
+                'learning_session_id': learning_session_id,
+                'province': province,
+                'duration': duration
+                }
+            return jsonify(data), 200
+        except Exception as error:
+            return jsonify(str(error)), 400
+        finally:
+            cursor.close()
+            connection.close()
+
 @app.route('/init')
 def init():
+    global province
+    global duration
     print('Initializing model...')
     print('Length of model.facts: ', len(model.facts))
     print('Resetting log file starttimes.txt')
@@ -53,8 +107,11 @@ def init():
         cities = pd.read_csv('cities_10k.csv')
         # remove empty locations
         cities = cities.loc[(cities['Latitude'] != 'No info') & (cities['Longitude'] != 'No info')]
+        # filter instances in the province
+        cities = cities.loc[(cities['Provincie'] == province)]
         # create new dataframe
         cities.drop(['Provincie', 'Landsdeel', 'Gemeente', 'Coordinates'], axis=1, inplace=True)
+        
 
         for index, row in cities.iterrows():
             combinedLongLat = str(row['Longitude']) + "-" + str(row['Latitude'])
@@ -269,29 +326,31 @@ def initializeUser():
         #df.drop(df.columns.difference(['City','initial_alpha']), 1, inplace=True)    
         return df.to_json(orient="records")
 
-@app.route('/popularity', methods=['POST'])
-def popularity():
+@app.route('/createuser', methods=['POST'])
+def createUser():
     if request.method == 'POST':
-        cities = request.args.get('cities')
-        cleanup = [x.strip() for x in cities.split(',')]
-        # read city names
-        cities = pd.read_csv('City_info.csv')
-        # remove empty locations
-        cities = cities.loc[(cities['Latitude'] != 'No info') & (cities['Longtitude'] != 'No info')]
-        # create new dataframe
-        #cities_len = len(cities)
-        columns = ['City', 'Popularity']
-        for index, city in enumerate(cleanup):
-            columns.append(cleanup[index]) 
-        distances = []
-        sample = cities['Woonplaats'][:30]
-        for city in sample:
-            kw_list = [city]
-            popularity = pytrend.build_payload(kw_list, cat=0, timeframe='today 5-y', geo='', gprop='')
-            interest_df = pytrend.interest_over_time()
-            interest = mean(interest_df[city])
-            #return interest_df.to_json(orient="records")
-            distances.append(interest)
-        return pd.Series(distances).to_json(orient='values')
-
-        #return pd.Series(cities['Woonplaats']).to_json(orient='records')
+        # Connect to the database
+        connection = mysql.connect()
+        # prepare query and data
+        name = request.args.get('name')
+        homes = request.args.get('origin')
+        query = """ INSERT INTO users
+                    (name, homes)
+                    VALUES (%s,%s)"""
+        data = (name, homes)
+        try:
+            # update book title
+            cursor = connection.cursor()
+            cursor.execute(query, data)
+            # get new user id
+            user_id = connection.insert_id()
+            # accept the changes
+            connection.commit()
+            data = {'user_id': user_id}
+            return jsonify(data), 200
+            return 'User created sucessfully.'
+        except Exception as error:
+            return jsonify(str(error)), 400
+        finally:
+            cursor.close()
+            connection.close()
