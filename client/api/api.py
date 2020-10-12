@@ -116,6 +116,7 @@ def init():
         for index, row in cities.iterrows():
             combinedLongLat = str(row['Longitude']) + "-" + str(row['Latitude'])
             model.add_fact(Fact(index, combinedLongLat, row['Woonplaatsen']))
+            # add inalpha to add_fact module
     print(len(model.facts), ' facts added to the model')
     return {'facts': model.facts}
 

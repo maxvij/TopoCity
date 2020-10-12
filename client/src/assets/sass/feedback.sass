@@ -1,0 +1,56 @@
+.feedback-messages
+  width: 360px
+  right: 20px
+  bottom: 20px
+  height: 82px
+  position: fixed
+  z-index: 1
+  pointer-events: none
+  ul
+    width: 360px
+    height: 82px
+    position: relative
+    margin: 0
+    padding: 0
+    opacity: 1
+    li
+      display: none
+      position: relative
+      border-radius: 5px
+      p
+        position: relative
+        font-size: 28px
+        line-height: 30px
+        top: 30%
+        margin: 0
+        color: white
+        transform: translateY(-50%)
+        &.fact
+          font-size: 16px
+          position: relative
+          top: initial
+          margin: 0
+          transform: none
+    li:last-child
+      width: 360px
+      height: 82px
+      display: inline-block
+      text-align: center
+      animation: fadeOut 5s ease-in-out
+      animation-fill-mode: forwards
+      opacity: 1
+      &.green
+        background: #28a745
+      &.red
+        background: #dc3545
+
+
+@keyframes fadeOut
+  0%
+    opacity: 0
+  10%
+    opacity: 1
+  90%
+    opacity: 1
+  100%
+    opacity: 0
