@@ -41,6 +41,7 @@ question_presented_time = 0
 response_time = 0
 province = ''
 duration = 10
+user_id = 0
 
 # Next facts
 next_fact = 0
@@ -95,6 +96,7 @@ def initSession():
 def init():
     global province
     global duration
+    global user_id
     print('Initializing model...')
     print('Length of model.facts: ', len(model.facts))
     print('Resetting log file starttimes.txt')
@@ -111,11 +113,14 @@ def init():
         cities = cities.loc[(cities['Provincie'] == province)]
         # create new dataframe
         cities.drop(['Provincie', 'Landsdeel', 'Gemeente', 'Coordinates'], axis=1, inplace=True)
-        
-
+        # get initial alphas of user
+        connection = mysql.connect()
+        db = pd.read_sql("SELECT * FROM initial_alphas WHERE user_id = (user_id)", connection)
+        connection.close()
         for index, row in cities.iterrows():
+            initial_alpha = db.loc[db['city'] == row['Woonplaatsen'], 'initial_alpha']
             combinedLongLat = str(row['Longitude']) + "-" + str(row['Latitude'])
-            model.add_fact(Fact(index, combinedLongLat, row['Woonplaatsen']))
+            model.add_fact(Fact(index, combinedLongLat, row['Woonplaatsen'], initial_alpha))
             # add inalpha to add_fact module
     print(len(model.facts), ' facts added to the model')
     return {'facts': model.facts}
@@ -280,6 +285,8 @@ def getInitialAlphas():
 @app.route('/initializeuser', methods=['POST'])
 def initializeUser():
     if request.method == 'POST':
+        # globals
+        global user_id
         # put home cities into an array
         homes = request.args.get('cities')
         homes = [x.strip() for x in homes.split(',')]
@@ -325,7 +332,34 @@ def initializeUser():
         df = pd.DataFrame(distances, columns = columns)
         #df['popularity_score'] = 0
         #df.drop(df.columns.difference(['City','initial_alpha']), 1, inplace=True)    
-        return df.to_json(orient="records")
+        # Connect to the database
+        connection = mysql.connect()
+        # prepare query and data
+        try:
+            # update book title
+            cursor = connection.cursor()
+            mean_alpha = df["initial_alpha"].mean()
+            count = 1
+            for index, row in df.iterrows():
+                query = """INSERT INTO initial_alphas
+                        (user_id, city, percentile_population, min_distance, initial_alpha)
+                        VALUES (%s,%s,%s,%s,%s)"""
+                data = (user_id, row['City'], row['percentile_popularity'], row['min_distance'], row['initial_alpha'])
+                cursor.execute(query, data)
+                count += 1
+            # accept the changes
+            connection.commit()
+            data = {
+                'initial_alphas_added': count,
+                'mean_alpha': mean_alpha
+            }
+            return jsonify(data), 200
+        except Exception as error:
+            return jsonify(str(error)), 400
+        finally:
+            cursor.close()
+            connection.close()
+        #return df.to_json(orient="records")
 
 @app.route('/createuser', methods=['POST'])
 def createUser():
