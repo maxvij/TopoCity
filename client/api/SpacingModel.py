@@ -91,7 +91,7 @@ class SpacingModel(object):
         for response in responses_for_fact:
             activation = self.calculate_activation_from_encounters(encounters, response.start_time)
             encounters.append(Encounter(activation, response.start_time, self.normalise_reaction_time(response), fact.inalpha))
-            alpha = self.estimate_alpha(encounters, activation, response, alpha)
+            alpha = self.estimate_alpha(encounters, activation, response, alpha, fact)
 
             # Update decay estimates of previous encounters
             encounters = [encounter._replace(decay = self.calculate_decay(encounter.activation, alpha)) for encounter in encounters]
@@ -117,7 +117,7 @@ class SpacingModel(object):
         for response in responses_for_fact:
             activation = self.calculate_activation_from_encounters(encounters, response.start_time)
             encounters.append(Encounter(activation, response.start_time, self.normalise_reaction_time(response), fact.inalpha))
-            alpha = self.estimate_alpha(encounters, activation, response, alpha)
+            alpha = self.estimate_alpha(encounters, activation, response, alpha, fact)
 
             # Update decay estimates of previous encounters
             encounters = [encounter._replace(decay = self.calculate_decay(encounter.activation, alpha)) for encounter in encounters]
@@ -133,7 +133,7 @@ class SpacingModel(object):
         return self.C * math.exp(activation) + alpha
 
 
-    def estimate_alpha(self, encounters, activation, response, previous_alpha):
+    def estimate_alpha(self, encounters, activation, response, previous_alpha, fact):
         # type: ([Encounter], float, Response, float) -> float
         """
         Estimate the rate of forgetting parameter (alpha) for an item.
