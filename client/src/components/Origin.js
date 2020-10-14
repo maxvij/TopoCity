@@ -1,11 +1,10 @@
 import fetch from 'isomorphic-fetch';
-import React, {Fragment, useState} from 'react';
+import React, {useState} from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import {AsyncTypeahead} from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import {useHistory} from "react-router";
-import {withRouter} from 'react-router-dom'
 
 
 const Origin = (dispatch, ownProps) => {
@@ -23,16 +22,12 @@ const Origin = (dispatch, ownProps) => {
     };
 
     function handleContinue(props) {
-
-        // submit data
-        // cities=Groningen,Amsterdam
         fetch("/createuser?name=" + name + "&origin=" + multiSelections, {
             method: 'POST'
         })
             .then((resp) => resp.json())
             .then((result) => {
                 setStatus(result.user_id);
-                console.log(result.user_id);
                 localStorage.setItem('topo_user_id', result.user_id);
                 history.push("/province")
             });
@@ -45,7 +40,6 @@ const Origin = (dispatch, ownProps) => {
             .then((resp) => resp.json())
             .then((result) => {
                 setOptions(result);
-                console.log(result);
                 setIsLoading(false);
             });
     }
