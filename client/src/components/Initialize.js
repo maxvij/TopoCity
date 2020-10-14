@@ -12,7 +12,9 @@ function Initialize() {
     // this useEffect will run once
     // similar to componentDidMount()
     useEffect(() => {
-        const uri = '/initializeuser?cities=Groningen,Amsterdam';
+        let origin = localStorage.getItem('topo_origin')
+        const uri = '/initializeuser?cities=' + origin;
+        console.log(origin);
         fetch(uri, {
             method: 'post'
           })

@@ -264,6 +264,13 @@ def provinces():
     json = pd.Series(provinces).to_json(orient='records')
     return json
 
+@app.route('/users')
+def users():
+    connection = mysql.connect()
+    profiles = pd.read_sql("SELECT * FROM users", connection)
+    connection.close()
+    return profiles.to_json(orient='records')
+
 @app.route('/initialalphas', methods=['POST'])
 def getInitialAlphas():
      if request.method == 'POST':
