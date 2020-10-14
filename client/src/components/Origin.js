@@ -22,7 +22,7 @@ const Origin = (dispatch, ownProps) => {
     };
 
     function handleContinue(props) {
-        fetch("/createuser?name=" + name + "&origin=" + multiSelections, {
+        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + "/createuser?name=" + name + "&origin=" + multiSelections, {
             method: 'POST'
         })
             .then((resp) => resp.json())
