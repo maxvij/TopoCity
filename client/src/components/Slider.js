@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import {SingleSlider} from 'react-slider-kit';
 import Button from 'react-bootstrap/Button';
+import {withRouter} from 'react-router-dom';
 
-export default class SimpleExample extends Component {
+class Slider extends Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
@@ -14,7 +15,24 @@ export default class SimpleExample extends Component {
     this.setState({
       value: value
     })
-    localStorage.setItem('duration', value);
+    localStorage.setItem('topo_duration', value);
+    
+  }
+  handleContinue = () => {
+    let duration = localStorage.getItem('topo_duration')
+    let province = localStorage.getItem('topo_province')
+    let user_id = localStorage.getItem('topo_user_id')
+    fetch("/initsession?duration=" + duration + "&province=" + province + "&user_id=" + user_id, {
+      method: 'POST'
+    })
+    .then((resp) => resp.json())
+      .then((result) => {
+        // console.log(result.province);
+        // console.log(result.duration);
+        // console.log(result.learning_session_id);
+        localStorage.setItem('topo_session_id', result)
+        this.props.history.push("/initialize")
+      });
   }
 
   render() {
@@ -36,7 +54,7 @@ export default class SimpleExample extends Component {
                 onChangeComplete={this.handleOnChange}
             />     
             <div className="filler-40"></div>     
-            <Button href="../initialize" variant="yellow" size="lg" color="blue" block>
+            <Button onClick={this.handleContinue} variant="yellow" size="lg" color="blue" block>
             Let's go!
             </Button>
             
@@ -46,3 +64,5 @@ export default class SimpleExample extends Component {
     )
   }
 }
+
+export default withRouter(Slider);

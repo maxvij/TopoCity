@@ -14,7 +14,7 @@ class Province extends React.Component {
     
     handleSelect(province) {
         this.setState({ province: province })
-        localStorage.setItem('province', province);
+        localStorage.setItem('topo_province', province);
         console.log(province)
         this.props.history.push('/slider');
     }

@@ -8,7 +8,7 @@ const useStateWithLocalStorage = (localStorageKey) => {
   );
  
   React.useEffect((localStorageKey) => {
-    localStorage.setItem(localStorageKey, value);
+    localStorage.setItem('topo_name', value);
   }, [value]);
  
   return [value, setValue];
