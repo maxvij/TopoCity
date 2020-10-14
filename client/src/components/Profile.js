@@ -15,47 +15,48 @@ class Profile extends React.Component {
                 origin: ''
             }
         }
-      }
-    
+    }
+
     handleSelect(id, name, origin) {
-        this.setState({ 
+        this.setState({
             profile: {
                 name: name,
                 id: id,
                 origin: origin
-            } })
+            }
+        })
         localStorage.setItem('topo_name', name);
         localStorage.setItem('topo_user_id', id);
         localStorage.setItem('topo_origin', origin);
         // console.log(profile)
         // this.props.history.push('/province');
     }
+
     componentDidMount() {
         fetch('/users')
-        .then(res => res.json())
-        .then((res) => {
-            this.setState({ profiles: res })
-            console.log(res)
-        })
-        .catch(console.log)
+            .then(res => res.json())
+            .then((res) => {
+                this.setState({profiles: res})
+                console.log(res)
+            })
+            .catch(console.log)
     }
+
     render() {
         return (
             <div className="center-box">
                 <h1>Hi, who are you?</h1>
                 <div className="filler-40"></div>
                 <div className="max-400">
-                <DropdownButton id="dropdown-basic-button" size='lg' title="Select an existing profile">
-                {this.state.profiles.map((profile, index) => (
-                    <Dropdown.Item onClick={() => this.handleSelect(id, name, origin)}>{name}</Dropdown.Item>
-                    ))}   
-                
-                </DropdownButton>
-                    
+                    <DropdownButton id="dropdown-basic-button" size='lg' title="Select an existing profile">
+                        {this.state.profiles.map((profile, index) => (
+                            <Dropdown.Item
+                                onClick={() => this.handleSelect(profile.id, profile.name, profile.origin)}>{profile.name}</Dropdown.Item>
+                        ))}
+                    </DropdownButton>
                     <Button href="/name" variant="yellow" size="lg" color="blue" block>
                         New Learner
                     </Button>
-
                 </div>
             </div>
 
