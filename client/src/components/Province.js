@@ -19,7 +19,7 @@ class Province extends React.Component {
         this.props.history.push('/slider');
     }
     componentDidMount() {
-        fetch('/provinces')
+        fetch(process.env.HOST + '/provinces')
         .then(res => res.json())
         .then((data) => {
             this.setState({ provinces: data })
