@@ -1,5 +1,4 @@
 import React from 'react';
-
 import "./assets/sass/custom.scss";
 import "./assets/sass/timer.sass";
 import "./assets/sass/feedback.sass";
@@ -13,6 +12,7 @@ import Game from "./components/game/Game";
 import Name from "./components/Name";
 import Slider from "./components/Slider";
 import Province from "./components/Province";
+require('dotenv').config()
 
 function App() {
     return (

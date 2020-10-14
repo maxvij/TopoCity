@@ -34,7 +34,7 @@ class Profile extends React.Component {
     }
 
     componentDidMount() {
-        fetch(process.env.HOST + '/users')
+        fetch((typeof(process.env.API_HOST) !== 'undefined' ? process.env.API_HOST : '') + '/users')
             .then(res => res.json())
             .then((res) => {
                 this.setState({profiles: res})

@@ -36,7 +36,7 @@ const Origin = (dispatch, ownProps) => {
     function handleSearch(query) {
         setIsLoading(true);
 
-        fetch(process.env.HOST + '/citynames')
+        fetch((typeof(process.env.API_HOST) !== 'undefined' ? process.env.API_HOST : '') + '/citynames')
             .then((resp) => resp.json())
             .then((result) => {
                 setOptions(result);
