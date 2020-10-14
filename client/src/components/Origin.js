@@ -36,7 +36,7 @@ const Origin = (dispatch, ownProps) => {
     function handleSearch(query) {
         setIsLoading(true);
 
-        fetch('/citynames')
+        fetch(process.env.HOST + '/citynames')
             .then((resp) => resp.json())
             .then((result) => {
                 setOptions(result);
