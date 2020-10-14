@@ -1,5 +1,5 @@
 import time
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 from SpacingModel import SpacingModel, Fact, Response
 from collections import namedtuple
@@ -12,6 +12,7 @@ from statistics import mean
 from scipy import stats
 from flaskext.mysql import MySQL
 from datetime import datetime
+import sys
 
 # Initialize flask aapp
 app = Flask(__name__)
@@ -21,10 +22,10 @@ CORS(app)
 app.config['SECRET_KEY'] = 'julius-jeroen'
 mysql = MySQL()
 # MySQL configurations - DO NOT DELETE!!!
-app.config['MYSQL_DATABASE_USER'] = 'sql7369271'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'eHNg15Fujm'
-app.config['MYSQL_DATABASE_DB'] = 'sql7369271'
-app.config['MYSQL_DATABASE_HOST'] = 'sql7.freesqldatabase.com'
+app.config['MYSQL_DATABASE_USER'] = 'PX8ZmX8fDh'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'TdOTitmjAw'
+app.config['MYSQL_DATABASE_DB'] = 'PX8ZmX8fDh'
+app.config['MYSQL_DATABASE_HOST'] = 'remotemysql.com'
 mysql.init_app(app)
 
 # Initialize PyTrend
@@ -50,6 +51,11 @@ new = True
 # Initialize model
 model = SpacingModel()
 
+def set_cookie(name,value):
+    res = make_response("Setting a cookie")
+    res.set_cookie(name, value)
+    return res
+
 
 @app.route('/time')
 def get_current_time():
@@ -61,9 +67,9 @@ def initSession():
         global province
         global duration
         global user_id
-        province = request.args.get('province')
-        duration = request.args.get('duration')
-        user_id = request.args.get('user_id')
+        province = request.args.get('province')       
+        duration = request.args.get('duration')       
+        user_id = request.args.get('user_id')        
         datetime_now = datetime.now()
         datetime_now= datetime_now.strftime('%Y-%m-%d %H:%M:%S')
         # insert into db
@@ -85,7 +91,12 @@ def initSession():
                 'province': province,
                 'duration': duration
                 }
-            return jsonify(data), 200
+            #return jsonify(data), 200, res
+            res = make_response(str(learning_session_id))
+            res.set_cookie('topo_province', province)
+            res.set_cookie('topo_duration', duration)
+            res.set_cookie('topo_user_id', user_id)
+            return res
         except Exception as error:
             return jsonify(str(error)), 400
         finally:
@@ -94,15 +105,18 @@ def initSession():
 
 @app.route('/init')
 def init():
-    global province
-    global duration
-    global user_id
+    province = request.cookies.get('topo_province')
+    #return 'Province: ' + str(province)
+    duration = request.cookies.get('topo_duration')
+    user_id = request.cookies.get('topo_user_id')
     print('Initializing model...')
     print('Length of model.facts: ', len(model.facts))
     print('Resetting log file starttimes.txt')
     with open("starttimes.txt", "w") as text_file:
         text_file.flush()
     if len(model.facts) == 0:
+        
+
         # Woonplaatsen,Provincie,Landsdeel,Gemeente,Lattitude,Longitude,Population,Coordinates
         # 12,Assen,Drenthe,Noord-Nederland          ,Assen                              ,52.983333333333334,6.55,68798,"52° 59′ NB, 6° 33′ OL"
         # read city names
@@ -110,19 +124,27 @@ def init():
         # remove empty locations
         cities = cities.loc[(cities['Latitude'] != 'No info') & (cities['Longitude'] != 'No info')]
         # filter instances in the province
+        #return 'Province: ' + province
         cities = cities.loc[(cities['Provincie'] == province)]
         # create new dataframe
         cities.drop(['Provincie', 'Landsdeel', 'Gemeente', 'Coordinates'], axis=1, inplace=True)
         # get initial alphas of user
         connection = mysql.connect()
-        db = pd.read_sql("SELECT * FROM initial_alphas WHERE user_id = (user_id)", connection)
-        connection.close()
+        #db = pd.read_sql("SELECT * FROM initial_alphas WHERE user_id = (user_id)", connection)    
         for index, row in cities.iterrows():
-            initial_alpha = db.loc[db['city'] == row['Woonplaatsen'], 'initial_alpha']
+            city_name = row['Woonplaatsen']
+            #return str(city_name)
+            #return 'Db City: ' + str(db['city']) + ' Woonplaats: '+ str(row['Woonplaatsen'])
+            #return row.to_json(orient='records')
+            #initial_alpha = db.loc[db['city'] == row['Woonplaatsen']]
+            inalpha = pd.read_sql("SELECT * FROM initial_alphas WHERE user_id = %s AND city = %s", connection, params=[user_id, city_name])
+            
+            #return 'Initial Alpha: ' + str(inalpha['initial_alpha'][0])
             combinedLongLat = str(row['Longitude']) + "-" + str(row['Latitude'])
-            model.add_fact(Fact(index, combinedLongLat, row['Woonplaatsen'], initial_alpha))
+            model.add_fact(Fact(index, combinedLongLat, row['Woonplaatsen'],inalpha['initial_alpha'][0]))
             # add inalpha to add_fact module
-    print(len(model.facts), ' facts added to the model')
+        connection.close()
+    #print(len(model.facts), ' facts added to the model')
     return {'facts': model.facts}
 
 @app.route('/start')

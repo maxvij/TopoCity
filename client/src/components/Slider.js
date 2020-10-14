@@ -16,6 +16,9 @@ class Slider extends Component {
       value: value
     })
     localStorage.setItem('topo_duration', value);
+    
+  }
+  handleContinue = () => {
     let duration = localStorage.getItem('topo_duration')
     let province = localStorage.getItem('topo_province')
     let user_id = localStorage.getItem('topo_user_id')
@@ -24,10 +27,10 @@ class Slider extends Component {
     })
     .then((resp) => resp.json())
       .then((result) => {
-        console.log(result.province);
-        console.log(result.duration);
-        console.log(result.learning_session_id);
-        localStorage.setItem('topo_session_id', result.learning_session_id)
+        // console.log(result.province);
+        // console.log(result.duration);
+        // console.log(result.learning_session_id);
+        localStorage.setItem('topo_session_id', result)
         this.props.history.push("/initialize")
       });
   }
@@ -51,7 +54,7 @@ class Slider extends Component {
                 onChangeComplete={this.handleOnChange}
             />     
             <div className="filler-40"></div>     
-            <Button href="../initialize" variant="yellow" size="lg" color="blue" block>
+            <Button onClick={this.handleContinue} variant="yellow" size="lg" color="blue" block>
             Let's go!
             </Button>
             
