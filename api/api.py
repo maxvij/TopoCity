@@ -218,6 +218,19 @@ def log_activations():
         result.append(fact)
     return jsonify(result)
 
+@app.route('/insertresponse', methods=['POST'])
+def insertResponse(user_id = 1, city = 'Groningen', start_time = 10, reaction_time = 1000, correct = 1):
+    connection = mysql.connect()
+    cursor = connection.cursor()
+    query = """INSERT INTO responses
+                        (user_id, city, start_time, reaction_time, correct)
+                        VALUES (%s,%s,%s,%s,%s)"""
+    data = (user_id, city, start_time, reaction_time, correct)
+    cursor.execute(query, data) 
+    connection.commit() 
+    return str(connection.insert_id())
+    
+
 @app.route('/logresponse', methods=['POST'])
 def log_response():
     global next_fact
@@ -242,6 +255,14 @@ def log_response():
         print(resp[2])
         print(resp[3])
         model.register_response(resp)
+        user_id = request.cookies.get('topo_user_id')
+        city = resp[0][2]
+        start_time = resp[1]
+        reaction_time = resp[2]
+        correct = 0
+        if resp[3] == True:
+            correct == 1
+        insertResponse(user_id, city, start_time, reaction_time, correct)
     return {'responses': model.responses}
 
 @app.route('/citynames')
