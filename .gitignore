@@ -128,3 +128,6 @@ client/.netlify
 
 # Venv
 venv
+
+# DS Store
+.DS_Store
