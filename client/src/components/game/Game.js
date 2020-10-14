@@ -73,7 +73,7 @@ export default class Game extends React.Component {
             'startTime': startTime,
             'responseTime': responseTime,
         }
-        fetch((typeof(process.env.API_HOST) !== 'undefined' ? process.env.API_HOST : '') + '/logresponse', {
+        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/logresponse', {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -102,7 +102,7 @@ export default class Game extends React.Component {
 
     getNextFact = () => {
         this.setState({loading: true})
-        fetch((typeof(process.env.API_HOST) !== 'undefined' ? process.env.API_HOST : '') + '/getnextfact').then(res => res.json()).then(data => {
+        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/getnextfact').then(res => res.json()).then(data => {
             const splittedString = data.next_fact[1].split("-");
             this.setState({
                 currentFact: data.next_fact,
@@ -122,7 +122,7 @@ export default class Game extends React.Component {
     }
 
     getActivationLevel = () => {
-        fetch((typeof(process.env.API_HOST) !== 'undefined' ? process.env.API_HOST : '') + '/getactivationlevel').then(res => res.json()).then(data => {
+        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/getactivationlevel').then(res => res.json()).then(data => {
             this.setState({
                 activationLevel: data.activation,
             });
@@ -135,7 +135,7 @@ export default class Game extends React.Component {
         this.setState({
             gameStarted: true
         })
-        fetch((typeof(process.env.API_HOST) !== 'undefined' ? process.env.API_HOST : '') + '/start').then(res => res.json()).then(data => {
+        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/start').then(res => res.json()).then(data => {
             console.log('Started model with start time: ', data)
         }).catch((error) => {
             this.logError('Unable to start the model', error)
@@ -170,7 +170,7 @@ export default class Game extends React.Component {
     }
 
     getFacts = () => {
-        fetch((typeof(process.env.API_HOST) !== 'undefined' ? process.env.API_HOST : '') + '/facts').then(res => res.json()).then(data => {
+        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/facts').then(res => res.json()).then(data => {
             this.setState({
                 facts: data.facts,
                 trainingFacts: data.facts
@@ -181,7 +181,7 @@ export default class Game extends React.Component {
     }
 
     getResponses = () => {
-        fetch((typeof(process.env.API_HOST) !== 'undefined' ? process.env.API_HOST : '') + '/responses').then(res => res.json()).then(data => {
+        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/responses').then(res => res.json()).then(data => {
             this.setState({
                 responses: data.responses
             });
@@ -191,7 +191,7 @@ export default class Game extends React.Component {
     }
 
     getActivationLevels = () => {
-        fetch((typeof(process.env.API_HOST) !== 'undefined' ? process.env.API_HOST : '') + '/activationLog').then(res => res.json()).then(data => {
+        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/activationLog').then(res => res.json()).then(data => {
             this.setState({
                 activationLevels: data
             });
