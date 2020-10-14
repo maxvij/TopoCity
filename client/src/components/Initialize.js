@@ -38,7 +38,7 @@ function Initialize() {
     } else if (!isLoaded) {
       return (
         <div className="center-box">
-            <div class="max-400">
+            <div className="max-400">
               <h2>Calculating distances to other cities and initializing individual forgetting rates for each city...</h2>
             </div>
             <div className="scene">

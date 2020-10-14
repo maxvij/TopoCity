@@ -37,13 +37,12 @@ class Province extends React.Component {
                     <Container>
                         {/* Stack the columns on mobile by making one full-width and the other half-width */}
                         <Row>             
-                        {this.state.provinces.map((province) => (
-                        <Col xs={6} md={6}>
+                        {this.state.provinces.map((province, index) => (
+                        <Col xs={6} md={6} key={index}>
                             <Button variant="blue" onClick={() => this.handleSelect(province)} size="lg" color="blue" block>
                                 {province}
                             </Button>
                             <div className="filler-20"></div> 
-
                         </Col>
                         ))}
                         </Row>
