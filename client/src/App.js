@@ -12,7 +12,7 @@ import Game from "./components/game/Game";
 import Name from "./components/Name";
 import Slider from "./components/Slider";
 import Province from "./components/Province";
-require('dotenv').config()
+require('dotenv').config({path: __dirname + '/.env'})
 
 function App() {
     return (
