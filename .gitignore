@@ -1,18 +1,18 @@
 # Log files
-client/api/starttimes.txt
+api/starttimes.txt
 
 # Node modules
 node_modules
 client/node_modules
 
 # Jupyter notebook
-client/api/.ipynb_checkpoints
+api/.ipynb_checkpoints
 
 # Virtual Environment
-client/api/venv
+api/venv
 
 # PyCache
-client/api/__pycache__/
+api/__pycache__/
 
 # JetBrains
 .idea
