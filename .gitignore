@@ -125,3 +125,6 @@ dist
 # Netlify files
 client/.netlify
 !*client/build/_redirects
+
+# Venv
+venv
