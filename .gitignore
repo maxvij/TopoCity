@@ -121,3 +121,7 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Netlify files
+client/.netlify
+!*client/build/_redirects
