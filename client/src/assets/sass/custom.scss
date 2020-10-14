@@ -56,6 +56,7 @@ $theme-colors: (
   height: 7px;
 }
 
+
 /* src/App.css */
 .map-container {
   position: absolute;
@@ -171,4 +172,12 @@ $theme-colors: (
   color: #118AB2;
   background-color: #fff;
   border-color: #dee2e6 #dee2e6 #fff;
+}
+.btn-lg {
+  display:block;
+  width:100%;
+}
+.dropdown-item {
+  width:400px;
+  display: block;
 }
