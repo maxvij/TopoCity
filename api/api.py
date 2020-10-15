@@ -43,7 +43,7 @@ response_time = 0
 province = ''
 duration = 10
 user_id = 0
-
+session_id = 0
 # Next facts
 next_fact = 0
 new = True
@@ -61,6 +61,7 @@ def initSession():
         global province
         global duration
         global user_id
+        global session_id
         province = request.args.get('province')       
         duration = request.args.get('duration')       
         user_id = request.args.get('user_id')        
@@ -78,6 +79,7 @@ def initSession():
             cursor.execute(query, data)
             # get new user id
             learning_session_id = connection.insert_id()
+            session_id = learning_session_id
             # accept the changes
             connection.commit()
             data = {
@@ -214,6 +216,30 @@ def log_activations():
         fact.append(str(model.calculate_activation(time_in_ms() - starttime, f)))
         result.append(fact)
     return jsonify(result)
+
+@app.route('/insertactivations')
+def insertActivations():
+    global user_id
+    global session_id
+    try:    
+        connection = mysql.connect()
+        cursor = connection.cursor()
+        for f in model.facts:
+            city = str(f.answer)
+            activation = str(model.calculate_activation(time_in_ms() - starttime, f))
+            alpha = str(model.get_rate_of_forgetting(time_in_ms() - starttime, f))
+            query = """INSERT INTO outcomes
+                            (user_id, session_id, city, alpha, activation)
+                            VALUES (%s,%s,%s,%s,%s)"""
+            data = (user_id, session_id, city, alpha, activation)
+            cursor.execute(query, data) 
+        connection.commit()    
+        return jsonify('Responses have been logged'), 200
+    except Exception as error:
+            return jsonify(str(error)), 400
+    finally:
+        cursor.close()
+        connection.close()
 
 @app.route('/insertresponse', methods=['POST'])
 def insertResponse(user_id, city, start_time, reaction_time, correct):
