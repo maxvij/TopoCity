@@ -51,12 +51,6 @@ new = True
 # Initialize model
 model = SpacingModel()
 
-def set_cookie(name,value):
-    res = make_response("Setting a cookie")
-    res.set_cookie(name, value)
-    return res
-
-
 @app.route('/time')
 def get_current_time():
     return {'time': time_in_ms()}
@@ -91,12 +85,7 @@ def initSession():
                 'province': province,
                 'duration': duration
                 }
-            #return jsonify(data), 200, res
-            res = make_response(str(learning_session_id))
-            res.set_cookie('topo_province', province)
-            res.set_cookie('topo_duration', duration)
-            res.set_cookie('topo_user_id', user_id)
-            return res
+            return jsonify(data), 200
         except Exception as error:
             return jsonify(str(error)), 400
         finally:
@@ -105,18 +94,13 @@ def initSession():
 
 @app.route('/init')
 def init():
-    province = request.cookies.get('topo_province')
-    #return 'Province: ' + str(province)
-    duration = request.cookies.get('topo_duration')
-    user_id = request.cookies.get('topo_user_id')
+    global province, duration, user_id
     print('Initializing model...')
     print('Length of model.facts: ', len(model.facts))
     print('Resetting log file starttimes.txt')
     with open("starttimes.txt", "w") as text_file:
         text_file.flush()
     if len(model.facts) == 0:
-        
-
         # Woonplaatsen,Provincie,Landsdeel,Gemeente,Lattitude,Longitude,Population,Coordinates
         # 12,Assen,Drenthe,Noord-Nederland          ,Assen                              ,52.983333333333334,6.55,68798,"52° 59′ NB, 6° 33′ OL"
         # read city names
@@ -137,15 +121,24 @@ def init():
             #return 'Db City: ' + str(db['city']) + ' Woonplaats: '+ str(row['Woonplaatsen'])
             #return row.to_json(orient='records')
             #initial_alpha = db.loc[db['city'] == row['Woonplaatsen']]
-            inalpha = pd.read_sql("SELECT * FROM initial_alphas WHERE user_id = %s AND city = %s", connection, params=[user_id, city_name])
-            
+            condition = 0
+            print(user_id)
+            if int(user_id) % 2 == 0:
+                condition = 1
+                initial_alpha = 0.3
+            else:
+                condition = 0
+                inalpha = pd.read_sql("SELECT * FROM initial_alphas WHERE user_id = %s AND city = %s", connection, params=[user_id, city_name])          
+                initial_alpha = inalpha['initial_alpha'][0]
             #return 'Initial Alpha: ' + str(inalpha['initial_alpha'][0])
             combinedLongLat = str(row['Longitude']) + "-" + str(row['Latitude'])
-            model.add_fact(Fact(index, combinedLongLat, row['Woonplaatsen'],inalpha['initial_alpha'][0]))
+            model.add_fact(Fact(index, combinedLongLat, row['Woonplaatsen'],initial_alpha))
             # add inalpha to add_fact module
         connection.close()
     #print(len(model.facts), ' facts added to the model')
-    return {'facts': model.facts}
+    return {
+        'facts': model.facts
+        }
 
 @app.route('/start')
 def start():
@@ -163,9 +156,13 @@ def start():
 
 @app.route('/facts')
 def facts():
+    global user_id
     if len(model.facts) == 0:
         init()
-    return {'facts': model.facts}
+    return {
+        'user_id': user_id,
+        'facts': model.facts
+        }
 
 @app.route('/responses')
 def responses():
@@ -219,7 +216,7 @@ def log_activations():
     return jsonify(result)
 
 @app.route('/insertresponse', methods=['POST'])
-def insertResponse(user_id = 1, city = 'Groningen', start_time = 10, reaction_time = 1000, correct = 1):
+def insertResponse(user_id, city, start_time, reaction_time, correct):
     connection = mysql.connect()
     cursor = connection.cursor()
     query = """INSERT INTO responses
@@ -237,6 +234,7 @@ def log_response():
     global new
     global response_time
     global question_presented_time
+    global user_id
     if len(model.facts) == 0:
         init()
     if request.method == 'POST':
@@ -251,24 +249,27 @@ def log_response():
         resp = Response(fact=next_fact, start_time=question_presented_time,
                         rt=response_time - question_presented_time,
                         correct=correctAnswer)
-        print(resp[1])
-        print(resp[2])
-        print(resp[3])
+        
         model.register_response(resp)
-        user_id = request.cookies.get('topo_user_id')
         city = resp[0][2]
-        start_time = resp[1]
-        reaction_time = resp[2]
+        start_time = str(resp[1])
+        reaction_time = str(resp[2])
         correct = 0
-        if resp[3] == True:
-            correct == 1
+        if correctAnswer == True:
+            correct = 1
+        print(city)
+        print(start_time)
+        print(reaction_time)
         insertResponse(user_id, city, start_time, reaction_time, correct)
-    return {'responses': model.responses}
+    return {
+        'city': city,
+        'start_time': start_time,
+        'reaction_time': reaction_time,
+        'correct': correct,
+        'responses': model.responses}
 
 @app.route('/citynames')
 def city_names():
-    if len(model.facts) == 0:
-        init()
     # read city names
     cities = pd.read_csv('cities_10k.csv')
     city_names = cities['Woonplaatsen'].unique()
@@ -277,8 +278,6 @@ def city_names():
 
 @app.route('/provinces')
 def provinces():
-    if len(model.facts) == 0:
-        init()
     # read city names
     cities = pd.read_csv('cities_10k.csv')
     provinces = cities['Provincie'].unique()
