@@ -209,6 +209,8 @@ def log_activations():
         init()
     result = []
     for f in model.facts:
+        print('f LOG MAX: ')
+        print(f)
         fact = []
         fact.append(f.fact_id)
         fact.append(f.question)
@@ -275,7 +277,8 @@ def log_response():
         resp = Response(fact=next_fact, start_time=question_presented_time,
                         rt=response_time - question_presented_time,
                         correct=correctAnswer)
-        
+        print('RESPONSE LOG MAX: ')
+        print(resp)
         model.register_response(resp)
         city = resp[0][2]
         start_time = str(resp[1])
