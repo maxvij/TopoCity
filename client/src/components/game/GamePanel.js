@@ -61,7 +61,7 @@ export default class GamePanel extends React.Component {
             <p>Activation level for this fact: <br /><strong>{this.props.activationLevel}</strong></p>
             <div className="filler-20"></div>
             <div className="max-400">
-                {this.props.activationLevel > 0 ? textInput : multipleChoice}
+                {this.props.activationLevel > 1 ? textInput : multipleChoice}
                 <div className="filler-20"></div>
             </div>
         </div>)
