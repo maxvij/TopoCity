@@ -35,14 +35,14 @@ class Slider extends Component {
         return (
             <div className="center-box">
                 <h1>How long do you want to study?</h1>
+                <p>For this User Models experiment, this variable will always be set to 10 minutes.</p>
                 <div className="filler-40"></div>
                 <div className="max-400">
-
                     <SingleSlider
                         min={1}
                         max={30}
                         step={1}
-                        start={15}
+                        start={10}
                         tooltips={'always'}
                         postfix='min'
                         onChange={(value) => this.handleOnChange}

@@ -86,6 +86,7 @@ export default class Game extends React.Component {
             })
             this.getNextFact()
         }).catch((error) => {
+            this.logResponse(correct)
             this.logError('Unable to log the response', error)
         });
     }
@@ -128,6 +129,7 @@ export default class Game extends React.Component {
                 activationLevel: data.activation,
             });
         }).catch((error) => {
+            this.getActivationLevel()
             this.logError('Unable to fetch the activation level', error)
         });
     }
@@ -177,6 +179,7 @@ export default class Game extends React.Component {
                 trainingFacts: data.facts
             });
         }).catch((error) => {
+            this.getFacts()
             this.logError('Unable to fetch facts', error)
         });
     }
@@ -187,6 +190,7 @@ export default class Game extends React.Component {
                 responses: data.responses
             });
         }).catch((error) => {
+            this.getResponses()
             this.logError('Unable to fetch responses', error)
         });
     }
@@ -197,6 +201,7 @@ export default class Game extends React.Component {
                 activationLevels: data
             });
         }).catch((error) => {
+            this.getActivationLevels()
             this.logError('Unable to fetch activation levels', error)
         });
     }
