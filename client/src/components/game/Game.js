@@ -114,6 +114,7 @@ export default class Game extends React.Component {
                 answerOptions: getShuffledAnswerOptions(this.state.facts, data.next_fact)
             });
         }).catch((error) => {
+            this.getNextFact()
             this.logError('Unable to fetch the next fact', error)
         });
         this.getResponses()
