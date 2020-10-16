@@ -125,11 +125,11 @@ def init():
             #initial_alpha = db.loc[db['city'] == row['Woonplaatsen']]
             condition = 0
             print(user_id)
-            if int(user_id) % 2 == 0:
-                condition = 1
-                initial_alpha = 0.3
-            else:
-                condition = 0
+            #if int(user_id) % 2 == 0:
+            #    condition = 1
+             #   initial_alpha = 0.3
+            #else:
+             #   condition = 0
                 inalpha = pd.read_sql("SELECT * FROM initial_alphas WHERE user_id = %s AND city = %s", connection, params=[user_id, city_name])          
                 initial_alpha = inalpha['initial_alpha'][0]
             #return 'Initial Alpha: ' + str(inalpha['initial_alpha'][0])
