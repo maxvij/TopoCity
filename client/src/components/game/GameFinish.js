@@ -24,7 +24,8 @@ export default class GameIntro extends React.Component {
                 <div className='filler-40'></div>
                 <center><img src='https://media.giphy.com/media/AeWoyE3ZT90YM/giphy.gif' style={{borderRadius: "10px"}}width='400' alt="Thanks" /></center>
                 <div className='filler-40'></div>
-                <Button href="/" variant="green" size="lg" color="blue" block>Start another game!</Button>
+                <p>Could you please fill in our VERY SHORT survey?</p>
+                <Button href="https://meet.google.com/linkredirect?authuser=1&dest=https%3A%2F%2Fforms.gle%2F2NJCnZh7MSqfEt318" variant="green" size="lg" color="blue" block>Fill in our Google Form</Button>
             </div>
         </div>)
     }
