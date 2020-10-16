@@ -15,7 +15,6 @@ class Province extends React.Component {
     handleSelect(province) {
         this.setState({ province: province })
         localStorage.setItem('topo_province', province);
-        console.log(province)
         this.props.history.push('/slider');
     }
     componentDidMount() {
@@ -23,8 +22,7 @@ class Province extends React.Component {
         .then(res => res.json())
         .then((data) => {
             this.setState({ provinces: data })
-            console.log(this.state.provinces)
-            
+
         })
         .catch(console.log)
     }

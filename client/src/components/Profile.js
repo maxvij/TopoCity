@@ -29,7 +29,6 @@ class Profile extends React.Component {
         localStorage.setItem('topo_name', name);
         localStorage.setItem('topo_user_id', id);
         localStorage.setItem('topo_origin', origin);
-        console.log(this.state.profile)
         this.props.history.push('/province');
     }
 
@@ -38,7 +37,6 @@ class Profile extends React.Component {
             .then(res => res.json())
             .then((res) => {
                 this.setState({profiles: res})
-                console.log(res)
             })
             .catch(console.log)
     }

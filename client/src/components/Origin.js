@@ -17,7 +17,6 @@ const Origin = (dispatch, ownProps) => {
 
     function handleSelection(e) {
         setMultiSelections(e);
-        console.log(e);
         localStorage.setItem('topo_origin', e);
     };
 

@@ -13,7 +13,6 @@ export default class GameIntro extends React.Component {
         .then(res => res.json())
         .then((data) => {
             this.setState({ status: data })
-            console.log(this.state.status)
         })
         .catch(console.log)
     }
