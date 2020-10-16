@@ -41,7 +41,8 @@ export default class Game extends React.Component {
             errorMessages: [],
             feedbackMessages: [],
             tab: 'play',
-            answerOptions: []
+            answerOptions: [], 
+            user_id: 0
         }
     }
 
@@ -52,9 +53,11 @@ export default class Game extends React.Component {
     }
 
     init = () => {
+        let user_id = localStorage.getItem('topo_user_id');
         this.setState({
             initialized: true,
             loading: false,
+            user_id: user_id
         });
         this.getFacts()
     }
@@ -72,6 +75,7 @@ export default class Game extends React.Component {
             'correct': correct ? "true" : "false",
             'startTime': startTime,
             'responseTime': responseTime,
+            'user_id': this.state.user_id
         }
         fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/logresponse', {
             headers: {

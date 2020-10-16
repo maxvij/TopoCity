@@ -291,6 +291,7 @@ def log_response():
         print(city)
         print(start_time)
         print(reaction_time)
+        user_id = request.json['user_id']
         insertResponse(user_id, city, start_time, reaction_time, correct)
     return {
         'city': city,
