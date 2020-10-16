@@ -40,7 +40,7 @@ class Province extends React.Component {
                         <Row>
                             {this.state.provinces.map((province, index) => (
                                 <Col xs={6} md={6} key={index}>
-                                    <Button disabled={province !== "Groningen" || province !== "Friesland"} variant="blue"
+                                    <Button disabled={(province !== "Groningen" || province !== "Friesland")} variant="blue"
                                             onClick={() => this.handleSelect(province)} size="lg" color="blue" block>
                                         {province}
                                     </Button>
