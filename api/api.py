@@ -371,6 +371,7 @@ def initializeUser():
         homes = [x.strip() for x in homes.split(',')]
         # read city matrix
         cities = pd.read_csv('city_matrix_new.csv')
+        provinceCities = pd.read_csv('groningen.csv')
         columns = ['City', 'Popularity']
         for index, city in enumerate(homes):
             columns.append(homes[index]) 
@@ -379,7 +380,7 @@ def initializeUser():
         columns.append("initial_alpha")
         popularities = []
         distances = []
-        for city in cities['City']:
+        for city in provinceCities['City']:
             row = []
             # city col
             row.append(city)
