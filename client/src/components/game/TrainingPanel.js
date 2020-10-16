@@ -8,10 +8,10 @@ export default class TrainingPanel extends React.Component {
             <p>{this.props.currentFact[2]}</p>
             <div className="filler-20"></div>
             <div className="max-400">
-                <Button variant="green" size="lg" color="blue" block onClick={this.props.markFactAsTrained}>Ok, got
+                <Button variant="green" size="lg" block onClick={this.props.markFactAsTrained}>Ok, got
                     it!</Button>
                 <div className="filler-20"></div>
-                <a onClick={this.props.endTraining}>Skip training</a>
+                <Button variant="yellow" size="lg" block onClick={this.props.endTraining}>Finish training</Button>
             </div>
         </div>)
     }

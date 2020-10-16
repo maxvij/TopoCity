@@ -203,7 +203,11 @@ export default class Game extends React.Component {
 
     markFactAsTrained = () => {
         if (this.state.trainingFacts.length === 1) {
-            // Finish training
+            // Reloop training
+            let facts = this.state.facts
+            this.setState({
+                trainingFacts: facts
+            });
         } else {
             let slicedTrainingFacts = this.state.trainingFacts.slice(0, 0).concat(this.state.trainingFacts.slice(1, this.state.trainingFacts.length))
             let trainingFact = slicedTrainingFacts[0]
