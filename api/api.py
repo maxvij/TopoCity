@@ -111,7 +111,7 @@ def init():
         cities = cities.loc[(cities['Latitude'] != 'No info') & (cities['Longitude'] != 'No info')]
         # filter instances in the province
         #return 'Province: ' + province
-        cities = cities.loc[cities['Provincie'].isin(['Groningen', 'Friesland'])
+        cities = cities.loc[(cities['Provincie'] == 'Groningen') or (cities['Provincie'] == 'Friesland')]
         # cities = cities.loc[(cities['Provincie'] == "Groningen") or (cities['Provincie'] == "Friesland")]
         # create new dataframe
         cities.drop(['Provincie', 'Landsdeel', 'Gemeente', 'Coordinates'], axis=1, inplace=True)
