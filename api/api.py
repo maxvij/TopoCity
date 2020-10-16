@@ -386,6 +386,7 @@ def initializeUser():
             row.append(city)
             # popularity col
             popularity = cities.loc[cities['City'] == city, 'Popularity']
+            print(city)
             popularities.append(float(popularity))
             row.append(float(popularity))
             # distances of city to homes
