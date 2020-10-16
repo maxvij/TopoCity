@@ -58,7 +58,6 @@ export default class GamePanel extends React.Component {
 
         return (<div className="vote-panel" id={this.props.currentFact[2]}>
             <h1>What's the name of this city?</h1>
-            <p>Activation level for this fact: <br /><strong>{this.props.activationLevel}</strong></p>
             <div className="filler-20"></div>
             <div className="max-400">
                 {this.props.activationLevel > 1 ? textInput : multipleChoice}
