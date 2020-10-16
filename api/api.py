@@ -380,17 +380,13 @@ def initializeUser():
         columns.append("initial_alpha")
         popularities = []
         distances = []
+        # Changed to provinceCities to prevent timeout issues online
         for city in provinceCities['City']:
             row = []
             # city col
             row.append(city)
             # popularity col
             popularity = cities.loc[cities['City'] == city, 'Popularity']
-            print('Fetching popularity for city: ')
-            print(city)
-            print('Popularity: ')
-            print(popularity)
-            print(type(popularity))
             popularities.append(float(popularity))
             row.append(float(popularity))
             # distances of city to homes
