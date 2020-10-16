@@ -100,6 +100,7 @@ def init():
     print('Initializing model...')
     print('Length of model.facts: ', len(model.facts))
     print('Resetting log file starttimes.txt')
+    model.responses = []
     with open("starttimes.txt", "w") as text_file:
         text_file.flush()
     if len(model.facts) == 0:
