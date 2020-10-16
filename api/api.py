@@ -111,7 +111,9 @@ def init():
         cities = cities.loc[(cities['Latitude'] != 'No info') & (cities['Longitude'] != 'No info')]
         # filter instances in the province
         #return 'Province: ' + province
-        cities = cities.loc[(cities['Provincie'] == 'Groningen') or (cities['Provincie'] == 'Friesland')]
+        Groningen = cities.loc[cities['Provincie'] == 'Groningen']
+        Friesland = cities.loc[cities['Provincie'] == 'Friesland']
+        cities = pd.concat([Groningen, Friesland], axis=0)
         # cities = cities.loc[(cities['Provincie'] == "Groningen") or (cities['Provincie'] == "Friesland")]
         # create new dataframe
         cities.drop(['Provincie', 'Landsdeel', 'Gemeente', 'Coordinates'], axis=1, inplace=True)
