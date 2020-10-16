@@ -100,7 +100,6 @@ def init():
     print('Initializing model...')
     print('Length of model.facts: ', len(model.facts))
     print('Resetting log file starttimes.txt')
-    model.responses = []
     with open("starttimes.txt", "w") as text_file:
         text_file.flush()
     if len(model.facts) == 0:
@@ -153,6 +152,7 @@ def start():
     global starttime
     global question_presented_time
     global response_time
+    model.responses = []
     # Initialize timing variables
     starttime = time_in_ms() - init_time
     question_presented_time = starttime
