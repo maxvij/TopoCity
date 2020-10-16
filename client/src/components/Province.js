@@ -33,14 +33,14 @@ class Province extends React.Component {
             <div className="center-box">
                 <div className="max-600">
                     <h1>What province do you want to study today?</h1>
-                    <p>For this User Models experiment, you can only select Groningen.</p>
+                    <p>For this User Models experiment, you can only select Groningen and Friesland. The model will train both. </p>
                     <div className="filler-40"></div>
                     <Container>
                         {/* Stack the columns on mobile by making one full-width and the other half-width */}
                         <Row>
                             {this.state.provinces.map((province, index) => (
                                 <Col xs={6} md={6} key={index}>
-                                    <Button disabled={province !== "Groningen"} variant="blue"
+                                    <Button disabled={province !== "Groningen" || province !== "Friesland"} variant="blue"
                                             onClick={() => this.handleSelect(province)} size="lg" color="blue" block>
                                         {province}
                                     </Button>

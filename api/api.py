@@ -72,7 +72,7 @@ def initSession():
         query = """ INSERT INTO learning_session
                     (user_id, duration, start, province)
                     VALUES (%s,%s,%s,%s)"""
-        data = (user_id, duration, datetime_now, province)
+        data = (user_id, duration, datetime_now, "Groningen,Friesland")
         try:
             # update book title
             cursor = connection.cursor()
@@ -111,7 +111,7 @@ def init():
         cities = cities.loc[(cities['Latitude'] != 'No info') & (cities['Longitude'] != 'No info')]
         # filter instances in the province
         #return 'Province: ' + province
-        cities = cities.loc[(cities['Provincie'] == province)]
+        cities = cities.loc[(cities['Provincie'] == "Groningen") OR (cities['Provincie'] == "Friesland")]
         # create new dataframe
         cities.drop(['Provincie', 'Landsdeel', 'Gemeente', 'Coordinates'], axis=1, inplace=True)
         # get initial alphas of user
