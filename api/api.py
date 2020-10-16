@@ -131,6 +131,7 @@ def init():
             else:
                 condition = 0
                 inalpha = pd.read_sql("SELECT * FROM initial_alphas WHERE user_id = %s AND city = %s", connection, params=[user_id, city_name])
+                print(inalpha)
                 initial_alpha = inalpha['initial_alpha'][0]
             #return 'Initial Alpha: ' + str(inalpha['initial_alpha'][0])
             combinedLongLat = str(row['Longitude']) + "-" + str(row['Latitude'])
