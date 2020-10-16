@@ -152,7 +152,7 @@ def start():
     global starttime
     global question_presented_time
     global response_time
-    model.responses = []
+    # model.responses = []
     # Initialize timing variables
     starttime = time_in_ms() - init_time
     question_presented_time = starttime
