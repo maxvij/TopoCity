@@ -210,8 +210,6 @@ def log_activations():
         init()
     result = []
     for f in model.facts:
-        print('f LOG MAX: ')
-        print(f)
         fact = []
         fact.append(f.fact_id)
         fact.append(f.question)
