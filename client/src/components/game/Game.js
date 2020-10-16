@@ -115,7 +115,7 @@ export default class Game extends React.Component {
             });
         }).catch((error) => {
             this.getNextFact()
-            this.logError('Unable to fetch the next fact', error)
+            // this.logError('Unable to fetch the next fact', error)
         });
         this.getResponses()
         this.getActivationLevel()
