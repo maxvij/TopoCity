@@ -13,7 +13,8 @@ function Initialize() {
     // similar to componentDidMount()
     useEffect(() => {
         let origin = localStorage.getItem('topo_origin')
-        const uri = '/initializeuser?cities=' + origin;
+        const uriPrefix = (typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '')
+        const uri = uriPrefix + '/initializeuser?cities=' + origin;
         console.log(origin);
         fetch(uri, {
             method: 'post'
