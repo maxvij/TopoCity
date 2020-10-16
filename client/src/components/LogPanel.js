@@ -50,10 +50,10 @@ export default class LogPanel extends React.Component {
                             <p>{response[0][2]}</p>
                         </div>
                         <div className="col-3">
-                            <p>{response[1]}</p>
+                            <p>{Math.round((response[1] + Number.EPSILON) * 1000) / 1000}</p>
                         </div>
                         <div className="col-3">
-                            <p>{response[2]}</p>
+                            <p>{Math.round(response[2])}</p>
                         </div>
                         <div className="col-3">
                             <p>{response[3] === true ? "correct" : "incorrect"}</p>
