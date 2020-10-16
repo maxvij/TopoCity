@@ -45,7 +45,7 @@ duration = 10
 user_id = 0
 session_id = 0
 # Next facts
-next_fact = 0
+next_fact = Fact(fact_id=0, question='', answer='', inalpha=0.3)
 new = True
 
 # Initialize model
