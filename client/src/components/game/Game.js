@@ -192,7 +192,7 @@ export default class Game extends React.Component {
         this.setState({
             loading: true
         })
-        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/facts?session_id=' + this.state.session_id, {method: 'POST'}).then(res => res.json()).then(data => {
+        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/facts?session_id=' + this.state.session_id).then(res => res.json()).then(data => {
             this.setState({
                 loading: false,
                 facts: data.facts,
@@ -205,7 +205,7 @@ export default class Game extends React.Component {
     }
 
     getResponses = () => {
-        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/responses?session_id=' + this.state.session_id, {method: 'POST'}).then(res => res.json()).then(data => {
+        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/responses?session_id=' + this.state.session_id).then(res => res.json()).then(data => {
             this.setState({
                 responses: data.responses
             });
@@ -216,7 +216,7 @@ export default class Game extends React.Component {
     }
 
     getActivationLevels = () => {
-        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/activationLog?session_id=' + this.state.session_id, {method: 'POST'}).then(res => res.json()).then(data => {
+        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/activationLog?session_id=' + this.state.session_id).then(res => res.json()).then(data => {
             this.setState({
                 activationLevels: data
             });
