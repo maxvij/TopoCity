@@ -57,9 +57,9 @@ def get_current_time():
 @app.route('/initsession', methods=['POST'])
 def initSession():
     if request.method == 'POST':
-        model = SpacingModel()
         global sessions
-        province = request.args.get('province')       
+        model = SpacingModel()
+        province = request.args.get('province')
         duration = request.args.get('duration')       
         user_id = request.args.get('user_id')        
         datetime_now = datetime.now()
@@ -77,8 +77,11 @@ def initSession():
             # get new user id
             learning_session_id = connection.insert_id()
             session_id = learning_session_id
+            print('Creating new session: ')
             new_session = Session(session_id, user_id, model, datetime_now, 'active', 0, time_in_ms(), 0, 0, Fact(fact_id=0, question='', answer='', inalpha=0.3), True)
+            print(new_session)
             sessions.append(new_session)
+            print(sessions)
             # accept the changes
             connection.commit()
             data = {
@@ -152,7 +155,11 @@ def start():
     session_id = request.args.get('session_id')
     active_session = []
     for session in sessions:
+        print('Checking every session for session_id')
+        print(session_id)
         if session.session_id == session_id:
+            print('Found acive session!')
+            print('Setting active session')
             active_session = session
     if active_session:
         # Initialize timing variables
