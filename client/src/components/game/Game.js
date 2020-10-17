@@ -63,7 +63,7 @@ export default class Game extends React.Component {
             user_id: user_id,
             session_id: session_id
         });
-        this.getFacts()
+        this.getFacts(session_id)
     }
 
     logResponse = (correct) => {
@@ -187,18 +187,18 @@ export default class Game extends React.Component {
         })
     }
 
-    getFacts = () => {
+    getFacts = (session_id) => {
         this.setState({
             loading: true
         })
-        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/facts?session_id=' + this.state.session_id).then(res => res.json()).then(data => {
+        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/facts?session_id=' + session_id).then(res => res.json()).then(data => {
             this.setState({
                 loading: false,
                 facts: data.facts,
                 trainingFacts: data.facts
             });
         }).catch((error) => {
-            this.getFacts()
+            this.getFacts(session_id)
             // this.logError('Unable to fetch facts', error)
         });
     }
