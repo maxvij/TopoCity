@@ -6,7 +6,6 @@ from collections import namedtuple
 import pandas as pd
 import json
 import numpy
-from pytrends.request import TrendReq
 import requests
 from statistics import mean
 from scipy import stats
@@ -27,10 +26,6 @@ app.config['MYSQL_DATABASE_PASSWORD'] = 'TdOTitmjAw'
 app.config['MYSQL_DATABASE_DB'] = 'PX8ZmX8fDh'
 app.config['MYSQL_DATABASE_HOST'] = 'remotemysql.com'
 mysql.init_app(app)
-
-# Initialize PyTrend
-pytrend = TrendReq()
-#pytrend = TrendReq(hl='en-GB', tz=360)
 
 # Timing function
 time_in_ms = lambda: int(time.time() * 1000)
@@ -323,46 +318,6 @@ def users():
     profiles = pd.read_sql("SELECT * FROM users", connection)
     connection.close()
     return profiles.to_json(orient='records')
-
-@app.route('/initialalphas', methods=['POST'])
-def getInitialAlphas():
-     if request.method == 'POST':
-        cities = request.args.get('cities')
-        cleanup = [x.strip() for x in cities.split(',')]
-        # read city names
-        cities = pd.read_csv('City_info.csv')
-        # remove empty locations
-        cities = cities.loc[(cities['Latitude'] != 'No info') & (cities['Longtitude'] != 'No info')]
-        # create new dataframe
-        #cities_len = len(cities)
-        columns = ['City', 'Popularity']
-        for index, city in enumerate(cleanup):
-            columns.append(cleanup[index]) 
-        distances = []
-        sample = cities['Woonplaats'][:30]
-        for city in sample:
-            row = []
-            row.append(city)
-            kw_list = [city]
-            popularity = pytrend.build_payload(kw_list, cat=0, timeframe='today 5-y', geo='', gprop='')
-            interest_df = pytrend.interest_over_time()
-            interest = mean(interest_df[city])
-            row.append(int(round(interest)))
-            for index, home in enumerate(cleanup):
-                uri = "https://www.distance24.org/route.json?stops=" + str(city).strip() + '|' + str(home).strip()
-                url = uri.strip()
-                try:
-                    uResponse = requests.get(url)
-                except requests.ConnectionError:
-                    return "Connection Error"  
-                Jresponse = uResponse.text
-                data = json.loads(Jresponse)
-                distance = data['distance']
-                row.append(distance)
-            distances.append(row) 
-        df = pd.DataFrame(distances, columns = columns)         
-        return df.to_json(orient='records')
-        #return pd.Series(cities['Woonplaats']).to_json(orient='records')
 
 @app.route('/initializeuser', methods=['POST'])
 def initializeUser():
