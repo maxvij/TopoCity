@@ -77,7 +77,7 @@ def initSession():
             # get new user id
             learning_session_id = connection.insert_id()
             session_id = learning_session_id
-            new_session = Session(session_id, user_id, model, datetime_now, 'active', 0, time_in_ms(), 0, 0)
+            new_session = Session(session_id, user_id, model, datetime_now, 'active', 0, time_in_ms(), 0, 0, Fact(fact_id=0, question='', answer='', inalpha=0.3), True)
             sessions.append(new_session)
             # accept the changes
             connection.commit()
