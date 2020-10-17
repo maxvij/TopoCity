@@ -29,7 +29,6 @@ class Slider extends Component {
         })
             .then((resp) => resp.json())
             .then((result) => {
-                console.log(result)
                 localStorage.setItem('topo_session_id', result.learning_session_id)
                 this.props.history.push("/initialize")
             });

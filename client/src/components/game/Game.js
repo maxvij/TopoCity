@@ -56,6 +56,7 @@ export default class Game extends React.Component {
     init = () => {
         let user_id = localStorage.getItem('topo_user_id');
         let session_id = localStorage.getItem('topo_session_id')
+        console.log('Setting session id from localstorage: ', session_id)
         this.setState({
             initialized: true,
             loading: false,
