@@ -67,8 +67,6 @@ export default class Game extends React.Component {
         let newResponseTime = new Date()
         this.setState({
             loading: true,
-            responseTime: newResponseTime,
-            answerCorrect: correct
         })
         let responseTime = newResponseTime.getTime() - this.state.firstStartTime.getTime()
         let data = {
@@ -86,11 +84,14 @@ export default class Game extends React.Component {
             body: JSON.stringify(data)
         }).then(res => res.json()).then(data => {
             this.setState({
-                loading: false
+                loading: false,
+                responseTime: newResponseTime,
+                answerCorrect: correct
             })
             this.getNextFact()
         }).catch((error) => {
-            this.logResponse(correct)
+            console.log(error);
+            // this.logResponse(correct)
             // this.logError('Unable to log the response', error)
         });
     }
