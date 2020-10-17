@@ -190,10 +190,10 @@ def facts():
             'facts': active_session.model.facts
             }
     else: 
-		return {
-			'user_id': 0,
-			'facts': []
-		}
+        return {
+            'user_id': 0,
+            'facts': []
+        }
 
 @app.route('/responses')
 def responses():
