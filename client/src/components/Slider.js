@@ -21,6 +21,9 @@ class Slider extends Component {
         let duration = localStorage.getItem('topo_duration')
         let province = localStorage.getItem('topo_province')
         let user_id = localStorage.getItem('topo_user_id')
+        if(duration === null) {
+            duration = 10
+        }
         fetch((typeof (process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + "/initsession?duration=" + duration + "&province=" + province + "&user_id=" + user_id, {
             method: 'POST'
         })
