@@ -33,7 +33,7 @@ class Province extends React.Component {
             <div className="center-box">
                 <div className="max-600">
                     <h1>What province do you want to study today?</h1>
-                    <p>For this User Models experiment, you can only select Groningen and Friesland. The model will train both. </p>
+                    <p>For this User Models experiment, you can only select Groningen and Friesland. You will learn both provinces during this session.</p>
                     <div className="filler-40"></div>
                     <Container>
                         {/* Stack the columns on mobile by making one full-width and the other half-width */}
