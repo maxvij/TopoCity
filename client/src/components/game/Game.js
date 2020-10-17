@@ -289,7 +289,7 @@ export default class Game extends React.Component {
         return (
             <div>
                 {this.state.initialized === false ? <div className="center-box"><p>Initializing...</p></div> : <div>
-                    {this.state.trainingStarted ? (this.state.trainingFinished ? (this.state.gameStarted ? (this.state.gameFinished ? <GameFinish /> : gameContent) : <GameIntro startGame={this.startGame} />) : trainingContent) : <TrainingIntro startTraining={this.startTraining} />}
+                    {this.state.trainingStarted ? (this.state.trainingFinished ? (this.state.gameStarted ? (this.state.gameFinished ? <GameFinish /> : gameContent) : <GameIntro startGame={this.startGame} loading={this.state.loading} />) : trainingContent) : <TrainingIntro startTraining={this.startTraining} loading={this.state.loading} />}
                 </div>}
             </div>
         )

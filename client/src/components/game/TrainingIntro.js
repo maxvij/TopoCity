@@ -8,8 +8,9 @@ export default class TrainingIntro extends React.Component {
                 <h3>Welcome to TopoCity</h3>
                 <p>We will start with a training phase. <br /> Memorize each city name and location, before we start the
                     testing session of 10 minutes.</p>
-                <Button variant="green" size="lg" color="blue" block onClick={this.props.startTraining}>Start
-                    training!</Button>
+                <Button variant="green" size="lg" color="blue" block disabled={!this.props.loading} onClick={this.props.startTraining}>
+                    {this.props.loading ? "..." : "Start training!"}
+                </Button>
             </div>
         </div>)
     }
