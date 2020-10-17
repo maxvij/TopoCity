@@ -174,8 +174,11 @@ def start():
 
 @app.route('/facts')
 def facts():
+    print('Fetching facts...')
     global sessions
     session_id = request.args.get('session_id')
+    print('Global session variable:')
+    print(sessions)
     active_session = []
     for session in sessions:
         print('Checking every session for session_id')
