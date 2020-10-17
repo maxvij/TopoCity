@@ -176,8 +176,13 @@ def facts():
     global sessions
     session_id = request.args.get('session_id')
     active_session = []
+    print(requests.args)
     for session in sessions:
+        print('Checking every session for session_id')
+        print(session_id)
         if session.session_id == session_id:
+            print('Found acive session!')
+            print('Setting active session')
             active_session = session
     if active_session:
         return {
