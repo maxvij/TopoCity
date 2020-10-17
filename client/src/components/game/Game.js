@@ -38,6 +38,7 @@ export default class Game extends React.Component {
             firstStartTime: new Date(),
             activationLevels: [],
             answerCorrect: false,
+            responseError: false,
             errorMessages: [],
             feedbackMessages: [],
             tab: 'play',
@@ -86,10 +87,16 @@ export default class Game extends React.Component {
             this.setState({
                 loading: false,
                 responseTime: newResponseTime,
-                answerCorrect: correct
+                answerCorrect: correct,
+                responseError: false
             })
             this.getNextFact()
+            this.showFeedback(correct)
         }).catch((error) => {
+            this.setState({
+                loading: false,
+                responseError: true
+            })
             console.log(error);
             // this.logResponse(correct)
             // this.logError('Unable to log the response', error)
@@ -97,12 +104,10 @@ export default class Game extends React.Component {
     }
 
     logCorrectResponse = () => {
-        this.showFeedback(true)
         this.logResponse(true)
     }
 
     logIncorrectResponse = () => {
-        this.showFeedback(false)
         this.logResponse(false)
     }
 
@@ -275,7 +280,7 @@ export default class Game extends React.Component {
                         onSelect={(k) => this.setState({tab: k})}
                     >
                         <Tab eventKey="play" title={<div><PlayArrow/> Play</div>}>
-                            <GamePanel activationLevel={this.state.activationLevel} loading={this.state.loading} answerOptions={this.state.answerOptions} currentFact={this.state.currentFact} isNewFact={this.state.isNewFact} logCorrectResponse={this.logCorrectResponse} logIncorrectResponse={this.logIncorrectResponse}/>
+                            <GamePanel activationLevel={this.state.activationLevel} loading={this.state.loading} answerOptions={this.state.answerOptions} currentFact={this.state.currentFact} isNewFact={this.state.isNewFact} logCorrectResponse={this.logCorrectResponse} logIncorrectResponse={this.logIncorrectResponse} responseError={this.state.responseError}/>
                             <ErrorPanel errorMessages={this.state.errorMessages} />
                         </Tab>
                         <Tab eventKey="inspect" title={<div><Search/> Inspect</div>}>

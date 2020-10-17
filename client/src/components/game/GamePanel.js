@@ -60,6 +60,7 @@ export default class GamePanel extends React.Component {
             <h1>What's the name of this city?</h1>
             <div className="filler-20"></div>
             <div className="max-400">
+                {this.props.responseError ? 'error' : ''}
                 {this.props.activationLevel > .5 ? textInput : multipleChoice}
                 <div className="filler-20"></div>
             </div>
