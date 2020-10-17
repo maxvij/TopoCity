@@ -180,7 +180,7 @@ def facts():
         print('Checking every session for session_id')
         print(session_id)
         if session.session_id == session_id:
-            print('Found acive session!')
+            print('Found active session!')
             print('Setting active session')
             active_session = session
     if active_session:
@@ -190,7 +190,7 @@ def facts():
             }
     return {
         'user_id': 0,
-        'facts' : []
+        'facts': []
     }
 
 @app.route('/responses')
