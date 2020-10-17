@@ -51,6 +51,11 @@ export default class GamePanel extends React.Component {
                     })}
         </>)
 
+        const retryPanel = (<>
+            <p>Something went wrong while trying to log your response. Please try again.</p>
+            <div className="filler-20"></div>
+        </>)
+
         const textInput = (<form>
             <input autoFocus={true} type="text" name="answer" id="answer" onChange={this.handleChange} value={this.state.value}/>
             <Button type="submit" variant="blue" size="lg" color="blue" block onClick={this.handleSubmit}>Submit</Button>
@@ -60,7 +65,7 @@ export default class GamePanel extends React.Component {
             <h1>What's the name of this city?</h1>
             <div className="filler-20"></div>
             <div className="max-400">
-                {this.props.responseError ? 'error' : ''}
+                {this.props.responseError ? retryPanel : ''}
                 {this.props.activationLevel > .5 ? textInput : multipleChoice}
                 <div className="filler-20"></div>
             </div>
