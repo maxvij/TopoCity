@@ -169,7 +169,8 @@ def start():
         print('Started model session with start time: ')
         print(active_session.starttime)
         return {'start_time': active_session.starttime}
-    return {'start_time':0}
+    else:
+        return {'start_time':0}
 
 @app.route('/facts')
 def facts():
@@ -188,10 +189,11 @@ def facts():
             'user_id': active_session.user_id,
             'facts': active_session.model.facts
             }
-    return {
-        'user_id': 0,
-        'facts': []
-    }
+    else: 
+		return {
+			'user_id': 0,
+			'facts': []
+		}
 
 @app.route('/responses')
 def responses():
@@ -203,7 +205,8 @@ def responses():
             active_session = session
     if active_session:
         return {'responses': active_session.model.responses}
-    return {'responses' : []}
+    else:
+        return {'responses' : []}
 
 @app.route('/getnextfact')
 def get_next_fact():
@@ -218,7 +221,8 @@ def get_next_fact():
         active_session.next_fact, active_session.new = active_session.model.get_next_fact(active_session.question_presented_time)
         return {'next_fact': active_session.next_fact,
                 'new': active_session.new}
-    return {'next_fact': [],
+    else:
+        return {'next_fact': [],
             'new':[]}
 
 @app.route('/getactivationlevel')
@@ -234,7 +238,8 @@ def getactivationlevel():
         if numpy.isinf(activationLevel):
             activationLevel = "-Inf"
         return {'activation':activationLevel}
-    return{'activation':0}
+    else:
+        return{'activation':0}
 
 @app.route('/activationLog')
 def log_activations():
@@ -254,7 +259,8 @@ def log_activations():
             fact.append(str(active_session.model.calculate_activation(time_in_ms() - active_session.starttime, f)))
             result.append(fact)
         return jsonify(result)
-    return{'activations' : []}
+    else:
+        return{'activations' : []}
 
 @app.route('/insertactivations')
 def insertActivations():
@@ -284,7 +290,8 @@ def insertActivations():
         finally:
             cursor.close()
             connection.close()
-    return jsonify('No session id given', 200)
+    else:
+        return jsonify('No session id given', 200)
 
 @app.route('/insertresponse', methods=['POST'])
 def insertResponse(user_id, city, start_time, reaction_time, correct):
@@ -340,7 +347,8 @@ def log_response():
             'reaction_time': reaction_time,
             'correct': correct,
             'responses': model.responses}
-    return jsonify('No session id given', 200)
+    else:
+        return jsonify('No session id given', 200)
 
 @app.route('/citynames')
 def city_names():
@@ -445,7 +453,8 @@ def initializeUser():
                 cursor.close()
                 connection.close()
         #return df.to_json(orient="records")
-    return jsonify('No user id given', 200)
+    else:
+        return jsonify('No user id given', 200)
 
 @app.route('/createuser', methods=['POST'])
 def createUser():
