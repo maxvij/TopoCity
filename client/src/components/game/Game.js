@@ -108,6 +108,8 @@ export default class Game extends React.Component {
 
     getNextFact = () => {
         this.setState({loading: true})
+        let newStartTime = new Date()
+        newStartTime.setMilliseconds(newStartTime.getMilliseconds() + 1)
         fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/getnextfact').then(res => res.json()).then(data => {
             const splittedString = data.next_fact[1].split("-");
             this.setState({
@@ -116,7 +118,7 @@ export default class Game extends React.Component {
                 lng: Number(splittedString[0]),
                 lat: Number(splittedString[1]),
                 loading: false,
-                startTime: new Date(),
+                startTime: newStartTime,
                 answerOptions: getShuffledAnswerOptions(this.state.facts, data.next_fact)
             });
         }).catch((error) => {
