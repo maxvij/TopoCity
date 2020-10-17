@@ -177,8 +177,12 @@ export default class Game extends React.Component {
     }
 
     getFacts = () => {
+        this.setState({
+            loading: true
+        })
         fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/facts').then(res => res.json()).then(data => {
             this.setState({
+                loading: false,
                 facts: data.facts,
                 trainingFacts: data.facts
             });
