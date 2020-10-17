@@ -82,7 +82,7 @@ def initSession():
             print(new_session)
             sessions.append(new_session)
             print(sessions)
-            init(session_id)
+            init(session_id, user_id)
             # accept the changes
             connection.commit()
             data = {
@@ -92,13 +92,13 @@ def initSession():
                 }
             return jsonify(data), 200
         except Exception as error:
-            return jsonify(str(error)), 400
+            return jsonify('Error' + str(error)), 400
         finally:
             cursor.close()
             connection.close()
 
 @app.route('/init')
-def init(session_id):
+def init(session_id, user_id):
     global sessions
     #session_id = request.args.get('session_id')
     active_session = []
