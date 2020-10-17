@@ -82,6 +82,7 @@ def initSession():
             print(new_session)
             sessions.append(new_session)
             print(sessions)
+            init(session_id)
             # accept the changes
             connection.commit()
             data = {
@@ -97,9 +98,9 @@ def initSession():
             connection.close()
 
 @app.route('/init')
-def init():
+def init(session_id):
     global sessions
-    session_id = request.args.get('session_id')
+    #session_id = request.args.get('session_id')
     active_session = []
     for session in sessions:
         if session.session_id == session_id:
