@@ -144,7 +144,7 @@ def init(session_id, user_id):
                     initial_alpha = 0.3
                 else:
                     condition = 0
-                    inalpha = pd.read_sql("SELECT * FROM initial_alphas WHERE user_id = %s AND city = %s", connection, params=[user_id, city_name])
+                    inalpha = pd.read_sql("SELECT * FROM initial_alphas WHERE user_id = ? AND city = ?", connection, params=[user_id, city_name])
                     print(inalpha)
                     initial_alpha = inalpha['initial_alpha'][0]
                 #return 'Initial Alpha: ' + str(inalpha['initial_alpha'][0])
