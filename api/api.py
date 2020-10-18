@@ -184,7 +184,8 @@ def facts():
     active_session = []
     for session in sessions:
         print('Checking every session for session_id')
-        print(session_id)
+        print(str(session.session_id) + ' is the session.session_id')
+        print(str(session_id) + ' is the current session')
         if session.session_id == session_id:
             print('Found active session!')
             print('Setting active session')
