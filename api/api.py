@@ -194,10 +194,12 @@ def facts():
         print('Checking every session for session_id')
         print(str(session.session_id) + ' is the session.session_id')
         print(str(session_id) + ' is the current session')
-        if session.session_id == session_id:
+        if str(session.session_id) == str(session_id):
             print('Found active session!')
             print('Setting active session')
             active_session = session
+        else:
+            print ('Did not find an active session')
     if active_session:
         return {
             'user_id': active_session.user_id,
