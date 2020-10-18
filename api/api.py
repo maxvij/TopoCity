@@ -105,6 +105,7 @@ def init(session_id, user_id):
     for session in sessions:
         if session.session_id == session_id:
             active_session = session
+    print(active_session)
     if active_session:
         print('Initializing model...')
         print('Length of model.facts: ', len(active_session.model.facts))
