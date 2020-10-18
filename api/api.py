@@ -146,9 +146,9 @@ def init(session_id, user_id):
                 active_session.model.add_fact(Fact(index, combinedLongLat, row['Woonplaatsen'],initial_alpha))
                 # add inalpha to add_fact module
             connection.close()
-    #print(len(model.facts), ' facts added to the model')
+    print(len(active_session.model.facts), ' facts added to the model')
     return {
-        'facts': model.facts
+        'facts': active_session.model.facts
         }
 
 @app.route('/start')
