@@ -137,7 +137,8 @@ def init(session_id, user_id):
                 #return row.to_json(orient='records')
                 #initial_alpha = db.loc[db['city'] == row['Woonplaatsen']]
                 condition = 0
-                print(user_id)
+                print('User ID: ' + str(user_id))
+                print('City name: '+ str(city_name))
                 if int(user_id) % 2 == 0:
                     condition = 1
                     initial_alpha = 0.3
