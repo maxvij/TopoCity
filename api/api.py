@@ -458,7 +458,7 @@ def initializeUser():
                 connection.close()
         #return df.to_json(orient="records")
     else:
-        return jsonify('No user id given', 200)
+        return jsonify('No user id given', 400)
 
 @app.route('/createuser', methods=['POST'])
 def createUser():
