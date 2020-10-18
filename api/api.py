@@ -77,10 +77,14 @@ def initSession():
             # get new user id
             learning_session_id = connection.insert_id()
             session_id = learning_session_id
+            print ('All sessions before append:')
+            print(global sessions)
             print('Creating new session: ')
             new_session = Session(session_id, user_id, model, datetime_now, 'active', 0, time_in_ms(), 0, 0, Fact(fact_id=0, question='', answer='', inalpha=0.3), True)
+            print('The new session')
             print(new_session)
             sessions.append(new_session)
+            print ('All sessions after append:')
             print(sessions)
             init(session_id, user_id)
             # accept the changes
