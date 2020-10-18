@@ -75,8 +75,10 @@ def initSession():
             cursor = connection.cursor()
             cursor.execute(query, data)
             # get new user id
-            learning_session_id = connection.insert_id()
+            learning_session_id = cursor.lastrowid
             session_id = learning_session_id
+            print('Database id of the new sesh:')
+            print(session_id)
             print ('All sessions before append:')
             global sessions
             print(sessions)
