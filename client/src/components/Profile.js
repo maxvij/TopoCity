@@ -52,6 +52,7 @@ class Profile extends React.Component {
                     <DropdownButton variant="blue" size='lg' title="Select an existing profile">
                         {this.state.profiles.map((profile, index) => (
                             <Dropdown.Item
+                                key={index}
                                 onClick={() => this.handleSelect(profile.id, profile.name, profile.homes)}>{profile.name}</Dropdown.Item>
                         ))}
                     </DropdownButton>
