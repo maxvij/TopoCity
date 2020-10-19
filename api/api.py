@@ -111,7 +111,9 @@ def init(session_id, user_id):
     global sessions
     active_session = []
     for session in sessions:
+        print('Checking each session from sessions list')
         if session.session_id == session_id:
+            print('SESSION FOUND IN INIT')
             active_session = session
     print(active_session)
     if active_session:
