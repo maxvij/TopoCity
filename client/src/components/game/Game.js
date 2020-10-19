@@ -14,8 +14,9 @@ import TrainingIntro from "./TrainingIntro";
 import TrainingPanel from "./TrainingPanel";
 import GamePanel from "./GamePanel";
 import GameFinish from "./GameFinish";
+import {withRouter} from 'react-router-dom';
 
-export default class Game extends React.Component {
+class Game extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -45,6 +46,10 @@ export default class Game extends React.Component {
             answerOptions: [], 
             user_id: localStorage.getItem('topo_user_id'),
             session_id: localStorage.getItem('topo_session_id')
+        }
+
+        window.onbeforeunload = function() {
+            return "You are attempting a refresh for TopoCity. If you refresh, the session data will be corrupt. Please restart the session.";
         }
     }
 
@@ -309,3 +314,5 @@ export default class Game extends React.Component {
         )
     }
 }
+
+export default withRouter(Game)

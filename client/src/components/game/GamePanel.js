@@ -66,7 +66,7 @@ export default class GamePanel extends React.Component {
             <div className="filler-20"></div>
             <div className="max-400">
                 {this.props.responseError ? retryPanel : ''}
-                {this.props.activationLevel > .5 ? textInput : multipleChoice}
+                {this.props.activationLevel > -0.3 ? textInput : multipleChoice}
                 <div className="filler-20"></div>
             </div>
         </div>)
