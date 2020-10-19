@@ -10,6 +10,7 @@ class Profile extends React.Component {
         this.handleSelect = this.handleSelect.bind(this);
         this.state = {
             profiles: [],
+            loading: true,
             profile: {
                 name: '',
                 id: 0,
@@ -36,7 +37,7 @@ class Profile extends React.Component {
         fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/users')
             .then(res => res.json())
             .then((res) => {
-                this.setState({profiles: res})
+                this.setState({profiles: res, loading: false})
             })
             .catch(console.log)
     }
@@ -49,13 +50,13 @@ class Profile extends React.Component {
                 <div className="max-400">
                 <div className="filler-40"></div>
                     <h3>Have you played before?</h3>
-                    <DropdownButton variant="blue" size='lg' title="Select an existing profile">
+                    {this.state.loading ? 'Fetching profiles...' : <DropdownButton variant="blue" size='lg' title="Select an existing profile">
                         {this.state.profiles.map((profile, index) => (
                             <Dropdown.Item
                                 key={index}
                                 onClick={() => this.handleSelect(profile.id, profile.name, profile.homes)}>{profile.name}</Dropdown.Item>
                         ))}
-                    </DropdownButton>
+                    </DropdownButton>}
                     <div className="filler-40"></div>
                     <h3>Are you new here?</h3>
                     <Button href="/name" variant="yellow" size="lg" color="blue" block>
