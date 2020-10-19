@@ -146,9 +146,8 @@ def init(session_id, user_id):
                     initial_alpha = 0.3
                 else:
                     condition = 0
-                    inalpha = pd.read_sql("SELECT * FROM initial_alphas WHERE user_id = %s AND city = %s", connection, params=[user_id, city_name])          
-                    print(inalpha)
-                    initial_alpha = inalpha['initial_alpha']
+                    inalpha = pd.read_sql("SELECT * FROM initial_alphas WHERE user_id = %s AND city = %s LIMIT 1", connection, params=[user_id, city_name])
+                    initial_alpha = inalpha['initial_alpha'].tail(1).item()
                 #return 'Initial Alpha: ' + str(inalpha['initial_alpha'][0])
                 combinedLongLat = str(row['Longitude']) + "-" + str(row['Latitude'])
                 active_session.model.add_fact(Fact(index, combinedLongLat, row['Woonplaatsen'],initial_alpha))
@@ -202,9 +201,19 @@ def facts():
             print('Did not find an active session')
     if active_session:
         print('Returning active session facts')
+        print('Active session:')
+        print(active_session)
+        print('Active model:')
+        print(active_session.model)
+        print('Active model facts:')
+        print(active_session.model.facts)
+        active_model = active_session.model
+        facts_from_session = active_model.facts
+        print('Returning:')
+        print(facts_from_session)
         return {
-            'user_id': active_session.user_id,
-            'facts': active_session.model.facts
+            'user_id': int(active_session.user_id),
+            'facts': facts_from_session
             }
     else: 
         return {
