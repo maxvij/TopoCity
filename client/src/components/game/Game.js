@@ -5,7 +5,7 @@ import CountdownTimer from "react-component-countdown-timer";
 import {PlayArrow} from '@material-ui/icons';
 import {Search} from '@material-ui/icons';
 import {getShuffledAnswerOptions} from "../helpers/multiplechoice";
-import LogPanel from "../LogPanel";
+import LogPanel from "./LogPanel";
 import MapContainer from "./MapContainer";
 import ErrorPanel from "./ErrorPanel";
 import Feedback from "./Feedback";
