@@ -112,7 +112,7 @@ def init(session_id, user_id):
     #session_id = request.args.get('session_id')
     active_session = []
     for session in sessions:
-        if session.session_id == int(session_id):
+        if int(session.session_id) == int(session_id):
             active_session = session
     # print(active_session)
     if active_session:
@@ -183,7 +183,7 @@ def start():
     for session in sessions:
         # print('Checking every session for session_id')
         # print(session_id)
-        if session.session_id == int(session_id):
+        if int(session.session_id) == int(session_id):
             # print('Setting active session')
             active_session = session
     if active_session:
@@ -209,7 +209,7 @@ def facts():
         # print('Checking every session for session_id')
         # print(str(session.session_id) + ' is the session.session_id')
         # print(str(session_id) + ' is the current session')
-        if session.session_id == int(session_id):
+        if int(session.session_id) == int(session_id):
             # print('Found active session!')
             # print('Setting active session')
             active_session = session
@@ -243,7 +243,7 @@ def responses():
     session_id = request.args.get('session_id')
     active_session = []
     for session in sessions:
-        if session.session_id == int(session_id):
+        if int(session.session_id) == int(session_id):
             active_session = session
     if active_session:
         return {'responses': active_session.model.responses}
@@ -256,7 +256,7 @@ def get_next_fact():
     session_id = request.args.get('session_id')
     active_session = []
     for session in sessions:
-        if session.session_id == int(session_id):
+        if int(session.session_id) == int(session_id):
             active_session = session
     if active_session:
         active_session.question_presented_time = time_in_ms() - active_session.start_time
@@ -273,7 +273,7 @@ def getactivationlevel():
     session_id = request.args.get('session_id')
     active_session = []
     for session in sessions:
-        if session.session_id == int(session_id):
+        if int(session.session_id) == int(session_id):
             active_session = session
     if active_session:
         activationLevel = active_session.model.calculate_activation(time_in_ms() - active_session.start_time, active_session.next_fact)
@@ -289,7 +289,7 @@ def log_activations():
     session_id = request.args.get('session_id')
     active_session = []
     for session in sessions:
-        if session.session_id == int(session_id):
+        if int(session.session_id) == int(session_id):
             active_session = session
     if active_session:
         result = []
@@ -310,7 +310,7 @@ def insertActivations():
     session_id = request.args.get('session_id')
     active_session = []
     for session in sessions:
-        if session.session_id == int(session_id):
+        if int(session.session_id) == int(session_id):
             active_session = session
     if active_session:
         try:
@@ -356,7 +356,7 @@ def log_response():
     session_id = request.args.get('session_id')
     active_session = []
     for session in sessions:
-        if session.session_id == int(session_id):
+        if int(session.session_id) == int(session_id):
             active_session = session
     if active_session:
         if request.method == 'POST':
