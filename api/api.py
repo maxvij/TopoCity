@@ -186,7 +186,7 @@ def start():
 def facts():
     print('Fetching facts...')
     global sessions
-    session_id = request.args.get('session_id')
+    session_id = int(request.args.get('session_id'))
     print('Global session variable:')
     print(sessions)
     active_session = []
@@ -194,13 +194,14 @@ def facts():
         print('Checking every session for session_id')
         print(str(session.session_id) + ' is the session.session_id')
         print(str(session_id) + ' is the current session')
-        if str(session.session_id) == str(session_id):
+        if session.session_id == session_id:
             print('Found active session!')
             print('Setting active session')
             active_session = session
         else:
-            print ('Did not find an active session')
+            print('Did not find an active session')
     if active_session:
+        print('Returning active session facts')
         return {
             'user_id': active_session.user_id,
             'facts': active_session.model.facts
