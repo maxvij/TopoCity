@@ -100,6 +100,8 @@ def initSession():
                 }
             return jsonify(data), 200
         except Exception as error:
+            print('Error')
+            print(Exception)
             return jsonify('Error' + str(error)), 400
         finally:
             cursor.close()
@@ -142,13 +144,24 @@ def init(session_id, user_id):
                 condition = 0
                 print('User ID: ' + str(user_id))
                 print('City name: '+ str(city_name))
+                print('Session ID: ' + str(session_id))
                 if int(user_id) % 2 == 0:
                     condition = 1
                     initial_alpha = 0.3
                 else:
                     condition = 0
-                    inalpha = pd.read_sql("SELECT * FROM initial_alphas WHERE user_id = %s AND city = %s LIMIT 1", connection, params=[user_id, city_name])
-                    initial_alpha = inalpha['initial_alpha'].tail(1).item()
+                    query_string = "SELECT * FROM initial_alphas WHERE session_id = %s AND city = %s"
+                    cursor = connection.cursor()
+                    cursor.execute(query_string, (session_id, city_name))
+                    records = cursor.fetchall()
+                    print(records)
+                    # inalpha = pd.read_sql("SELECT * FROM initial_alphas WHERE session_id = %s AND city = %s", connection, params=[int(session_id), city_name])
+                    # print(inalpha)
+                    if records.empty:
+                        initial_alpha = 0.3
+                    else:
+                        initial_alpha = 0.4
+                        # initial_alpha = inalpha['initial_alpha'].tail(1).item()
                 #return 'Initial Alpha: ' + str(inalpha['initial_alpha'][0])
                 combinedLongLat = str(row['Longitude']) + "-" + str(row['Latitude'])
                 active_session.model.add_fact(Fact(index, combinedLongLat, row['Woonplaatsen'],initial_alpha))
@@ -312,7 +325,9 @@ def insertActivations():
             connection.commit()
             return jsonify('Responses have been logged'), 200
         except Exception as error:
-                return jsonify(str(error)), 400
+            print(Exception)
+            print(error)
+            return jsonify(str(error)), 400
         finally:
             cursor.close()
             connection.close()
@@ -401,8 +416,10 @@ def users():
 
 @app.route('/initializeuser', methods=['POST'])
 def initializeUser():
-    user_id = request.args.get('user_id')
-    if user_id:
+    user_id = int(request.args.get('user_id'))
+    session_id = int(request.args.get('session_id'))
+    print(session_id)
+    if session_id:
         if request.method == 'POST':
             # put home cities into an array
             homes = request.args.get('cities')
@@ -461,9 +478,9 @@ def initializeUser():
                 count = 1
                 for index, row in df.iterrows():
                     query = """INSERT INTO initial_alphas
-                            (user_id, city, percentile_population, min_distance, initial_alpha)
-                            VALUES (%s,%s,%s,%s,%s)"""
-                    data = (user_id, row['City'], row['percentile_popularity'], row['min_distance'], row['initial_alpha'])
+                            (user_id, session_id, city, percentile_population, min_distance, initial_alpha)
+                            VALUES (%s,%s,%s,%s,%s,%s)"""
+                    data = (user_id, session_id, row['City'], row['percentile_popularity'], row['min_distance'], row['initial_alpha'])
                     cursor.execute(query, data)
                     count += 1
                 # accept the changes
@@ -474,6 +491,8 @@ def initializeUser():
                 }
                 return jsonify(data), 200
             except Exception as error:
+                print(Exception)
+                print(error)
                 return jsonify(str(error)), 400
             finally:
                 cursor.close()
@@ -506,6 +525,8 @@ def createUser():
             return jsonify(data), 200
             return 'User created sucessfully.'
         except Exception as error:
+            print(Exception)
+            print(error)
             return jsonify(str(error)), 400
         finally:
             cursor.close()

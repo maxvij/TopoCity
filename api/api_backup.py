@@ -379,11 +379,12 @@ def initializeUser():
             cursor = connection.cursor()
             mean_alpha = df["initial_alpha"].mean()
             count = 1
+            print('Attempting to insert into initial_alphas')
             for index, row in df.iterrows():
                 query = """INSERT INTO initial_alphas
-                        (user_id, city, percentile_population, min_distance, initial_alpha)
-                        VALUES (%s,%s,%s,%s,%s)"""
-                data = (user_id, row['City'], row['percentile_popularity'], row['min_distance'], row['initial_alpha'])
+                        (user_id, session_id, city, percentile_population, min_distance, initial_alpha)
+                        VALUES (%s,%s,%s,%s,%s,%s)"""
+                data = (user_id, session_id, row['City'], row['percentile_popularity'], row['min_distance'], row['initial_alpha'])
                 cursor.execute(query, data)
                 count += 1
             # accept the changes
