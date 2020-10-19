@@ -7,7 +7,8 @@ class Slider extends Component {
     constructor(props, context) {
         super(props, context)
         this.state = {
-            value: 0
+            value: 0,
+            loading: false
         }
     }
 
@@ -24,11 +25,17 @@ class Slider extends Component {
         if(duration === null) {
             duration = 10
         }
+        this.setState({
+            loading: true
+        })
         fetch((typeof (process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + "/initsession?duration=" + duration + "&province=" + province + "&user_id=" + user_id, {
             method: 'POST'
         })
             .then((resp) => resp.json())
             .then((result) => {
+                this.setState({
+                    loading: false
+                })
                 localStorage.setItem('topo_session_id', result.learning_session_id)
                 this.props.history.push("/initialize")
             });
@@ -52,8 +59,8 @@ class Slider extends Component {
                         onChangeComplete={this.handleOnChange}
                     />
                     <div className="filler-40"></div>
-                    <Button onClick={this.handleContinue} variant="yellow" size="lg" color="blue" block>
-                        Let's go!
+                    <Button disabled={this.state.loading} onClick={this.handleContinue} variant="yellow" size="lg" color="blue" block>
+                        {this.state.loading ? 'Initializing...' : "Let's go!"}
                     </Button>
 
                 </div>

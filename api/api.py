@@ -286,7 +286,7 @@ def log_activations():
             result.append(fact)
         return jsonify(result)
     else:
-        return{[]}
+        return{jsonify([])}
 
 @app.route('/insertactivations')
 def insertActivations():
