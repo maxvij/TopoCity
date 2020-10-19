@@ -13,3 +13,4 @@ scipy==1.5.2
 DateTime==4.3
 waitress==1.4.4
 gunicorn==20.0.4
+recordtype==1.3
