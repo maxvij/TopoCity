@@ -213,7 +213,7 @@ def facts():
             # print('Found active session!')
             # print('Setting active session')
             active_session = session
-        else:
+        # else:
             # print('Did not find an active session')
     if active_session:
         # print('Returning active session facts')
@@ -360,7 +360,7 @@ def log_response():
             active_session = session
     if active_session:
         if request.method == 'POST':
-            with open("starttimes.txt", "a") as text_file:
+            # with open("starttimes.txt", "a") as text_file:
                 # print("Start times: {}".format(active_session.question_presented_time), file=text_file)
             # print('Response logged')
             # print(request.json)
