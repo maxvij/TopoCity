@@ -8,7 +8,8 @@ class Province extends React.Component {
         this.handleSelect = this.handleSelect.bind(this);
         this.state = {
             provinces: [],
-            province: ''
+            province: '',
+            loading: true
         }
     }
 
@@ -22,7 +23,7 @@ class Province extends React.Component {
         fetch((typeof (process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/provinces')
             .then(res => res.json())
             .then((data) => {
-                this.setState({provinces: data})
+                this.setState({provinces: data, loading: false})
 
             })
             .catch(console.log)
@@ -38,7 +39,7 @@ class Province extends React.Component {
                     <Container>
                         {/* Stack the columns on mobile by making one full-width and the other half-width */}
                         <Row>
-                            {this.state.provinces.map((province, index) => (
+                            {this.state.loading ? <p style={{textAlign: 'center', width: '100%'}}>Fetching provinces...</p> : this.state.provinces.map((province, index) => (
                                 <Col xs={6} md={6} key={index}>
                                     <Button disabled={(province !== "Groningen" && province !== "Friesland")} variant="blue"
                                             onClick={() => this.handleSelect(province)} size="lg" color="blue" block>
