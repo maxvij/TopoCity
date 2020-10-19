@@ -78,19 +78,18 @@ def initSession():
             # get new user id
             learning_session_id = cursor.lastrowid
             session_id = learning_session_id
-            print('Database id of the new sesh:')
-            print(session_id)
+            # print('Database id of the new sesh:')
+            # print(session_id)
             print ('All sessions before append:')
             global sessions
-            print(sessions)
-            print('Creating new session: ')
+            # print(sessions)
+            # print('Creating new session: ')
             new_session = Session(session_id, user_id, model, datetime_now, 'active', 0, time_in_ms(), 0, 0, Fact(fact_id=0, question='', answer='', inalpha=0.3), True)
-            print('The new session')
-            print(new_session)
+            # print('The new session')
+            # print(new_session)
             sessions.append(new_session)
             print ('All sessions after append:')
-            print(sessions)
-            init(session_id, user_id)
+            # print(sessions)
             # accept the changes
             connection.commit()
             data = {
@@ -100,6 +99,8 @@ def initSession():
                 }
             return jsonify(data), 200
         except Exception as error:
+            # print('Error')
+            # print(Exception)
             return jsonify('Error' + str(error)), 400
         finally:
             cursor.close()
@@ -113,11 +114,11 @@ def init(session_id, user_id):
     for session in sessions:
         if session.session_id == int(session_id):
             active_session = session
-    print(active_session)
+    # print(active_session)
     if active_session:
-        print('Initializing model...')
-        print('Length of model.facts: ', len(active_session.model.facts))
-        print('Resetting log file starttimes.txt')
+        # print('Initializing model...')
+        # print('Length of model.facts: ', len(active_session.model.facts))
+        # print('Resetting log file starttimes.txt')
         with open("starttimes.txt", "w") as text_file:
             text_file.flush()
         if len(active_session.model.facts) == 0:
@@ -140,21 +141,36 @@ def init(session_id, user_id):
                 #return row.to_json(orient='records')
                 #initial_alpha = db.loc[db['city'] == row['Woonplaatsen']]
                 condition = 0
-                print('User ID: ' + str(user_id))
-                print('City name: '+ str(city_name))
+                # print('User ID: ' + str(user_id))
+                # print('City name: '+ str(city_name))
+                # print('Session ID: ' + str(session_id))
                 if int(user_id) % 2 == 0:
                     condition = 1
                     initial_alpha = 0.3
                 else:
                     condition = 0
-                    inalpha = pd.read_sql("SELECT * FROM initial_alphas WHERE user_id = %s AND city = %s LIMIT 1", connection, params=[user_id, city_name])
-                    initial_alpha = inalpha['initial_alpha'].tail(1).item()
+                    query_string = "SELECT * FROM initial_alphas WHERE session_id = %s AND city = %s LIMIT 1"
+                    cursor = connection.cursor()
+                    cursor.execute(query_string, (session_id, city_name))
+                    records = cursor.fetchall()
+                    # print('PRINTING RECORDS')
+                    # print('--------')
+                    # print(records)
+                    # inalpha = pd.read_sql("SELECT * FROM initial_alphas WHERE session_id = %s AND city = %s", connection, params=[int(session_id), city_name])
+                    # # print(inalpha)
+                    if not records:
+                        initial_alpha = 0.3
+                    else:
+                        # print('setting initial alpha to')
+                        # print(records[0][-1])
+                        initial_alpha = records[0][-1]
+                        # initial_alpha = inalpha['initial_alpha'].tail(1).item()
                 #return 'Initial Alpha: ' + str(inalpha['initial_alpha'][0])
                 combinedLongLat = str(row['Longitude']) + "-" + str(row['Latitude'])
                 active_session.model.add_fact(Fact(index, combinedLongLat, row['Woonplaatsen'],initial_alpha))
                 # add inalpha to add_fact module
             connection.close()
-    print(len(active_session.model.facts), ' facts added to the model')
+    # print(len(active_session.model.facts), ' facts added to the model')
     return {
         'facts': active_session.model.facts
         }
@@ -165,52 +181,52 @@ def start():
     session_id = request.args.get('session_id')
     active_session = []
     for session in sessions:
-        print('Checking every session for session_id')
-        print(session_id)
+        # print('Checking every session for session_id')
+        # print(session_id)
         if session.session_id == int(session_id):
-            print('Setting active session')
+            # print('Setting active session')
             active_session = session
     if active_session:
         # Initialize timing variables
         active_session.start_time = time_in_ms() - active_session.init_time
         active_session.question_presented_time = active_session.start_time
         active_session.response_time = active_session.start_time
-        print('Started model session with start time: ')
-        print(active_session.start_time)
+        # print('Started model session with start time: ')
+        # print(active_session.start_time)
         return {'start_time': active_session.start_time}
     else:
         return {'start_time':0}
 
 @app.route('/facts')
 def facts():
-    print('Fetching facts...')
+    # print('Fetching facts...')
     global sessions
     session_id = int(request.args.get('session_id'))
-    print('Global session variable:')
-    print(sessions)
+    # print('Global session variable:')
+    # print(sessions)
     active_session = []
     for session in sessions:
-        print('Checking every session for session_id')
-        print(str(session.session_id) + ' is the session.session_id')
-        print(str(session_id) + ' is the current session')
+        # print('Checking every session for session_id')
+        # print(str(session.session_id) + ' is the session.session_id')
+        # print(str(session_id) + ' is the current session')
         if session.session_id == int(session_id):
-            print('Found active session!')
-            print('Setting active session')
+            # print('Found active session!')
+            # print('Setting active session')
             active_session = session
         else:
-            print('Did not find an active session')
+            # print('Did not find an active session')
     if active_session:
-        print('Returning active session facts')
-        print('Active session:')
-        print(active_session)
-        print('Active model:')
-        print(active_session.model)
-        print('Active model facts:')
-        print(active_session.model.facts)
+        # print('Returning active session facts')
+        # print('Active session:')
+        # print(active_session)
+        # print('Active model:')
+        # print(active_session.model)
+        # print('Active model facts:')
+        # print(active_session.model.facts)
         active_model = active_session.model
         facts_from_session = active_model.facts
-        print('Returning:')
-        print(facts_from_session)
+        # print('Returning:')
+        # print(facts_from_session)
         return {
             'user_id': int(active_session.user_id),
             'facts': facts_from_session
@@ -312,7 +328,9 @@ def insertActivations():
             connection.commit()
             return jsonify('Responses have been logged'), 200
         except Exception as error:
-                return jsonify(str(error)), 400
+            # print(Exception)
+            # print(error)
+            return jsonify(str(error)), 400
         finally:
             cursor.close()
             connection.close()
@@ -343,9 +361,9 @@ def log_response():
     if active_session:
         if request.method == 'POST':
             with open("starttimes.txt", "a") as text_file:
-                print("Start times: {}".format(active_session.question_presented_time), file=text_file)
-            print('Response logged')
-            print(request.json)
+                # print("Start times: {}".format(active_session.question_presented_time), file=text_file)
+            # print('Response logged')
+            # print(request.json)
             correctAnswer = False
             if request.json['correct'] == 'true':
                 correctAnswer = True
@@ -353,8 +371,8 @@ def log_response():
             resp = Response(fact=active_session.next_fact, start_time=active_session.question_presented_time,
                             rt=active_session.response_time - active_session.question_presented_time,
                             correct=correctAnswer)
-            print('RESPONSE LOG MAX: ')
-            print(resp)
+            # print('RESPONSE LOG MAX: ')
+            # print(resp)
             active_session.model.register_response(resp)
             city = resp[0][2]
             start_time = str(resp[1])
@@ -362,9 +380,9 @@ def log_response():
             correct = 0
             if correctAnswer == True:
                 correct = 1
-            print(city)
-            print(start_time)
-            print(reaction_time)
+            # print(city)
+            # print(start_time)
+            # print(reaction_time)
             user_id = request.json['user_id']
             insertResponse(user_id, city, start_time, reaction_time, correct)
         return {
@@ -401,8 +419,15 @@ def users():
 
 @app.route('/initializeuser', methods=['POST'])
 def initializeUser():
-    user_id = request.args.get('user_id')
-    if user_id:
+    user_id = int(request.args.get('user_id'))
+    session_id = int(request.args.get('session_id'))
+    # print('initializing user')
+    # print('session_id:')
+    # print(session_id)
+    # print('user_id:')
+    # print(user_id)
+    if session_id:
+        # print('Session_id was found')
         if request.method == 'POST':
             # put home cities into an array
             homes = request.args.get('cities')
@@ -460,20 +485,38 @@ def initializeUser():
                 mean_alpha = df["initial_alpha"].mean()
                 count = 1
                 for index, row in df.iterrows():
+                    # print('Inserting into initial alphas (user id, session_id, city, percentile population, min_distance, initial alpha):')
+                    # print(user_id)
+                    # print(',')
+                    # print(session_id)
+                    # print(',')
+                    # print(row['City'])
+                    # print(',')
+                    # print(row['percentile_popularity'])
+                    # print(',')
+                    # print(row['min_distance'])
+                    # print(',')
+                    # print(row['initial_alpha'])
                     query = """INSERT INTO initial_alphas
-                            (user_id, city, percentile_population, min_distance, initial_alpha)
-                            VALUES (%s,%s,%s,%s,%s)"""
-                    data = (user_id, row['City'], row['percentile_popularity'], row['min_distance'], row['initial_alpha'])
+                            (user_id, session_id, city, percentile_population, min_distance, initial_alpha)
+                            VALUES (%s,%s,%s,%s,%s,%s)"""
+                    data = (user_id, session_id, row['City'], row['percentile_popularity'], row['min_distance'], row['initial_alpha'])
                     cursor.execute(query, data)
                     count += 1
                 # accept the changes
                 connection.commit()
+                # print('Should be in table')
+                # print('Now we can init session')
+                init(session_id, user_id)
+
                 data = {
                     'initial_alphas_added': count,
                     'mean_alpha': mean_alpha
                 }
                 return jsonify(data), 200
             except Exception as error:
+                # print(Exception)
+                # print(error)
                 return jsonify(str(error)), 400
             finally:
                 cursor.close()
@@ -506,6 +549,8 @@ def createUser():
             return jsonify(data), 200
             return 'User created sucessfully.'
         except Exception as error:
+            # print(Exception)
+            # print(error)
             return jsonify(str(error)), 400
         finally:
             cursor.close()
