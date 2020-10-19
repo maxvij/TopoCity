@@ -302,7 +302,7 @@ def log_activations():
             result.append(fact)
         return jsonify(result)
     else:
-        return{jsonify([])}
+        return jsonify('Could not find active session', 404)
 
 @app.route('/insertactivations')
 def insertActivations():
