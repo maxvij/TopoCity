@@ -203,7 +203,7 @@ class Game extends React.Component {
                 trainingFacts: data.facts
             });
         }).catch((error) => {
-            this.getFacts()
+            // this.getFacts()
             // this.logError('Unable to fetch facts', error)
         });
     }
