@@ -107,12 +107,18 @@ def initSession():
             connection.close()
 
 @app.route('/init')
-def init(session_id, user_id):
-    global sessions
-    #session_id = request.args.get('session_id')
+def init(session_id, user_id, session_variable):
     active_session = []
-    for session in sessions:
-        if session.session_id == int(session_id):
+    print('Init session_id')
+    print(session_id)
+    print('Init user_id')
+    print(user_id)
+    print('Sessions:')
+    print(session_variable)
+    for session in session_variable:
+        print('Checking each session from sessions list')
+        if session.session_id == session_id:
+            print('SESSION FOUND IN INIT')
             active_session = session
     print(active_session)
     if active_session:
@@ -170,10 +176,10 @@ def init(session_id, user_id):
                 active_session.model.add_fact(Fact(index, combinedLongLat, row['Woonplaatsen'],initial_alpha))
                 # add inalpha to add_fact module
             connection.close()
-    print(len(active_session.model.facts), ' facts added to the model')
-    return {
-        'facts': active_session.model.facts
-        }
+        print(len(active_session.model.facts), ' facts added to the model')
+        return {
+            'facts': active_session.model.facts
+            }
 
 @app.route('/start')
 def start():
@@ -507,7 +513,7 @@ def initializeUser():
                 connection.commit()
                 print('Should be in table')
                 print('Now we can init session')
-                init(session_id, user_id)
+                init(session_id, user_id, sessions)
 
                 data = {
                     'initial_alphas_added': count,
