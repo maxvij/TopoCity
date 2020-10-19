@@ -12,12 +12,13 @@ from scipy import stats
 from flaskext.mysql import MySQL
 from datetime import datetime
 import sys
+from recordtype import recordtype
 
 # Initialize flask aapp
 app = Flask(__name__)
 CORS(app)
 
-Session = namedtuple("Session", "session_id, user_id, model, created_at, status, start_time, init_time, question_presented_time, response_time, next_fact, new")
+Session = recordtype("Session", "session_id user_id model created_at status start_time init_time question_presented_time response_time next_fact new")
 
 sessions = []
 
@@ -110,7 +111,7 @@ def init(session_id, user_id):
     #session_id = request.args.get('session_id')
     active_session = []
     for session in sessions:
-        if session.session_id == session_id:
+        if session.session_id == int(session_id):
             active_session = session
     print(active_session)
     if active_session:
@@ -166,18 +167,17 @@ def start():
     for session in sessions:
         print('Checking every session for session_id')
         print(session_id)
-        if session.session_id == session_id:
-            print('Found acive session!')
+        if session.session_id == int(session_id):
             print('Setting active session')
             active_session = session
     if active_session:
         # Initialize timing variables
-        active_session.starttime = time_in_ms() - active_session.init_time
-        active_session.question_presented_time = active_session.starttime
-        active_session.response_time = active_session.starttime
+        active_session.start_time = time_in_ms() - active_session.init_time
+        active_session.question_presented_time = active_session.start_time
+        active_session.response_time = active_session.start_time
         print('Started model session with start time: ')
-        print(active_session.starttime)
-        return {'start_time': active_session.starttime}
+        print(active_session.start_time)
+        return {'start_time': active_session.start_time}
     else:
         return {'start_time':0}
 
@@ -193,7 +193,7 @@ def facts():
         print('Checking every session for session_id')
         print(str(session.session_id) + ' is the session.session_id')
         print(str(session_id) + ' is the current session')
-        if session.session_id == session_id:
+        if session.session_id == int(session_id):
             print('Found active session!')
             print('Setting active session')
             active_session = session
@@ -215,7 +215,7 @@ def facts():
             'user_id': int(active_session.user_id),
             'facts': facts_from_session
             }
-    else: 
+    else:
         return {
             'user_id': 0,
             'facts': []
@@ -227,7 +227,7 @@ def responses():
     session_id = request.args.get('session_id')
     active_session = []
     for session in sessions:
-        if session.session_id == session_id:
+        if session.session_id == int(session_id):
             active_session = session
     if active_session:
         return {'responses': active_session.model.responses}
@@ -240,10 +240,10 @@ def get_next_fact():
     session_id = request.args.get('session_id')
     active_session = []
     for session in sessions:
-        if session.session_id == session_id:
+        if session.session_id == int(session_id):
             active_session = session
     if active_session:
-        active_session.question_presented_time = time_in_ms() - active_session.starttime
+        active_session.question_presented_time = time_in_ms() - active_session.start_time
         active_session.next_fact, active_session.new = active_session.model.get_next_fact(active_session.question_presented_time)
         return {'next_fact': active_session.next_fact,
                 'new': active_session.new}
@@ -257,10 +257,10 @@ def getactivationlevel():
     session_id = request.args.get('session_id')
     active_session = []
     for session in sessions:
-        if session.session_id == session_id:
+        if session.session_id == int(session_id):
             active_session = session
     if active_session:
-        activationLevel = active_session.model.calculate_activation(time_in_ms() - active_session.starttime, active_session.next_fact)
+        activationLevel = active_session.model.calculate_activation(time_in_ms() - active_session.start_time, active_session.next_fact)
         if numpy.isinf(activationLevel):
             activationLevel = "-Inf"
         return {'activation':activationLevel}
@@ -273,7 +273,7 @@ def log_activations():
     session_id = request.args.get('session_id')
     active_session = []
     for session in sessions:
-        if session.session_id == session_id:
+        if session.session_id == int(session_id):
             active_session = session
     if active_session:
         result = []
@@ -282,7 +282,7 @@ def log_activations():
             fact.append(f.fact_id)
             fact.append(f.question)
             fact.append(f.answer)
-            fact.append(str(active_session.model.calculate_activation(time_in_ms() - active_session.starttime, f)))
+            fact.append(str(active_session.model.calculate_activation(time_in_ms() - active_session.start_time, f)))
             result.append(fact)
         return jsonify(result)
     else:
@@ -294,7 +294,7 @@ def insertActivations():
     session_id = request.args.get('session_id')
     active_session = []
     for session in sessions:
-        if session.session_id == session_id:
+        if session.session_id == int(session_id):
             active_session = session
     if active_session:
         try:
@@ -302,8 +302,8 @@ def insertActivations():
             cursor = connection.cursor()
             for f in active_session.model.facts:
                 city = str(f.answer)
-                activation = str(active_session.model.calculate_activation(time_in_ms() - active_session.starttime, f))
-                alpha = str(active_session.model.get_rate_of_forgetting(time_in_ms() - active_session.starttime, f))
+                activation = str(active_session.model.calculate_activation(time_in_ms() - active_session.start_time, f))
+                alpha = str(active_session.model.get_rate_of_forgetting(time_in_ms() - active_session.start_time, f))
                 query = """INSERT INTO outcomes
                                 (user_id, session_id, city, alpha, activation)
                                 VALUES (%s,%s,%s,%s,%s)"""
@@ -338,7 +338,7 @@ def log_response():
     session_id = request.args.get('session_id')
     active_session = []
     for session in sessions:
-        if session.session_id == session_id:
+        if session.session_id == int(session_id):
             active_session = session
     if active_session:
         if request.method == 'POST':
