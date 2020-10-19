@@ -145,7 +145,6 @@ export default class Game extends React.Component {
                 activationLevel: data.activation,
             });
         }).catch((error) => {
-            this.getActivationLevel()
             // this.logError('Unable to fetch the activation level', error)
         });
     }
@@ -159,7 +158,7 @@ export default class Game extends React.Component {
         }).catch((error) => {
             this.logError('Unable to start the model', error)
         });
-        setInterval(this.getActivationLevels, 1000);
+        setInterval(this.getActivationLevels, 3000);
     }
 
     endGame = () => {
@@ -221,7 +220,6 @@ export default class Game extends React.Component {
                 activationLevels: data
             });
         }).catch((error) => {
-            this.getActivationLevels()
             // this.logError('Unable to fetch activation levels', error)
         });
     }
