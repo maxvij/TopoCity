@@ -109,10 +109,9 @@ def initSession():
 @app.route('/init')
 def init(session_id, user_id):
     global sessions
-    #session_id = request.args.get('session_id')
     active_session = []
     for session in sessions:
-        if session.session_id == int(session_id):
+        if session.session_id == session_id:
             active_session = session
     print(active_session)
     if active_session:
