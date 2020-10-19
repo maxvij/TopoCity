@@ -112,7 +112,7 @@ def init(session_id, user_id):
     #session_id = request.args.get('session_id')
     active_session = []
     for session in sessions:
-        if int(session.session_id) == int(session_id):
+        if session.session_id == int(session_id):
             active_session = session
     # print(active_session)
     if active_session:
