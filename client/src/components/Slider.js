@@ -19,26 +19,7 @@ class Slider extends Component {
         localStorage.setItem('topo_duration', value);
     }
     handleContinue = () => {
-        let duration = localStorage.getItem('topo_duration')
-        let province = localStorage.getItem('topo_province')
-        let user_id = localStorage.getItem('topo_user_id')
-        if(duration === null) {
-            duration = 10
-        }
-        this.setState({
-            loading: true
-        })
-        fetch((typeof (process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + "/initsession?duration=" + duration + "&province=" + province + "&user_id=" + user_id, {
-            method: 'POST'
-        })
-            .then((resp) => resp.json())
-            .then((result) => {
-                this.setState({
-                    loading: false
-                })
-                localStorage.setItem('topo_session_id', result.learning_session_id)
-                this.props.history.push("/initialize")
-            });
+        this.props.history.push("/initialize")
     }
 
     render() {

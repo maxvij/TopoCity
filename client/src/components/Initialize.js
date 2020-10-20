@@ -14,15 +14,15 @@ function Initialize() {
     useEffect(() => {
         let origin = localStorage.getItem('topo_origin')
         let user_id = localStorage.getItem('topo_user_id')
-        let session_id = localStorage.getItem('topo_session_id')
         const uriPrefix = (typeof (process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '')
-        const uri = uriPrefix + '/initializeuser?cities=' + origin + '&user_id=' + user_id + '&session_id=' + session_id;
+        const uri = uriPrefix + '/initializeuser?cities=' + origin + '&user_id=' + user_id;
         fetch(uri, {
             method: 'post'
         })
             .then(res => res.json())
             .then(
                 (result) => {
+                    localStorage.setItem('topo_session_id', result.session_id)
                     setIsLoaded(true);
                 },
                 // Note: it's important to handle errors here

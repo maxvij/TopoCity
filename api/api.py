@@ -51,52 +51,45 @@ def get_current_time():
     return {'time': time_in_ms()}
 
 @app.route('/initsession', methods=['POST'])
-def initSession():
-    if request.method == 'POST':
-        model = SpacingModel()
-        province = request.args.get('province')
-        duration = request.args.get('duration')       
-        user_id = request.args.get('user_id')        
-        datetime_now = datetime.now()
-        datetime_now = datetime_now.strftime('%Y-%m-%d %H:%M:%S')
-        # insert into db
-        connection = mysql.connect()
-        query = """ INSERT INTO learning_session
-                    (user_id, duration, start, province)
-                    VALUES (%s,%s,%s,%s)"""
-        data = (user_id, duration, datetime_now, "Groningen,Friesland")
-        try:
-            # update book title
-            cursor = connection.cursor()
-            cursor.execute(query, data)
-            # get new user id
-            learning_session_id = cursor.lastrowid
-            session_id = learning_session_id
-            print('Database id of the new sesh:')
-            print(session_id)
-            print('Creating new session: ')
-            new_session = Session(session_id, user_id, model, datetime_now, 'active', 0, time_in_ms(), 0, 0, Fact(fact_id=0, question='', answer='', inalpha=0.3), True)
-            print('The new session')
-            print(new_session)
-            global sessions
-            sessions.append(new_session)
-            print ('All sessions after append:')
-            print(sessions)
-            # accept the changes
-            connection.commit()
-            data = {
-                'learning_session_id': learning_session_id,
-                'province': province,
-                'duration': duration
-                }
-            return jsonify(data), 200
-        except Exception as error:
-            print('Error')
-            print(Exception)
-            return jsonify('Error' + str(error)), 400
-        finally:
-            cursor.close()
-            connection.close()
+def initSession(user_id):
+    model = SpacingModel()
+    duration = 10
+    province = "Groningen"
+    datetime_now = datetime.now()
+    datetime_now = datetime_now.strftime('%Y-%m-%d %H:%M:%S')
+    # insert into db
+    connection = mysql.connect()
+    query = """ INSERT INTO learning_session
+                (user_id, duration, start, province)
+                VALUES (%s,%s,%s,%s)"""
+    data = (user_id, duration, datetime_now, "Groningen,Friesland")
+    try:
+        # update book title
+        cursor = connection.cursor()
+        cursor.execute(query, data)
+        # get new user id
+        learning_session_id = cursor.lastrowid
+        session_id = learning_session_id
+        print('Database id of the new sesh:')
+        print(session_id)
+        print('Creating new session: ')
+        new_session = Session(session_id, user_id, model, datetime_now, 'active', 0, time_in_ms(), 0, 0, Fact(fact_id=0, question='', answer='', inalpha=0.3), True)
+        print('The new session')
+        print(new_session)
+        global sessions
+        sessions.append(new_session)
+        print ('All sessions after append:')
+        print(sessions)
+        # accept the changes
+        connection.commit()
+        return learning_session_id
+    except Exception as error:
+        print('Error')
+        print(Exception)
+        return error
+    finally:
+        cursor.close()
+        connection.close()
 
 @app.route('/init')
 def init(session_id, user_id, session_variable):
@@ -416,7 +409,13 @@ def users():
 @app.route('/initializeuser', methods=['POST'])
 def initializeUser():
     user_id = int(request.args.get('user_id'))
-    session_id = int(request.args.get('session_id'))
+    session_id = 0
+    try:
+        session_id = initSession(user_id)
+    except Exception as error:
+        print('Error')
+        print(Exception)
+        return error
     print('initializing user')
     print('session_id:')
     print(session_id)
@@ -505,7 +504,8 @@ def initializeUser():
 
                 data = {
                     'initial_alphas_added': count,
-                    'mean_alpha': mean_alpha
+                    'mean_alpha': mean_alpha,
+                    'session_id': session_id
                 }
                 try:
                     print('Now we can init session')
