@@ -57,8 +57,8 @@ def get_current_time():
 
 @app.route('/initsession', methods=['POST'])
 def initSession():
+    global sessions
     if request.method == 'POST':
-        global sessions
         model = SpacingModel()
         province = request.args.get('province')
         duration = request.args.get('duration')       
@@ -81,7 +81,6 @@ def initSession():
             print('Database id of the new sesh:')
             print(session_id)
             print ('All sessions before append:')
-            global sessions
             print(sessions)
             print('Creating new session: ')
             new_session = Session(session_id, user_id, model, datetime_now, 'active', 0, time_in_ms(), 0, 0, Fact(fact_id=0, question='', answer='', inalpha=0.3), True)
