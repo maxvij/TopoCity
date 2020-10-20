@@ -219,8 +219,6 @@ def facts():
             print('Found active session!')
             print('Setting active session')
             active_session = session
-        # else:
-            print('Did not find an active session')
     if active_session:
         print('Returning active session facts')
         print('Active session:')
@@ -512,13 +510,19 @@ def initializeUser():
                 # accept the changes
                 connection.commit()
                 print('Should be in table')
-                print('Now we can init session')
-                init(session_id, user_id, sessions)
 
                 data = {
                     'initial_alphas_added': count,
                     'mean_alpha': mean_alpha
                 }
+                try:
+                    print('Now we can init session')
+                    init(session_id, user_id, sessions)
+                except Exception as error:
+                    print('Error in init function')
+                    print(error)
+                finally:
+                    print('Finally')
                 return jsonify(data), 200
             except Exception as error:
                 print(Exception)
