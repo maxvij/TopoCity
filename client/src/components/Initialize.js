@@ -7,6 +7,7 @@ function Initialize() {
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [items, setItems] = useState([]);
+    const [facts, setFacts] = useState([]);
 
     // Note: the empty deps array [] means
     // this useEffect will run once
@@ -23,6 +24,8 @@ function Initialize() {
             .then(
                 (result) => {
                     localStorage.setItem('topo_session_id', result.session_id)
+                    console.log('Setting facts to state: ', result.facts)
+                    setFacts(result.facts)
                     setIsLoaded(true);
                 },
                 // Note: it's important to handle errors here
@@ -53,7 +56,7 @@ function Initialize() {
         );
     } else {
         return (
-            <Redirect to='../game'/>
+            <Redirect to={{pathname: '../game', state: {facts: facts}}}/>
         );
     }
 }

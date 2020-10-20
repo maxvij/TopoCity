@@ -24,7 +24,7 @@ class Game extends React.Component {
             lat: 52.3740300,
             currentFact: {},
             activationLevel: 0,
-            facts: [],
+            facts: this.props.location.state.facts,
             responses: [],
             initialized: false,
             loading: true,
@@ -32,7 +32,7 @@ class Game extends React.Component {
             trainingFinished: false,
             gameStarted: false,
             gameFinished: false,
-            trainingFacts: [],
+            trainingFacts: this.props.location.state.facts,
             isNewFact: true,
             startTime: new Date(),
             responseTime: new Date(),
@@ -69,7 +69,7 @@ class Game extends React.Component {
             user_id: user_id,
             session_id: session_id
         });
-        this.getFacts()
+        // this.getFacts()
     }
 
     logResponse = (correct) => {

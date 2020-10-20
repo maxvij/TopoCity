@@ -50,7 +50,6 @@ time_in_ms = lambda: int(time.time() * 1000)
 def get_current_time():
     return {'time': time_in_ms()}
 
-@app.route('/initsession', methods=['POST'])
 def initSession(user_id):
     model = SpacingModel()
     duration = 10
@@ -91,7 +90,6 @@ def initSession(user_id):
         cursor.close()
         connection.close()
 
-@app.route('/init')
 def init(session_id, user_id, session_variable):
     active_session = []
     print('Init session_id')
@@ -162,9 +160,7 @@ def init(session_id, user_id, session_variable):
                 # add inalpha to add_fact module
             connection.close()
         print(len(active_session.model.facts), ' facts added to the model')
-        return {
-            'facts': active_session.model.facts
-            }
+        return active_session.model.facts
 
 @app.route('/start')
 def start():
@@ -501,20 +497,21 @@ def initializeUser():
                 # accept the changes
                 connection.commit()
                 print('Should be in table')
-
-                data = {
-                    'initial_alphas_added': count,
-                    'mean_alpha': mean_alpha,
-                    'session_id': session_id
-                }
+                facts_init = []
                 try:
                     print('Now we can init session')
-                    init(session_id, user_id, sessions)
+                    facts_init = init(session_id, user_id, sessions)
                 except Exception as error:
                     print('Error in init function')
                     print(error)
                 finally:
                     print('Finally')
+                    data = {
+                        'initial_alphas_added': count,
+                        'mean_alpha': mean_alpha,
+                        'session_id': session_id,
+                        'facts': facts_init
+                    }
                 return jsonify(data), 200
             except Exception as error:
                 print(Exception)
