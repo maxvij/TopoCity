@@ -555,7 +555,10 @@ def createUser():
             cursor.close()
             connection.close()
 
+# if __name__ == "__main__":
+     # app.debug = False
+     # port = int(os.environ.get('PORT', 33507))
+     # waitress.serve(app, port=port)
+
 if __name__ == "__main__":
-     app.debug = False
-     port = int(os.environ.get('PORT', 33507))
-     waitress.serve(app, port=port)
+    app.run(host='127.0.0.1', port=5000)
