@@ -375,7 +375,7 @@ def log_response():
             'start_time': start_time,
             'reaction_time': reaction_time,
             'correct': correct,
-            'responses': model.responses}
+            'responses': active_session.model.responses}
     else:
         return jsonify('No session id given', 200)
 
