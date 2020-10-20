@@ -43,6 +43,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "main": "public/electron.js",
   "eslintConfig": {
     "extends": "react-app"
   },
