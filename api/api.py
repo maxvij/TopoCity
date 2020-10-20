@@ -45,11 +45,6 @@ time_in_ms = lambda: int(time.time() * 1000)
 # user_id = 0
 # session_id = 0
 # Next facts
-next_fact = Fact(fact_id=0, question='', answer='', inalpha=0.3)
-new = True
-
-# Initialize model
-model = SpacingModel()
 
 @app.route('/time')
 def get_current_time():
@@ -57,7 +52,6 @@ def get_current_time():
 
 @app.route('/initsession', methods=['POST'])
 def initSession():
-    global sessions
     if request.method == 'POST':
         model = SpacingModel()
         province = request.args.get('province')
@@ -86,6 +80,7 @@ def initSession():
             new_session = Session(session_id, user_id, model, datetime_now, 'active', 0, time_in_ms(), 0, 0, Fact(fact_id=0, question='', answer='', inalpha=0.3), True)
             print('The new session')
             print(new_session)
+            global sessions
             sessions.append(new_session)
             print ('All sessions after append:')
             print(sessions)
@@ -182,9 +177,9 @@ def init(session_id, user_id, session_variable):
 
 @app.route('/start')
 def start():
-    global sessions
     session_id = request.args.get('session_id')
     active_session = []
+    global sessions
     for session in sessions:
         print('Checking every session for session_id')
         print(session_id)
@@ -205,12 +200,12 @@ def start():
 @app.route('/facts')
 def facts():
     print('Fetching facts...')
-    global sessions
     session_id = int(request.args.get('session_id'))
-    print('Global session variable:')
-    print(sessions)
     active_session = []
+    global sessions
     for session in sessions:
+        print('Global session variable:')
+        print(sessions)
         print('Checking every session for session_id')
         print(str(session.session_id) + ' is the session.session_id')
         print(str(session_id) + ' is the current session')
@@ -242,9 +237,9 @@ def facts():
 
 @app.route('/responses')
 def responses():
-    global sessions
     session_id = request.args.get('session_id')
     active_session = []
+    global sessions
     for session in sessions:
         if session.session_id == int(session_id):
             active_session = session
@@ -255,9 +250,9 @@ def responses():
 
 @app.route('/getnextfact')
 def get_next_fact():
-    global sessions
     session_id = request.args.get('session_id')
     active_session = []
+    global sessions
     for session in sessions:
         if session.session_id == int(session_id):
             active_session = session
@@ -272,9 +267,9 @@ def get_next_fact():
 
 @app.route('/getactivationlevel')
 def getactivationlevel():
-    global sessions
     session_id = request.args.get('session_id')
     active_session = []
+    global sessions
     for session in sessions:
         if session.session_id == int(session_id):
             active_session = session
@@ -288,9 +283,9 @@ def getactivationlevel():
 
 @app.route('/activationLog')
 def log_activations():
-    global sessions
     session_id = request.args.get('session_id')
     active_session = []
+    global sessions
     for session in sessions:
         if session.session_id == int(session_id):
             active_session = session
@@ -309,9 +304,9 @@ def log_activations():
 
 @app.route('/insertactivations')
 def insertActivations():
-    global sessions
     session_id = request.args.get('session_id')
     active_session = []
+    global sessions
     for session in sessions:
         if session.session_id == int(session_id):
             active_session = session
@@ -355,9 +350,9 @@ def insertResponse(user_id, city, start_time, reaction_time, correct):
 
 @app.route('/logresponse', methods=['POST'])
 def log_response():
-    global sessions
     session_id = request.args.get('session_id')
     active_session = []
+    global sessions
     for session in sessions:
         if session.session_id == int(session_id):
             active_session = session
