@@ -35,17 +35,6 @@ mysql.init_app(app)
 # Timing function
 time_in_ms = lambda: int(time.time() * 1000)
 
-# Initialize timing variables
-# init_time = time_in_ms()
-# starttime = 0
-# question_presented_time = 0
-# response_time = 0
-# province = ''
-# duration = 10
-# user_id = 0
-# session_id = 0
-# Next facts
-
 @app.route('/time')
 def get_current_time():
     return {'time': time_in_ms()}
@@ -465,7 +454,7 @@ def initializeUser():
                 elif min_dist <= 1:
                     reduction_distance = 0.075
                 total_reduction = reduction_popularity + reduction_distance
-                initial_alpha = .4 - total_reduction
+                initial_alpha = .35 - total_reduction
                 row.append(initial_alpha)
                 distances.append(row)
             df = pd.DataFrame(distances, columns = columns)
