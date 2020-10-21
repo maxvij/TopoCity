@@ -53,7 +53,7 @@ class Profile extends React.Component {
     }
 
     render() {
-        const helpPanel = <p>If you're having trouble setting up the server correctly, make sure to follow the steps as described in our <a target="_blank" href="https://github.com/maxvij/TopoCity">Readme at our Github repository</a>.</p>
+        const helpPanel = <p>If you're having trouble setting up the server correctly, make sure to follow the steps as described in our <a target="_blank" rel="noopener noreferrer" href="https://github.com/maxvij/TopoCity">Readme at our Github repository</a>.</p>
 
         return (
             <div className="center-box">
