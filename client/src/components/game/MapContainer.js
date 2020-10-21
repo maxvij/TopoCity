@@ -3,7 +3,7 @@ import ReactMapboxGl, {Source, Layer} from 'react-mapbox-gl';
 import MapLayers from "./MapLayers";
 
 const Map = ReactMapboxGl({
-    accessToken: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN,
+    accessToken: 'pk.eyJ1IjoibmlrbGFzbWFydGluIiwiYSI6ImNrZXR3aXRvaTFxZzAyeW9lajQ3d2ljZXgifQ.jfdervmfFmg7TSA8sU0CxA',
     minZoom: 7,
     maxZoom: 9,
     scrollZoom: false,

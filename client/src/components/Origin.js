@@ -35,7 +35,7 @@ const Origin = (dispatch, ownProps) => {
     function handleSearch(query) {
         setIsLoading(true);
 
-        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/citynames')
+        fetch('http://localhost:5000/citynames')
             .then((resp) => resp.json())
             .then((result) => {
                 setOptions(result);
