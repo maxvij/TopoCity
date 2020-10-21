@@ -53,14 +53,15 @@ class Profile extends React.Component {
     }
 
     render() {
-        const helpPanel = <p>If you're having trouble setting up the server correctly, make sure to follow the steps as described in our <a href="https://github.com/maxvij/TopoCity">Readme at our Github repository</a>.</p>
+        const helpPanel = <p>If you're having trouble setting up the server correctly, make sure to follow the steps as described in our <a target="_blank" href="https://github.com/maxvij/TopoCity">Readme at our Github repository</a>.</p>
 
         return (
             <div className="center-box">
                 <h1>Welcome to TopoCity!</h1>
                 <div className="max-400">
                 <p>TopoCity is a SlimStampen-based topography learning app for the Netherlands.</p>
-                <p>Thank you for willing to participate in this experiment. <br />The experiment should not take longer than <strong>10 minutes</strong>.</p>
+                <p>Thank you for willing to participate in this experiment. <br />The experiment should take approximately <strong>10 minutes</strong>.</p>
+                <br />
                 <p><span className={"status" + (this.state.connected ? " green" : " red")}>{this.state.connected ? 'connected to python' : 'not connected to python'}</span></p>
                     {this.state.connected === false && helpPanel}
                     {this.state.connected && <>
