@@ -1,7 +1,5 @@
 import React from 'react'
 import Button from "react-bootstrap/Button";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
 import {withRouter} from 'react-router-dom';
 
 class Profile extends React.Component {
@@ -46,19 +44,9 @@ class Profile extends React.Component {
         return (
             <div className="center-box">
                 <h1>Nice that you're here!</h1>
-                <div className="filler-40"></div>
                 <div className="max-400">
                 <div className="filler-40"></div>
-                    <h3>Have you played before?</h3>
-                    {this.state.loading ? 'Fetching profiles...' : <DropdownButton variant="blue" size='lg' title="Select an existing profile">
-                        {this.state.profiles.map((profile, index) => (
-                            <Dropdown.Item
-                                key={index}
-                                onClick={() => this.handleSelect(profile.id, profile.name, profile.homes)}>{profile.name}</Dropdown.Item>
-                        ))}
-                    </DropdownButton>}
-                    <div className="filler-40"></div>
-                    <h3>Are you new here?</h3>
+                    <h3>Please create a profile to continue</h3>
                     <Button href="/name" variant="yellow" size="lg" color="blue" block>
                         Create a new profile
                     </Button>
