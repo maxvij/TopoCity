@@ -11,7 +11,9 @@ const Origin = (dispatch, ownProps) => {
     const [isLoading, setIsLoading] = useState(false);
     const [options, setOptions] = useState([]);
     const [multiSelections, setMultiSelections] = useState([]);
+    /* eslint-disable no-unused-vars */
     const [status, setStatus] = useState([]);
+    /* eslint-enable no-unused-vars */
     const name = localStorage.getItem('topo_name')
     const history = useHistory();
 

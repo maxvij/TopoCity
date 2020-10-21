@@ -82,7 +82,9 @@ export default class MapContainer extends React.Component {
                 right: 0,
                 bottom: 0
             }}
+            /* eslint-disable react/style-prop-object */
             style={"mapbox://styles/niklasmartin/ckf3wu17m13kb19ldd3g5rhd3"}
+            /* eslint-enable react/style-prop-object */
             zoom={[8.5]}
             center={this.props.center}
             onStyleLoad={this.onStyleLoad}
