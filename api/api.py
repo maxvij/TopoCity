@@ -424,8 +424,8 @@ def initializeUser():
             homes = request.args.get('cities')
             homes = [x.strip() for x in homes.split(',')]
             # read city matrix
-            cities = pd.read_csv('city_matrix_new.csv')
-            provinceCities = pd.read_csv('groningen.csv')
+            cities = pd.read_csv('city_matrix.csv')
+            provinceCities = pd.read_csv('cities_gro_fri.csv')
             columns = ['City', 'Popularity']
             for index, city in enumerate(homes):
                 columns.append(homes[index])
