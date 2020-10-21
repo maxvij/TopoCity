@@ -10,7 +10,8 @@ To be able to run the application, you need:
 
 ### Clone the repository
 Clone this repository using the following command in a Git bash <br>
-```git clone https://github.com/maxvij/TopoCity.git```
+```git clone https://github.com/maxvij/TopoCity.git``` <br>
+or download the source code from the [latest release](https://github.com/maxvij/TopoCity/releases)
 
 ### Run the API
 1.  From the current folder (in which you cloned the project), go to <br>```cd /api``` 
