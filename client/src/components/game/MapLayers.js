@@ -9,7 +9,7 @@ export default class MapLayers extends React.Component {
                 "circle-color": "#28a745",
                 "circle-opacity": 0.4
             }}>
-                {this.props.activationLevels.length > 0 && this.props.activationLevels.filter(activation => (activation[3] !== "-inf" && activation[3] > 0)).map((activeCity) => {
+                {this.props.activationLevels.length > 0 && this.props.activationLevels.filter(activation => (activation[3] !== "-inf" && activation[3] > -0.2)).map((activeCity) => {
                     let splittedString = activeCity[1].split('-')
                     return <Feature key={activeCity[1]} coordinates={[Number(splittedString[0]), Number(splittedString[1])]} />
                 })}
@@ -19,7 +19,7 @@ export default class MapLayers extends React.Component {
                 "circle-color": "#dc3545",
                 "circle-opacity": 0.4
             }}>
-                {this.props.activationLevels.length > 0 && this.props.activationLevels.filter(activation => (activation[3] !== "-inf" && activation[3] < -0.5)).map((activeCity) => {
+                {this.props.activationLevels.length > 0 && this.props.activationLevels.filter(activation => (activation[3] !== "-inf" && activation[3] < -0.8)).map((activeCity) => {
                     let splittedString = activeCity[1].split('-')
                     return <Feature key={activeCity[1]} coordinates={[Number(splittedString[0]), Number(splittedString[1])]} />
                 })}
@@ -29,7 +29,7 @@ export default class MapLayers extends React.Component {
                 "circle-color": "#fd7e14",
                 "circle-opacity": 0.4
             }}>
-                {this.props.activationLevels.length > 0 && this.props.activationLevels.filter(activation => (activation[3] !== "-inf" && activation[3] < 0 && activation[3] >= -0.5)).map((activeCity) => {
+                {this.props.activationLevels.length > 0 && this.props.activationLevels.filter(activation => (activation[3] !== "-inf" && activation[3] < -0.2 && activation[3] >= -0.8)).map((activeCity) => {
                     let splittedString = activeCity[1].split('-')
                     return <Feature key={activeCity[1]} coordinates={[Number(splittedString[0]), Number(splittedString[1])]} />
                 })}
