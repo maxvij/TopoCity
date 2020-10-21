@@ -50,6 +50,10 @@ time_in_ms = lambda: int(time.time() * 1000)
 def get_current_time():
     return {'time': time_in_ms()}
 
+@app.route('/status')
+def get_status():
+    return {'status': 'OK'}
+
 def initSession(user_id):
     model = SpacingModel()
     duration = 10
