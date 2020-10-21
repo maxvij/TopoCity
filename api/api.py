@@ -517,6 +517,19 @@ def initializeUser():
     else:
         return jsonify('No user id given', 400)
 
+@app.route('/getgrade', methods=['POST', 'GET'])
+def getGrade():
+    connection = mysql.connect()
+    user_id = request.args.get('user_id')
+    query_string = "SELECT * FROM responses WHERE user_id = %s"
+    cursor = connection.cursor()
+    cursor.execute(query_string, (user_id))
+    records = cursor.fetchall()
+    connection.close()
+    cursor.close()
+    print(type(records))
+    return jsonify(records)
+
 @app.route('/createuser', methods=['POST'])
 def createUser():
     if request.method == 'POST':
