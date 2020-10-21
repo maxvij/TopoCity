@@ -6,7 +6,7 @@ To be able to run the application, Python 3.8 or higher should be installed (htt
 <br>
 
 ### Clone the repository
-Clone this repository using the following command in a Git bash
+Clone this repository using the following command in a Git bash <br>
 ```git clone https://github.com/maxvij/TopoCity.git```
 
 ### Run the API
