@@ -11,7 +11,9 @@ const Origin = (dispatch, ownProps) => {
     const [isLoading, setIsLoading] = useState(false);
     const [options, setOptions] = useState([]);
     const [multiSelections, setMultiSelections] = useState([]);
+    /* eslint-disable no-unused-vars */
     const [status, setStatus] = useState([]);
+    /* eslint-enable no-unused-vars */
     const name = localStorage.getItem('topo_name')
     const history = useHistory();
 
@@ -35,7 +37,7 @@ const Origin = (dispatch, ownProps) => {
     function handleSearch(query) {
         setIsLoading(true);
 
-        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/citynames')
+        fetch('http://localhost:5000/citynames')
             .then((resp) => resp.json())
             .then((result) => {
                 setOptions(result);

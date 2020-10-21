@@ -9,7 +9,7 @@ export default class GameIntro extends React.Component {
         }
     }
     componentDidMount() {
-        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/insertactivations')
+        fetch('http://localhost:5000/insertactivations')
         .then(res => res.json())
         .then((data) => {
             this.setState({ status: data })

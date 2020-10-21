@@ -1,4 +1,3 @@
-
 import React, {useState, useEffect} from 'react';
 import {Redirect} from 'react-router-dom';
 import {ReactComponent as Loader} from '../assets/loader.svg';
@@ -6,12 +5,8 @@ import {ReactComponent as Loader} from '../assets/loader.svg';
 function Initialize() {
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
-    const [items, setItems] = useState([]);
     const [facts, setFacts] = useState([]);
 
-    // Note: the empty deps array [] means
-    // this useEffect will run once
-    // similar to componentDidMount()
     useEffect(() => {
         let origin = localStorage.getItem('topo_origin')
         let user_id = localStorage.getItem('topo_user_id')
@@ -28,9 +23,6 @@ function Initialize() {
                     setFacts(result.facts)
                     setIsLoaded(true);
                 },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
                 (error) => {
                     setIsLoaded(true);
                     setError(error);

@@ -50,6 +50,10 @@ time_in_ms = lambda: int(time.time() * 1000)
 def get_current_time():
     return {'time': time_in_ms()}
 
+@app.route('/status')
+def get_status():
+    return {'status': 'OK'}
+
 def initSession(user_id):
     model = SpacingModel()
     duration = 10
@@ -424,8 +428,8 @@ def initializeUser():
             homes = request.args.get('cities')
             homes = [x.strip() for x in homes.split(',')]
             # read city matrix
-            cities = pd.read_csv('city_matrix_new.csv')
-            provinceCities = pd.read_csv('groningen.csv')
+            cities = pd.read_csv('city_matrix.csv')
+            provinceCities = pd.read_csv('cities_gro_fri.csv')
             columns = ['City', 'Popularity']
             for index, city in enumerate(homes):
                 columns.append(homes[index])

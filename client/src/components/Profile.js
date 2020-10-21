@@ -1,7 +1,5 @@
 import React from 'react'
 import Button from "react-bootstrap/Button";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
 import {withRouter} from 'react-router-dom';
 
 class Profile extends React.Component {
@@ -15,7 +13,8 @@ class Profile extends React.Component {
                 name: '',
                 id: 0,
                 origin: ''
-            }
+            },
+            connected: false
         }
     }
 
@@ -34,34 +33,44 @@ class Profile extends React.Component {
     }
 
     componentDidMount() {
-        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/users')
+        setInterval(this.checkServerStatus, 1000)
+    }
+
+    checkServerStatus = () => {
+        fetch('http://localhost:5000/status')
             .then(res => res.json())
             .then((res) => {
-                this.setState({profiles: res, loading: false})
+                this.setState({
+                    connected: true
+                })
             })
-            .catch(console.log)
+            .catch((err) => {
+                this.setState({
+                    connected: false
+                })
+                // console.log(err)
+            })
     }
 
     render() {
+        const helpPanel = <p>If you're having trouble setting up the server correctly, make sure to follow the steps as described in our <a target="_blank" href="https://github.com/maxvij/TopoCity">Readme at our Github repository</a>.</p>
+
         return (
             <div className="center-box">
-                <h1>Nice that you're here!</h1>
-                <div className="filler-40"></div>
+                <h1>Welcome to TopoCity!</h1>
                 <div className="max-400">
-                <div className="filler-40"></div>
-                    <h3>Have you played before?</h3>
-                    {this.state.loading ? 'Fetching profiles...' : <DropdownButton variant="blue" size='lg' title="Select an existing profile">
-                        {this.state.profiles.map((profile, index) => (
-                            <Dropdown.Item
-                                key={index}
-                                onClick={() => this.handleSelect(profile.id, profile.name, profile.homes)}>{profile.name}</Dropdown.Item>
-                        ))}
-                    </DropdownButton>}
-                    <div className="filler-40"></div>
-                    <h3>Are you new here?</h3>
-                    <Button href="/name" variant="yellow" size="lg" color="blue" block>
-                        Create a new profile
-                    </Button>
+                <p>TopoCity is a SlimStampen-based topography learning app for the Netherlands.</p>
+                <p>Thank you for willing to participate in this experiment. <br />The experiment should take approximately <strong>10 minutes</strong>.</p>
+                <br />
+                <p><span className={"status" + (this.state.connected ? " green" : " red")}>{this.state.connected ? 'connected to python' : 'not connected to python'}</span></p>
+                    {this.state.connected === false && helpPanel}
+                    {this.state.connected && <>
+                        <div className="filler-40"></div>
+                        <h3>Please create a profile</h3>
+                        <Button href="/name" variant="yellow" size="lg" color="blue" block>
+                            Create a new profile
+                        </Button></>
+                    }
                 </div>
             </div>
 

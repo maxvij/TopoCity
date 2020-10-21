@@ -85,7 +85,7 @@ class Game extends React.Component {
             'responseTime': responseTime,
             'user_id': this.state.user_id
         }
-        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/logresponse?session_id=' + this.state.session_id, {
+        fetch('http://localhost:5000/logresponse?session_id=' + this.state.session_id, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -124,7 +124,7 @@ class Game extends React.Component {
         this.setState({loading: true})
         let newStartTime = new Date()
         newStartTime.setMilliseconds(newStartTime.getMilliseconds() + 1)
-        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/getnextfact?session_id=' + this.state.session_id).then(res => res.json()).then(data => {
+        fetch('http://localhost:5000/getnextfact?session_id=' + this.state.session_id).then(res => res.json()).then(data => {
             const splittedString = data.next_fact[1].split("-");
             this.setState({
                 currentFact: data.next_fact,
@@ -145,7 +145,7 @@ class Game extends React.Component {
     }
 
     getActivationLevel = () => {
-        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/getactivationlevel?session_id=' + this.state.session_id).then(res => res.json()).then(data => {
+        fetch('http://localhost:5000/getactivationlevel?session_id=' + this.state.session_id).then(res => res.json()).then(data => {
             this.setState({
                 activationLevel: data.activation,
             });
@@ -158,7 +158,7 @@ class Game extends React.Component {
         this.setState({
             gameStarted: true
         })
-        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/start?session_id=' + this.state.session_id).then(res => res.json()).then(data => {
+        fetch('http://localhost:5000/start?session_id=' + this.state.session_id).then(res => res.json()).then(data => {
             console.log('Started model with start time: ', data)
         }).catch((error) => {
             this.logError('Unable to start the model', error)
@@ -196,7 +196,7 @@ class Game extends React.Component {
         this.setState({
             loading: true
         })
-        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/facts?session_id=' + this.state.session_id).then(res => res.json()).then(data => {
+        fetch('http://localhost:5000/facts?session_id=' + this.state.session_id).then(res => res.json()).then(data => {
             this.setState({
                 loading: false,
                 facts: data.facts,
@@ -209,7 +209,7 @@ class Game extends React.Component {
     }
 
     getResponses = () => {
-        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/responses?session_id=' + this.state.session_id).then(res => res.json()).then(data => {
+        fetch('http://localhost:5000/responses?session_id=' + this.state.session_id).then(res => res.json()).then(data => {
             this.setState({
                 responses: data.responses
             });
@@ -220,7 +220,7 @@ class Game extends React.Component {
     }
 
     getActivationLevels = () => {
-        fetch((typeof(process.env.REACT_APP_API_HOST) !== 'undefined' ? process.env.REACT_APP_API_HOST : '') + '/activationLog?session_id=' + this.state.session_id).then(res => res.json()).then(data => {
+        fetch('http://localhost:5000/activationLog?session_id=' + this.state.session_id).then(res => res.json()).then(data => {
             this.setState({
                 activationLevels: data
             });

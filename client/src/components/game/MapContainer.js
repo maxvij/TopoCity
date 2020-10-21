@@ -3,7 +3,7 @@ import ReactMapboxGl, {Source, Layer} from 'react-mapbox-gl';
 import MapLayers from "./MapLayers";
 
 const Map = ReactMapboxGl({
-    accessToken: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN,
+    accessToken: 'pk.eyJ1IjoibmlrbGFzbWFydGluIiwiYSI6ImNrZXR3aXRvaTFxZzAyeW9lajQ3d2ljZXgifQ.jfdervmfFmg7TSA8sU0CxA',
     minZoom: 7,
     maxZoom: 9,
     scrollZoom: false,
@@ -82,7 +82,9 @@ export default class MapContainer extends React.Component {
                 right: 0,
                 bottom: 0
             }}
+            /* eslint-disable react/style-prop-object */
             style={"mapbox://styles/niklasmartin/ckf3wu17m13kb19ldd3g5rhd3"}
+            /* eslint-enable react/style-prop-object */
             zoom={[8.5]}
             center={this.props.center}
             onStyleLoad={this.onStyleLoad}
